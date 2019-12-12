@@ -4,7 +4,7 @@ using VectorEngine.Engine;
 
 namespace VectorEngine
 {
-    class EntryPoint
+    public static class EntryPoint
     {
         public const int TargetFPS = 60;
         public const int MaxFPS = 300;
@@ -12,10 +12,10 @@ namespace VectorEngine
 
         public static void Main(string[] args)
         {
-            new EntryPoint().Start(args);
+            Start(args);
         }
 
-        private void Start(string[] startParameters)
+        private static void Start(string[] startParameters)
         {
             new GameEngine(startParameters);
 
