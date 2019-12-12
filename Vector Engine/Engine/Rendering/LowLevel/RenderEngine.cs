@@ -23,7 +23,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
             staticShader = shader;
 
             ChangeClearColor(0.25f, 0f, 0.5f, 1f);
-            ClearScreen();
+            PrepareForRendering();
         }
 
         /// <summary>
@@ -47,15 +47,13 @@ namespace VectorEngine.Core.Rendering.LowLevel
         /// <summary>
         /// Clear the screen using the clear color
         /// </summary>
-        public static void ClearScreen()
+        public static void PrepareForRendering()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
 
             staticShader.EnableShader();
             staticShader.LoadProjectionMatrix(projectionMatrix);
-
-            ShaderProgram.DisableShader();
         }
 
         /// <summary>

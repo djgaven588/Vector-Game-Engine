@@ -121,13 +121,15 @@ namespace VectorEngine.Core
                 if (keyboard.IsKeyDown(Key.ShiftLeft))
                     camera.Move(new Vector3d(0, -10 * e.Time, 0));
                 if (keyboard.IsKeyDown(Key.Q))
-                    camera.Rotate(new Vector3d(0, -40 * e.Time, 0));
+                    camera.Rotate(new Vector3d(0, -80 * e.Time, 0));
                 if (keyboard.IsKeyDown(Key.E))
-                    camera.Rotate(new Vector3d(0, 40 * e.Time, 0));
+                    camera.Rotate(new Vector3d(0, 80 * e.Time, 0));
                 if (keyboard.IsKeyDown(Key.X))
-                    camera.Rotate(new Vector3d(40 * e.Time, 0, 0));
+                    camera.Rotate(new Vector3d(-80 * e.Time, 0, 0));
                 if (keyboard.IsKeyDown(Key.Z))
-                    camera.Rotate(new Vector3d(-40 * e.Time, 0, 0));
+                    camera.Rotate(new Vector3d(80 * e.Time, 0, 0));
+
+                Debug.Log(camera.GetPosition() + ", " + camera.GetRotation());
             }
         }
 
@@ -136,15 +138,13 @@ namespace VectorEngine.Core
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
 
             RenderEngine.CleanUp();
-
             light.SetPosition(camera.GetPosition());
-            
-            staticShader.EnableShader();
+
+            RenderEngine.PrepareForRendering();
             staticShader.LoadViewMatrix(camera);
             staticShader.LoadLight(light);
 
             // Run render code here
-            RenderEngine.ClearScreen();
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
 
