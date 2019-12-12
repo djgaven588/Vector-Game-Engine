@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Svelto.ObjectPool
 {
-    public class ObjectPool<T> : IObjectPool<T>, IDisposable
+    public class ObjectPool<T> : IObjectPool<T>
 #if DEBUG
                                , IObjectPoolDebug
 #endif
-        where T : class
+        where T : class, new()
     {
 #if DEBUG
         readonly HashSet<T> alreadyRecycled = new HashSet<T>();
@@ -21,13 +21,7 @@ namespace Svelto.ObjectPool
             alreadyRecycled.Clear();
 #endif
         }
-        
-        public virtual void Dispose()
-        {
-            _pools.Clear();
-            _namedPools.Clear();
-        }
-        
+
         public virtual void Recycle(T go, int pool)
         {
             InternalRecycle(go, pool);
@@ -157,7 +151,9 @@ namespace Svelto.ObjectPool
 
         Stack<T> ReturnValidPool(int pool)
         {
-            if (_pools.TryGetValue(pool, out var localPool) == false)
+            Stack<T> localPool;
+
+            if (_pools.TryGetValue(pool, out localPool) == false)
                 _pools[pool] = localPool = new Stack<T>();
 
             return localPool;
@@ -165,7 +161,9 @@ namespace Svelto.ObjectPool
 
         Stack<T> ReturnValidPool(string poolName)
         {
-            if (_namedPools.TryGetValue(poolName, out var localPool) == false)
+            Stack<T> localPool;
+
+            if (_namedPools.TryGetValue(poolName, out localPool) == false)
                 localPool = _namedPools[poolName] = new Stack<T>();
 
             return localPool;
@@ -200,8 +198,8 @@ namespace Svelto.ObjectPool
             return aObj == null || aObj.Equals(null);
         }
 
-        protected readonly Dictionary<int, Stack<T>>    _pools      = new Dictionary<int, Stack<T>>();
-        protected readonly Dictionary<string, Stack<T>> _namedPools = new Dictionary<string, Stack<T>>();
+        Dictionary<int, Stack<T>>    _pools      = new Dictionary<int, Stack<T>>();
+        Dictionary<string, Stack<T>> _namedPools = new Dictionary<string, Stack<T>>();
 
         int _objectsReused;
         int _objectsCreated;

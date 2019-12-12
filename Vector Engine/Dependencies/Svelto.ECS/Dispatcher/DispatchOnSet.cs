@@ -1,11 +1,14 @@
 using System;
+using Svelto.WeakEvents;
 
 namespace Svelto.ECS
 {
-    public class DispatchOnSet<T>
+    public class DispatchOnSet<T> where T:struct
     {
         public DispatchOnSet(EGID senderID)
         {      
+            _subscribers = new WeakEvent<EGID, T>();
+            
             _senderID = senderID;
         }
         
@@ -15,8 +18,8 @@ namespace Svelto.ECS
             {
                 _value = value;
 
-                if (_paused == false)
-                    _subscribers(_senderID, value);
+                if(_paused == false)
+                    _subscribers.Invoke(_senderID, value);
             }
         }
         
@@ -36,7 +39,7 @@ namespace Svelto.ECS
         protected T  _value;
         readonly EGID _senderID;
 
-        Action<EGID, T> _subscribers;
-        bool            _paused;
+        WeakEvent<EGID, T> _subscribers;
+        bool _paused;
     }
 }

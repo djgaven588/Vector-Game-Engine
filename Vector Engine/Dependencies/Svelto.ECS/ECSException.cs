@@ -1,13 +1,13 @@
 using System;
 
-namespace Svelto.ECS
+namespace Svelto.ECS.Internal
 {
-    public class ECSException : Exception
+    class ECSException : Exception
     {
-        public ECSException(string message):base("<color=red>".FastConcat(message, "</color>"))
+        public ECSException(string message):base(message)
         {}
         
-        public ECSException(string message, Exception innerE):base("<color=red>".FastConcat(message, "</color>"), innerE)
+        public ECSException(string message, Exception innerE):base(message, innerE)
         {}
     }
 }

@@ -1,7 +1,12 @@
+using System;
+
 namespace Svelto.ECS
 {
-    struct EntityStructInfoView: IEntityStruct
+    public struct EntityStructInfoView: IEntityStruct, INeedEGID
     {
+        public EGID ID   { get; set; }
+        public Type type { get; set; }
+
         public IEntityBuilder[] entitiesToBuild;
     }
 }

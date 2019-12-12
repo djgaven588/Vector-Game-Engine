@@ -1,28 +1,15 @@
 using System;
 using System.Collections.Generic;
 using Svelto.DataStructures;
+using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
+using Svelto.WeakEvents;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-        public struct EntitiesSubmitter
-        {
-            public EntitiesSubmitter(EnginesRoot enginesRoot)
-            {
-                _weakReference = new DataStructures.WeakReference<EnginesRoot>(enginesRoot);
-            }
-
-            public void Invoke()
-            {
-                if (_weakReference.IsValid)
-                    _weakReference.Target.SubmitEntityViews();
-            }
-
-            readonly DataStructures.WeakReference<EnginesRoot> _weakReference;
-        }
         /// <summary>
         /// Engines root contextualize your engines and entities. You don't need to limit yourself to one EngineRoot
         /// as multiple engines root could promote separation of scopes. The EntitySubmissionScheduler checks
@@ -34,47 +21,37 @@ namespace Svelto.ECS
         public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler)
         {
             _entitiesOperations = new FasterDictionary<ulong, EntitySubmitOperation>();
-            _reactiveEnginesAddRemove = new FasterDictionary<RefWrapper<Type>, FasterList<IEngine>>();
-            _reactiveEnginesSwap = new FasterDictionary<RefWrapper<Type>, FasterList<IEngine>>();
-            _enginesSet = new FasterList<IEngine>();
-            _enginesTypeSet = new HashSet<Type>();
+            _reactiveEnginesAddRemove = new Dictionary<Type, FasterList<IEngine>>();
+            _reactiveEnginesSwap = new Dictionary<Type, FasterList<IEngine>>();
+            _enginesSet = new HashSet<IEngine>();
             _disposableEngines = new FasterList<IDisposable>();
             _transientEntitiesOperations = new FasterList<EntitySubmitOperation>();
 
-            _groupEntityViewsDB = new FasterDictionary<uint, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>>();
-            _groupsPerEntity = new FasterDictionary<RefWrapper<Type>, FasterDictionary<uint, ITypeSafeDictionary>>();
+            _groupEntityDB = new FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>>();
+            _groupsPerEntity = new Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>>();
             _groupedEntityToAdd = new DoubleBufferedEntitiesToAdd();
 
             _entitiesStream = new EntitiesStream();
-            _entitiesDB = new EntitiesDB(_groupEntityViewsDB, _groupsPerEntity, _entitiesStream);
-
+            _entitiesDB = new EntitiesDB(_groupEntityDB, _groupsPerEntity, _entitiesStream);
+            
             _scheduler = entityViewScheduler;
-            _scheduler.onTick = new EntitiesSubmitter(this);
-        }
-        
-        public EnginesRoot(IEntitySubmissionScheduler entityViewScheduler, bool isDeserializationOnly):this(entityViewScheduler)
-        {
-            _isDeserializationOnly = isDeserializationOnly;
+            _scheduler.onTick = new WeakAction(SubmitEntityViews);
         }
 
         public void AddEngine(IEngine engine)
         {
-            var type = engine.GetType();
-            var refWrapper = new RefWrapper<Type>(type);
-            DBC.ECS.Check.Require(
-                _enginesTypeSet.Contains(refWrapper) == false ||
-                type.ContainsCustomAttribute(typeof(AllowMultipleAttribute)) == true,
-                "The same engine has been added more than once, if intentional, use [AllowMultiple] class attribute "
-                    .FastConcat(engine.ToString()));
+            DBC.ECS.Check.Require(_enginesSet.Contains(engine) == false,
+                                 "The same engine has been added more than once "
+                                    .FastConcat(engine.ToString()));
+
             try
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
-                    CheckEntityViewsEngine(viewEngine, _reactiveEnginesAddRemove);
-
+                    CheckEntityViewsEngine<IReactOnAddAndRemove>(viewEngine, _reactiveEnginesAddRemove);
+                
                 if (engine is IReactOnSwap viewEngineSwap)
-                    CheckEntityViewsEngine(viewEngineSwap, _reactiveEnginesSwap);
+                    CheckEntityViewsEngine<IReactOnSwap>(viewEngineSwap, _reactiveEnginesSwap);
 
-                _enginesTypeSet.Add(refWrapper);
                 _enginesSet.Add(engine);
 
                 if (engine is IDisposable)
@@ -88,12 +65,15 @@ namespace Svelto.ECS
             }
             catch (Exception e)
             {
-                throw new ECSException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString(), " "), e);
+#if !DEBUG                
+                throw new ECSException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString()), e);
+#else
+                Console.LogException("Code crashed while adding engine ".FastConcat(engine.GetType().ToString()), e);
+#endif                
             }
         }
-
-        void CheckEntityViewsEngine<T>(T engine, FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines)
-            where T : class, IEngine
+       
+        void CheckEntityViewsEngine<T>(IEngine engine, Dictionary<Type, FasterList<IEngine>> engines)
         {
             var interfaces = engine.GetType().GetInterfaces();
 
@@ -109,10 +89,9 @@ namespace Svelto.ECS
         }
 
         static void AddEngine<T>(T engine, Type[] entityViewTypes,
-            FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines) 
-            where T : class, IEngine
+                              Dictionary<Type, FasterList<T>> engines) where T:IEngine
         {
-            for (var i = 0; i < entityViewTypes.Length; i++)
+            for (int i = 0; i < entityViewTypes.Length; i++)
             {
                 var type = entityViewTypes[i];
 
@@ -120,24 +99,40 @@ namespace Svelto.ECS
             }
         }
 
-        static void AddEngine<T>(T engine, FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> engines, Type type)
-            where T : class, IEngine
+        static void AddEngine<T>(T engine, Dictionary<Type, FasterList<T>> engines, Type type) where T : IEngine
         {
-            if (engines.TryGetValue(new RefWrapper<Type>(type), out var list) == false)
+            if (engines.TryGetValue(type, out var list) == false)
             {
-                list = new FasterList<IEngine>();
+                list = new FasterList<T>();
 
-                engines.Add(new RefWrapper<Type>(type), list);
+                engines.Add(type, list);
             }
 
             list.Add(engine);
         }
 
-        readonly FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> _reactiveEnginesAddRemove;
-        readonly FasterDictionary<RefWrapper<Type>, FasterList<IEngine>> _reactiveEnginesSwap;
-        readonly FasterList<IDisposable>                                 _disposableEngines;
+        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesAddRemove;    
+        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesSwap;
+        readonly HashSet<IEngine>                      _enginesSet;
+        readonly FasterList<IDisposable>               _disposableEngines;
         
-        readonly FasterList<IEngine> _enginesSet;
-        readonly HashSet<Type>       _enginesTypeSet;
+        //one datastructure rule them all:
+        //split by group
+        //split by type per group. It's possible to get all the entities of a give type T per group thanks 
+        //to the FasterDictionary capabilities OR it's possible to get a specific entityView indexed by
+        //ID. This ID doesn't need to be the EGID, it can be just the entityID
+        //for each group id, save a dictionary indexed by entity type of entities indexed by id
+        //ITypeSafeDictionary = Key = entityID, Value = EntityStruct
+        readonly FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> _groupEntityDB;
+        //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
+        //found indexed by group id
+                    //EntityViewType           //groupID  //entityID, EntityStruct
+        readonly Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>> _groupsPerEntity;
+        
+        readonly EntitiesStream _entitiesStream;
+        readonly EntitiesDB     _entitiesDB;
+        
+        static readonly Type OBJECT_TYPE           = typeof(object);
+        static readonly Type ENTITY_INFO_VIEW_TYPE = typeof(EntityStructInfoView);
     }
 }

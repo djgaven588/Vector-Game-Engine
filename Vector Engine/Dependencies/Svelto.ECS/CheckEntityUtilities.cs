@@ -1,81 +1,105 @@
-﻿#if DEBUG && !PROFILER
-using System.Collections.Generic;
-using Svelto.DataStructures;
-#else
+﻿#if !DEBUG || PROFILER
+#define DISABLE_CHECKS
 using System.Diagnostics;
 #endif
+using System;
+using System.Collections.Generic;
+using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
-#if DEBUG && !PROFILER        
-        void CheckRemoveEntityID(EGID egid)
+#if DISABLE_CHECKS        
+        [Conditional("_CHECKS_DISABLED")]
+#endif        
+        void CheckRemoveEntityID(EGID entityID, IEntityDescriptor descriptorEntity)
         {
-     //       Console.LogError("<color=orange>removed</color>".FastConcat(egid.ToString()));
-            if (_idCheckers.TryGetValue(egid.groupID, out var hash))
-            {
-                if (hash.Contains(egid.entityID) == false)
-                    throw new ECSException("Entity with not found ID is about to be removed: id: "
-                        .FastConcat(egid.entityID)
-                        .FastConcat(" groupid: ")
-                        .FastConcat(egid.groupID));
-
-                hash.Remove(egid.entityID);
-
-                if (hash.Count == 0)
-                    _idCheckers.Remove(egid.groupID);
-            }
-            else
-            {
-                throw new ECSException("Entity with not found ID is about to be removed: id: "
-                    .FastConcat(egid.entityID)
-                    .FastConcat(" groupid: ")
-                    .FastConcat(egid.groupID));
-            }
-        }
-
-        void CheckAddEntityID(EGID egid)
-        {
-//            Console.LogError("<color=orange>added</color> ".FastConcat(egid.ToString()));
             
-            if (_idCheckers.TryGetValue(egid.groupID, out var hash) == false)
-                hash = _idCheckers[egid.groupID] = new HashSet<uint>();
+            var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
+            
+            if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
+            {
+                for (int i = 0; i < descriptorEntitiesToBuild.Length; i++)
+                {
+                    CheckRemoveEntityID(entityID, descriptorEntitiesToBuild[i].GetEntityType(), group, descriptorEntity.ToString());
+                }
+            }
             else
             {
-                if (hash.Contains(egid.entityID))
-                    throw new ECSException("Entity with used ID is about to be built: '"
-                        .FastConcat("' id: '")
-                        .FastConcat(egid.entityID)
-                        .FastConcat("' groupid: '")
-                        .FastConcat(egid.groupID)
-                        .FastConcat("'"));
+                Console.LogError("Entity with not found ID is about to be removed: id: "
+                                                           .FastConcat(entityID.entityID)
+                                                           .FastConcat(" groupid: ")
+                                                           .FastConcat(entityID.groupID));
             }
-
-            hash.Add(egid.entityID);
-        }
-        
-        void RemoveGroupID(ExclusiveGroup.ExclusiveGroupStruct groupID)
-        {
-            _idCheckers.Remove(groupID);
         }
 
-        readonly FasterDictionary<uint, HashSet<uint>> _idCheckers = new FasterDictionary<uint, HashSet<uint>>();
-#else
+#if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
-        void CheckRemoveEntityID(EGID egid)
+#endif        
+        void CheckRemoveEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group, string name)
         {
+            ITypeSafeDictionary entities;
+            if (group.TryGetValue(entityViewType, out entities))
+            {
+                if (entities.Has(entityID.entityID) == false)
+                {
+                    Console.LogError("Entity ".FastConcat(name, " with not found ID is about to be removed: ")
+                                                               .FastConcat(entityViewType.ToString())
+                                                               .FastConcat(" id: ")
+                                                               .FastConcat(entityID.entityID)
+                                                               .FastConcat(" groupid: ")
+                                                               .FastConcat(entityID.groupID));
+                }
+            }
+            else
+            {
+                Console.LogError("Entity ".FastConcat(name, " with not found ID is about to be removed: ")
+                                                           .FastConcat(entityViewType.ToString())
+                                                           .FastConcat(" id: ")
+                                                           .FastConcat(entityID.entityID)
+                                                           .FastConcat(" groupid: ")
+                                                           .FastConcat(entityID.groupID));
+            }
         }
 
+#if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
-        void CheckAddEntityID(EGID egid)
+#endif        
+        void CheckAddEntityID<T>(EGID entityID, T descriptorEntity) where T:IEntityDescriptor
         {
+            var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
+            
+            //these are the entities added in this frame
+            if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
+            {
+                for (int i = 0; i < descriptorEntitiesToBuild.Length; i++)
+                {
+                    CheckAddEntityID(entityID, descriptorEntitiesToBuild[i].GetEntityType(), group,
+                                     descriptorEntity.ToString());
+                }
+            }
         }
-        
+
+#if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
-        void RemoveGroupID(ExclusiveGroup.ExclusiveGroupStruct groupID)
+#endif        
+        static void CheckAddEntityID(EGID   entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group,
+                                     string name)
         {
+            ITypeSafeDictionary entities;
+            if (group.TryGetValue(entityViewType, out entities))
+            {
+                if (entities.Has(entityID.entityID))
+                {
+                    Console.LogError("Entity ".FastConcat(name, " with used ID is about to be built: ")
+                                                               .FastConcat(entityViewType.ToString())
+                                                               .FastConcat(" id: ")
+                                                               .FastConcat(entityID.entityID)
+                                                               .FastConcat(" groupid: ")
+                                                               .FastConcat(entityID.groupID));
+                }
+            }
         }
-#endif
     }
 }

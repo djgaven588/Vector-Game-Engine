@@ -46,7 +46,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Dependencies\Svelto.Tasks\Runners\Unity\Editor\Svelto.Tasks.StopEditorThread.asmdef" />
+    <None Include="Dependencies\Svelto.ECS\EntityBuilder.cs.rej" />
+    <None Include="Dependencies\Svelto.ECS\LICENSE" />
+    <None Include="Dependencies\Svelto.ECS\README.md" />
+    <None Include="Dependencies\Svelto.ECS\Svelto.ECS.asmdef" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -72,22 +75,18 @@
     <Compile Include="Dependencies\Svelto.Common\Command\ICommandFactory.cs" />
     <Compile Include="Dependencies\Svelto.Common\Command\IInjectableCommand.cs" />
     <Compile Include="Dependencies\Svelto.Common\Context\ContextNotifier.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\Extensions\Unity\UnityContext.cs" />
     <Compile Include="Dependencies\Svelto.Common\Context\ICompositionRoot.cs" />
     <Compile Include="Dependencies\Svelto.Common\Context\IContextNotifer.cs" />
     <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkDestruction.cs" />
     <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkInitialization.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterDenseList.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterDictionary.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterList.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterSparseList.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\HashableWeakReference.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\HashHelpers.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\LockFreeQueue.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyDictionary.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\RefWrapper.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\RingBuffer.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeDictionary.cs" />
     <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeQueue.cs" />
@@ -113,9 +112,9 @@
     <Compile Include="Dependencies\Svelto.Common\Utilities\ThreadUtility.cs" />
     <Compile Include="Dependencies\Svelto.Common\Utilities\TypeToString.cs" />
     <Compile Include="Dependencies\Svelto.Common\WeakEvents\SafeEvent.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\AllowMultipleAttribute.cs" />
+    <Compile Include="Dependencies\Svelto.Common\WeakEvents\WeakAction.cs" />
+    <Compile Include="Dependencies\Svelto.Common\WeakEvents\WeakEvent.cs" />
     <Compile Include="Dependencies\Svelto.ECS\CheckEntityUtilities.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\DataStructures\SetEGIDWithoutBoxing.cs" />
     <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
     <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
     <Compile Include="Dependencies\Svelto.ECS\DBC.cs" />
@@ -123,8 +122,6 @@
     <Compile Include="Dependencies\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
     <Compile Include="Dependencies\Svelto.ECS\DynamicEntityDescriptor.cs" />
     <Compile Include="Dependencies\Svelto.ECS\ECSException.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ECSResources\ECSResources.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ECSResources\ECSString.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EGID.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EGIDMapper.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
@@ -137,7 +134,7 @@
     <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.CheckFields.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityCollection.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityDescriptorTemplate.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityDescriptorInfo.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityFactory.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityGroupNotFoundException.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityHierarchyStruct.cs" />
@@ -147,6 +144,7 @@
     <Compile Include="Dependencies\Svelto.ECS\EntityStructInitializer.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntitySubmissionScheduler.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntitySubmitOperation.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityView.cs" />
     <Compile Include="Dependencies\Svelto.ECS\EntityViewUtility.cs" />
     <Compile Include="Dependencies\Svelto.ECS\ExclusiveGroup.cs" />
     <Compile Include="Dependencies\Svelto.ECS\ExecuteOnEntitiesDB.cs" />
@@ -164,33 +162,8 @@
     <Compile Include="Dependencies\Svelto.ECS\IReactOnAddAndRemove.cs" />
     <Compile Include="Dependencies\Svelto.ECS\IReactOnSwap.cs" />
     <Compile Include="Dependencies\Svelto.ECS\Sequencer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\ComposedSerializer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultSerializer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultSerializerUtils.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultVersioningFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\DoNotSerializeAttribute.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\DontSerialize.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\EnginesRoot.SerializableEntityHeader.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\EntitiesDB.DescriptorMap.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\HashNameAttribute.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\IDeserializationFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\IEntitySerialization.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializableEntityBuilder.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializableEntityDescriptor.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializationData.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\PartialSerializer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityBuilder.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityDescriptor.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityStruct.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializationEntityDescriptorTemplate.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\SimpleSerializationData.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Serialization\Unsafe.cs" />
     <Compile Include="Dependencies\Svelto.ECS\SimpleSubmissionEntityViewScheduler.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\TypeCache.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\WaitForSubmissionEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Services\ServiceRequestFactoryArgumentException.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\StaticEntityDescriptorInfo.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\BreakIt.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Collections\ParallelTaskCollection.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Collections\SerialTaskCollection.cs" />
@@ -205,10 +178,6 @@
     <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ExceptionHandlingEnumerator.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ReusableWaitForSecondsEnumerator.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Enumerators\TaskServiceEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\Unity\AsyncOperationEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\Unity\UnityWebRequestEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\Unity\WWWEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\Unity\YieldInstructionEnumerator.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Enumerators\WaitForSecondsEnumerator.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Enumerators\WaitForSignalEnumerator.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\ITaskRoutine.cs" />
@@ -226,21 +195,6 @@
     <Compile Include="Dependencies\Svelto.Tasks\Runners\IRunner.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Runners\MultiThreadRunner.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\Runners\SyncRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\CoroutineMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\EarlyUpdateMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\Editor\UnityThreadStopper.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\EndOfFrameRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\IRunningTasksInfo.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\LateMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\MonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\PhysicMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\RunnerBehaviourUpdate.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\SequentialMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\StaggeredMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\TimeBoundMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\TimeSlicedMonoRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\UnityCoroutineRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\Unity\UpdateMonoRunner.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\ServiceTasks\IServiceTask.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\StandardSchedulers.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\SveltoTask.cs" />
@@ -267,6 +221,7 @@
     <Compile Include="EntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dependencies\Svelto.ECS\Svelto.ECS.csproj" />
     <Content Include="Engine\Rendering\Shaders\FragmentShader.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

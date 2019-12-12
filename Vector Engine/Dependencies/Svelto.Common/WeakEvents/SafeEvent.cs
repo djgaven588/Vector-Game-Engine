@@ -11,7 +11,14 @@ public static class SafeEvent
             {
                 Action<T> handler = (Action<T>) onEvent.GetInvocationList()[index];
 
+                try
+                {
                     if (handler != null) handler.Invoke(val);
+                }
+                catch (Exception e)
+                {
+                    Svelto.Console.LogException(e);
+                }
             }
         }
     }
@@ -25,7 +32,14 @@ public static class SafeEvent
             {
                 Action handler = (Action)onEvent.GetInvocationList()[index];
 
+                try
+                {
                     if (handler != null) handler.Invoke();
+                }
+                catch (Exception e)
+                {
+                    Svelto.Console.LogException(e);
+                }
             }
         }
     }

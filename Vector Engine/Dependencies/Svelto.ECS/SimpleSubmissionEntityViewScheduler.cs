@@ -1,21 +1,17 @@
-﻿using System;
-using Svelto.ECS.Schedulers;
+﻿using Svelto.ECS.Schedulers;
+using Svelto.WeakEvents;
 
 namespace Svelto.ECS
 {
-    //This scheduler shouldn't be used in production and it's meant to be used for Unit Tests only
+    //This scheduler shouldn't be used in production and it's meant to be 
+    //used for Unit Tests only
     public class SimpleSubmissionEntityViewScheduler : IEntitySubmissionScheduler
     {
         public void SubmitEntities()
         {
-            _onTick.Invoke();
+            onTick.Invoke();
         }
         
-        EnginesRoot.EntitiesSubmitter IEntitySubmissionScheduler.onTick
-        {
-            set => _onTick = value;
-        }
-        
-        EnginesRoot.EntitiesSubmitter _onTick;
+        public WeakAction onTick { set; private get; }
     }
 }

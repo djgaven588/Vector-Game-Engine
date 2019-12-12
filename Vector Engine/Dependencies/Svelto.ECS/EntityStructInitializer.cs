@@ -1,75 +1,36 @@
 ﻿using System;
-using Svelto.DataStructures;
+using System.Collections.Generic;
 using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
-    public ref struct EntityStructInitializer
+    public struct EntityStructInitializer
     {
-        public EntityStructInitializer(EGID id, FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> group)
+        public EntityStructInitializer(EGID id, Dictionary<Type, ITypeSafeDictionary> @group)
         {
-            _group = group;
-            _ID = id;
+            _group = @group;
+            ID      = id;
         }
 
-        public void Init<T>(T initializer) where T : struct, IEntityStruct
+        public void Init<T>(T initializer) where T: struct, IEntityStruct
         {
-            if (_group.TryGetValue(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE),
-                    out var typeSafeDictionary) == false) return;
-
-            var dictionary = (TypeSafeDictionary<T>) typeSafeDictionary;
-
-            if (EntityBuilder<T>.HAS_EGID)
-                SetEGIDWithoutBoxing<T>.SetIDWithoutBoxing(ref initializer, _ID);
-
-            if (dictionary.TryFindIndex(_ID.entityID, out var findElementIndex))
-                dictionary.GetDirectValue(findElementIndex) = initializer;
-        }
-        
-        public void CopyFrom<T>(T initializer) where T : struct, IEntityStruct
-        {
-            var dictionary = (TypeSafeDictionary<T>) _group[new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)];
-
-            if (EntityBuilder<T>.HAS_EGID)
-                SetEGIDWithoutBoxing<T>.SetIDWithoutBoxing(ref initializer, _ID);
-
-           dictionary[_ID.entityID] = initializer;
-        }
-
-        public ref T GetOrCreate<T>() where T : struct, IEntityStruct
-        {
-            ref var entityDictionary = ref _group.GetOrCreate(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)
-            , () => new TypeSafeDictionary<T>());
-            var dictionary = (TypeSafeDictionary<T>) entityDictionary;
-
-            return ref dictionary.GetOrCreate(_ID.entityID);
-        }
-        
-        public T Get<T>() where T : struct, IEntityStruct
-        {
-            return (_group[new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE)] as TypeSafeDictionary<T>)[_ID.entityID];
-        }
-
-        public bool Has<T>() where T : struct, IEntityStruct
-        {
-            if (_group.TryGetValue(new RefWrapper<Type>(EntityBuilder<T>.ENTITY_VIEW_TYPE),
-                out var typeSafeDictionary))
+            if (_group.TryGetValue(EntityBuilder<T>.ENTITY_VIEW_TYPE, out var typeSafeDictionary) == true)
             {
-                var dictionary = (TypeSafeDictionary<T>) typeSafeDictionary;
+                var dictionary = typeSafeDictionary as TypeSafeDictionary<T>;
 
-                if (dictionary.ContainsKey(_ID.entityID))
-                    return true;
+                if (EntityBuilder<T>.HAS_EGID)
+                {
+                    var needEgid = ((INeedEGID) initializer);
+                    needEgid.ID = ID;
+                    initializer = (T) needEgid;
+                }
+
+                if (dictionary.TryFindIndex(ID.entityID, out var findElementIndex))
+                    dictionary.GetDirectValue(findElementIndex) = initializer;
             }
-
-            return false;
         }
-
-        public static EntityStructInitializer CreateEmptyInitializer()
-        {
-            return new EntityStructInitializer(new EGID(), new FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary>());
-        }
-
-        readonly EGID                                                    _ID;
-        readonly FasterDictionary<RefWrapper<Type>, ITypeSafeDictionary> _group;
+        
+        readonly EGID ID;
+        readonly Dictionary<Type, ITypeSafeDictionary> _group;
     }
 }

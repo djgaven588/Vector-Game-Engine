@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Svelto.ECS
 {
@@ -12,19 +11,23 @@ namespace Svelto.ECS
         public readonly IEntityBuilder[]          builders;
         public readonly EGID                      fromID;
         public readonly EGID                      toID;
+        public readonly Type                      entityDescriptor;
 #if DEBUG && !PROFILER
-        public StackFrame trace;
+        public string trace;
 #endif
 
         public EntitySubmitOperation(EntitySubmitOperationType operation, EGID from, EGID to,
-                                     IEntityBuilder[]          builders         = null)
+                                     IEntityBuilder[]          builders         = null,
+                                     Type                      entityDescriptor = null)
         {
             type          = operation;
             this.builders = builders;
-            fromID        = from;
+            fromID            = from;
             toID          = to;
+
+            this.entityDescriptor = entityDescriptor;
 #if DEBUG && !PROFILER
-            trace = default;
+            trace = string.Empty;
 #endif
         }
         
