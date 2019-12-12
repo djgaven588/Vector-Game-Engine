@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A17F338E-DFB3-4756-984E-0D761D01CDA9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>VectorEngine</RootNamespace>
+    <AssemblyName>Vector Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="OpenTK.dll.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="BulletSharp, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BulletSharp.0.11.1\lib\net40-client\BulletSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=3.0.1.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenTK.3.0.1\lib\net20\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpNoise, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpNoise.0.11.0\lib\net45\SharpNoise.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dependencies\Svelto.Common\Command\CommandFactory.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Command\ICommand.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Command\ICommandFactory.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Command\IInjectableCommand.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\ContextNotifier.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\Extensions\Unity\UnityContext.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\ICompositionRoot.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\IContextNotifer.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkDestruction.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkInitialization.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterDenseList.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterDictionary.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterList.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterSparseList.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\HashableWeakReference.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\HashHelpers.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\LockFreeQueue.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyDictionary.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\RefWrapper.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\RingBuffer.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeDictionary.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeQueue.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DataStructures\WeakReference.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DBC.cs" />
+    <Compile Include="Dependencies\Svelto.Common\DebugExtensions.cs" />
+    <Compile Include="Dependencies\Svelto.Common\ObjectPool\IObjectPool.cs" />
+    <Compile Include="Dependencies\Svelto.Common\ObjectPool\IObjectPoolDebug.cs" />
+    <Compile Include="Dependencies\Svelto.Common\ObjectPool\ObjectPool.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Observer\Observable.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Observer\Observer.cs" />
+    <Compile Include="Dependencies\Svelto.Common\PlatformProfiler\PlatformProfiler.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\ActionRef.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\Console.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\DataToString.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\FastConcatUtility.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\FastInvoke.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\ILogger.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\Murmur3.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\SimpleLogger.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\ThreadUtility.cs" />
+    <Compile Include="Dependencies\Svelto.Common\Utilities\TypeToString.cs" />
+    <Compile Include="Dependencies\Svelto.Common\WeakEvents\SafeEvent.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\AllowMultipleAttribute.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\CheckEntityUtilities.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\DataStructures\SetEGIDWithoutBoxing.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\DBC.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\DynamicEntityDescriptor.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ECSException.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ECSResources\ECSResources.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ECSResources\ECSString.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EGID.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EGIDMapper.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Engines.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Entities.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.GenericEntityFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.GenericEntityFunctions.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Submission.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntitiesDB.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.CheckFields.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityCollection.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityDescriptorTemplate.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityGroupNotFoundException.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityHierarchyStruct.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityInfoView.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityNotFoundException.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityStream.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityStructInitializer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntitySubmissionScheduler.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntitySubmitOperation.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\EntityViewUtility.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ExclusiveGroup.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ExecuteOnEntitiesDB.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\ExtendibleEntityDescriptor.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\GenericEntityDescriptor.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\GenericentityStreamConsumerFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEngine.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntitiesDB.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntityBuilder.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntityDescriptorHolder.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntityFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntityFunctions.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IEntityStruct.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IQueryingEntitiesEngine.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IReactOnAddAndRemove.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\IReactOnSwap.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Sequencer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\ComposedSerializer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultSerializer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultSerializerUtils.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\DefaultVersioningFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\DoNotSerializeAttribute.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\DontSerialize.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\EnginesRoot.GenericEntitySerialization.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\EnginesRoot.SerializableEntityHeader.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\EntitiesDB.DescriptorMap.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\HashNameAttribute.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\IDeserializationFactory.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\IEntitySerialization.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializableEntityBuilder.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializableEntityDescriptor.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializationData.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\ISerializer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\PartialSerializer.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityBuilder.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityDescriptor.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializableEntityStruct.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\SerializationEntityDescriptorTemplate.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\SimpleSerializationData.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\Serialization\Unsafe.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\SimpleSubmissionEntityViewScheduler.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\TypeCache.cs" />
+    <Compile Include="Dependencies\Svelto.ECS\WaitForSubmissionEnumerator.cs" />
+    <Compile Include="Dependencies\Svelto.Services\ServiceRequestFactoryArgumentException.cs" />
+    <Compile Include="Dependencies\Svelto.Services\ServiceRequestsFactory.cs" />
+    <Compile Include="Engine\Common\MathLib.cs" />
+    <Compile Include="Engine\Debug.cs" />
+    <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="Engine\WindowHandler.cs" />
+    <Compile Include="Engine\Rendering\LowLevel\RenderDataLoader.cs" />
+    <Compile Include="Engine\Components\Camera.cs" />
+    <Compile Include="Engine\Components\Light.cs" />
+    <Compile Include="Engine\Rendering\LowLevel\Mesh.cs" />
+    <Compile Include="Engine\Rendering\LowLevel\RenderEngine.cs" />
+    <Compile Include="Engine\Rendering\Shaders\ShaderProgram.cs" />
+    <Compile Include="Engine\Rendering\Shaders\StaticShader.cs" />
+    <Compile Include="EntryPoint.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Engine\Rendering\Shaders\FragmentShader.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Engine\Rendering\Shaders\VertexShader.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Game\Textures\TextureAtlisStatic.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets'))" />
+  </Target>
+</Project>
