@@ -1,16 +1,15 @@
 ﻿using VectorEngine.Core.Rendering.Objects;
 using OpenTK;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VectorEngine.Core.Common
 {
-    public static class MathLib
+    public static class Mathmatics
     {
-        public static Matrix4 createTransformationMatrix(Vector3d translation, Vector3d rotation, Vector3d scale)
+        public const double PI = 3.1415926535897931;
+        public const double E = 2.7182818284590451;
+
+        public static Matrix4 CreateTransformationMatrix(Vector3d translation, Vector3d rotation, Vector3d scale)
         {
             Matrix4 matrix = Matrix4.Identity;
 
@@ -22,7 +21,7 @@ namespace VectorEngine.Core.Common
             return matrix;
         }
 
-        public static Matrix4 createViewMatrix(Camera camera)
+        public static Matrix4 CreateViewMatrix(Camera camera)
         {
             Matrix4 matrix = Matrix4.Identity;
 
@@ -33,13 +32,25 @@ namespace VectorEngine.Core.Common
             matrix *= Matrix4.CreateRotationZ((float)ConvertToRadians(camera.GetRotation().Z));
             return matrix;
         }
+
         /// <summary>
         /// Converts degrees into radians
         /// </summary>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        public static double ConvertToRadians(double degrees) {
-            return (Math.PI / 180) * degrees;
+        public static double ConvertToRadians(double degrees) 
+        {
+            return (PI / 180) * degrees;
+        }
+
+        /// <summary>
+        /// Converts radians into degrees
+        /// </summary>
+        /// <param name="degrees"></param>
+        /// <returns></returns>
+        public static double ConvertToDegrees(double radians)
+        {
+            return radians * (180 / Math.PI);
         }
     }
 }

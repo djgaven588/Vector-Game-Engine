@@ -20,9 +20,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            ChangeClearColor(0.25f, 0f, 0.5f, 1f);
-
             staticShader = shader;
+
+            ChangeClearColor(0.25f, 0f, 0.5f, 1f);
+            ClearScreen();
         }
 
         /// <summary>
@@ -70,24 +71,24 @@ namespace VectorEngine.Core.Rendering.LowLevel
         }
 
         /// <summary>
-        /// Render an entity right now.
-        /// TODO: Add a method to do batched rendering
+        /// Render a mesh, ignoring the batching system
         /// </summary>
-        /// <param name="entity"></param>
-        /// 
-        /*
-        public static void Render(Entity entity)
+        /// <param name="matrix"></param>
+        /// <param name="mesh"></param>
+        /// <param name="textureId"></param>
+        public static void RenderMesh(Matrix4 matrix, Mesh mesh, int textureId)
         {
-            Mesh mesh = entity.getMesh();
-
-            entity.UpdateMatrix();
-            staticShader.LoadTransformationMatrix(entity.GetMatrix());
+            staticShader.LoadTransformationMatrix(matrix);
 
             GL.BindVertexArray(mesh.GetVAOID());
 
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
             GL.EnableVertexAttribArray(2);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
 
             GL.DrawElements(BeginMode.Triangles, mesh.GetVertexCount(), DrawElementsType.UnsignedInt, 0);
 
@@ -96,6 +97,37 @@ namespace VectorEngine.Core.Rendering.LowLevel
             GL.DisableVertexAttribArray(2);
 
             GL.BindVertexArray(0);
-        }*/
+        }
+
+        /// <summary>
+        /// Render multiple meshes in one call, particles will find this useful
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <param name="mesh"></param>
+        /// <param name="textureId"></param>
+        public static void RenderMeshInstanced(Matrix4[] matrixes, Mesh mesh, int textureId)
+        {
+            GL.BindVertexArray(mesh.GetVAOID());
+
+            GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
+
+            GL.ActiveTexture(TextureUnit.Texture0);
+
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
+            for (int i = 0; i < matrixes.Length; i++)
+            {
+                staticShader.LoadTransformationMatrix(matrixes[i]);
+
+                GL.DrawElements(BeginMode.Triangles, mesh.GetVertexCount(), DrawElementsType.UnsignedInt, 0);
+            }
+
+            GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
+
+            GL.BindVertexArray(0);
+        }
     }
 }

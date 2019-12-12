@@ -15,7 +15,7 @@ namespace VectorEngine
             Start(args);
         }
 
-        private static void Start(string[] startParameters)
+        public static void Start(string[] startParameters)
         {
             new GameEngine(startParameters);
 

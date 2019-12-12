@@ -37,6 +37,9 @@ namespace VectorEngine.Core
         StaticShader staticShader;
         Light light;
         Camera camera;
+        Mesh treeMesh;
+        Mesh testMesh;
+        int treeTexture;
 
         public void OnLoad(EventArgs e)
         {
@@ -44,8 +47,35 @@ namespace VectorEngine.Core
             RenderEngine.Setup(staticShader);
             light = new Light(new Vector3d(-500, 500, 500), new Vector3d(1, 1, 1));
             camera = new Camera();
-            camera.Move(new Vector3d(0, 80, 0));
-            camera.Rotate(new Vector3d(0, 90, 0));
+            camera.Move(new Vector3d(0, 0, 0));
+            camera.Rotate(new Vector3d(0, 0, 0));
+
+            treeMesh = OBJLoader.LoadObjModel("Tree");
+
+            testMesh = RenderDataLoader.LoadMeshData(new Vector3d[] {
+                new Vector3d(-0.5, 0.5, -2),
+                new Vector3d(-0.5, -0.5, -2),
+                new Vector3d(0.5, -0.5, -2),
+                new Vector3d(0.5, 0.5, -2)
+            },
+            new int[] {
+                0, 1, 2,
+                2, 3, 0
+            },
+            new Vector2d[] {
+                new Vector2d(0, 0),
+                new Vector2d(0, 1),
+                new Vector2d(1, 1),
+                new Vector2d(1, 0)
+            },
+                new Vector3d[] {
+                new Vector3d(0, 0, 1),
+                new Vector3d(0, 0, 1),
+                new Vector3d(0, 0, 1),
+                new Vector3d(0, 0, 1)
+             });
+
+            treeTexture = RenderDataLoader.LoadTexture("Tree");
 
             RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
         }
@@ -68,7 +98,7 @@ namespace VectorEngine.Core
         {
             (int width, int height) = windowHandler.GetWindowDimensions();
             float aspectRatio = (float)width / height;
-            return Matrix4.CreatePerspectiveFieldOfView((float)MathLib.ConvertToRadians(FOV), aspectRatio, NEAR_PLANE, FAR_PLANE);
+            return Matrix4.CreatePerspectiveFieldOfView((float)Mathmatics.ConvertToRadians(FOV), aspectRatio, NEAR_PLANE, FAR_PLANE);
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
@@ -114,8 +144,9 @@ namespace VectorEngine.Core
             staticShader.LoadLight(light);
 
             // Run render code here
-
             RenderEngine.ClearScreen();
+            RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
+            RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
 
             ShaderProgram.DisableShader();
             

@@ -1,11 +1,6 @@
 ﻿using VectorEngine.Core.Common;
 using VectorEngine.Core.Rendering.Objects;
 using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VectorEngine.Core.Rendering.Shaders
 {
@@ -53,7 +48,7 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public void LoadViewMatrix(Camera camera)
         {
-            LoadMatrix4(location_viewMatrix, MathLib.createViewMatrix(camera));
+            LoadMatrix4(location_viewMatrix, Mathmatics.CreateViewMatrix(camera));
         }
 
         public void LoadLight(Light light)
