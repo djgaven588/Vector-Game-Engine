@@ -21,6 +21,16 @@ namespace VectorEngine.Core.Common
             return matrix;
         }
 
+        public static Matrix4 CreateTransformationMatrix(Vector3d translation, Quaterniond rotation, Vector3d scale)
+        {
+            Matrix4 matrix = Matrix4.Identity;
+
+            matrix *= Matrix4.CreateTranslation((float)translation.X, (float)translation.Y, (float)translation.Z);
+            matrix *= Matrix4.CreateFromQuaternion(new Quaternion((float)rotation.X, (float)rotation.Y, (float)rotation.Z, (float)rotation.W));
+            matrix *= Matrix4.CreateScale((float)scale.X, (float)scale.Y, (float)scale.Z);
+            return matrix;
+        }
+
         public static Matrix4 CreateViewMatrix(Camera camera)
         {
             Matrix4 matrix = Matrix4.Identity;

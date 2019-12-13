@@ -78,7 +78,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
         {
             staticShader.LoadTransformationMatrix(matrix);
 
-            GL.BindVertexArray(mesh.GetVAOID());
+            GL.BindVertexArray(mesh.VaoID);
 
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
@@ -88,7 +88,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
             GL.BindTexture(TextureTarget.Texture2D, textureId);
 
-            GL.DrawElements(BeginMode.Triangles, mesh.GetVertexCount(), DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(BeginMode.Triangles, mesh.VertexCount, DrawElementsType.UnsignedInt, 0);
 
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
@@ -105,7 +105,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
         /// <param name="textureId"></param>
         public static void RenderMeshInstanced(Matrix4[] matrixes, Mesh mesh, int textureId)
         {
-            GL.BindVertexArray(mesh.GetVAOID());
+            GL.BindVertexArray(mesh.VaoID);
 
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
@@ -118,7 +118,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
             {
                 staticShader.LoadTransformationMatrix(matrixes[i]);
 
-                GL.DrawElements(BeginMode.Triangles, mesh.GetVertexCount(), DrawElementsType.UnsignedInt, 0);
+                GL.DrawElements(BeginMode.Triangles, mesh.VertexCount, DrawElementsType.UnsignedInt, 0);
             }
 
             GL.DisableVertexAttribArray(0);

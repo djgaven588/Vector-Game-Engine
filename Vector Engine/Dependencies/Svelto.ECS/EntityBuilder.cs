@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Svelto.DataStructures;
-using Svelto.ECS.Hybrid;
 using Svelto.ECS.Internal;
 using Svelto.Utilities;
 
@@ -78,7 +77,7 @@ namespace Svelto.ECS
 
         internal static readonly Type   ENTITY_VIEW_TYPE    = typeof(T);
         static readonly T      DEFAULT_IT          = default;
-        static readonly bool   NEEDS_REFLECTION    = typeof(IEntityViewStruct).IsAssignableFrom(typeof(T));
+        static readonly bool   NEEDS_REFLECTION    = false;
         static readonly string ENTITY_VIEW_NAME    = ENTITY_VIEW_TYPE.ToString();
         internal static readonly bool HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_VIEW_TYPE);
 

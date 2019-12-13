@@ -36,9 +36,9 @@ namespace Svelto.Tasks
 
         protected override bool RunTasksAndCheckIfDone()
         {
-            while (_stackOffset < taskCount)
+            while (_stackOffset < TaskCount)
             {
-                var listBuffer = rawListOfStacks;
+                var listBuffer = RawListOfStacks;
                 while (listBuffer[_stackOffset].count > 0)
                 {
                     var processStackAndCheckIfDone = ProcessStackAndCheckIfDone(_stackOffset);

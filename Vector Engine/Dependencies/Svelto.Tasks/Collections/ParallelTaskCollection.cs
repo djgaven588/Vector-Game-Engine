@@ -47,8 +47,8 @@ namespace Svelto.Tasks
         /// <returns></returns>
         protected override bool RunTasksAndCheckIfDone()
         {
-            var stacks = rawListOfStacks;
-            for (int index = 0; index < taskCount - _stackOffset; ++index)
+            var stacks = RawListOfStacks;
+            for (int index = 0; index < TaskCount - _stackOffset; ++index)
             {
                 if (stacks[index].count > 0)
                 {
@@ -66,7 +66,7 @@ namespace Svelto.Tasks
                                 //in order to be able to reuse the task collection, we will keep the stack 
                                 //in its original state. The tasks will be shuffled, but due to the nature
                                 //of the parallel execution, it doesn't matter.
-                                index = SwapStack(index, stacks, taskCount);
+                                index = SwapStack(index, stacks, TaskCount);
                                 _stackOffset++; 
                                 //move to the next task
                             }
@@ -82,7 +82,7 @@ namespace Svelto.Tasks
                 }
             }
 
-            if (taskCount - _stackOffset > 0)
+            if (TaskCount - _stackOffset > 0)
                 return false;
 
             _stackOffset = 0;

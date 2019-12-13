@@ -19,7 +19,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
             else
             {
                 Console.WriteLine("Model file with name " + fileName + " doesn't exist!");
-                return null;
+                return new Mesh(0, 0);
             }
 
             Vector3d[] verts;

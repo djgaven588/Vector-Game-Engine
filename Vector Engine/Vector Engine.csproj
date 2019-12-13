@@ -205,7 +205,11 @@
     <Compile Include="Dependencies\Svelto.Tasks\TasksChain\ParallelTaskCollection.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\TasksChain\SerialTaskCollection.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\TaskYieldsIEnumerableException.cs" />
+    <Compile Include="Engine\Common\ExclusiveGroups.cs" />
     <Compile Include="Engine\Common\Mathmatics.cs" />
+    <Compile Include="Engine\Common\VectorSchedulers.cs" />
+    <Compile Include="Engine\Components\RendersMesh.cs" />
+    <Compile Include="Engine\Components\Transform.cs" />
     <Compile Include="Engine\Debug.cs" />
     <Compile Include="Engine\GameEngine.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />

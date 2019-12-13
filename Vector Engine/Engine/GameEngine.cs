@@ -39,7 +39,7 @@ namespace VectorEngine.Core
         Camera camera;
         Mesh treeMesh;
         Mesh testMesh;
-        int treeTexture;
+        public static int treeTexture;
 
         public void OnLoad(EventArgs e)
         {
@@ -128,8 +128,6 @@ namespace VectorEngine.Core
                     camera.Rotate(new Vector3d(-80 * e.Time, 0, 0));
                 if (keyboard.IsKeyDown(Key.Z))
                     camera.Rotate(new Vector3d(80 * e.Time, 0, 0));
-
-                Debug.Log(camera.GetPosition() + ", " + camera.GetRotation());
             }
         }
 

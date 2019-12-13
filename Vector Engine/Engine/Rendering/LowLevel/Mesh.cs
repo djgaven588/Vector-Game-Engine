@@ -1,34 +1,23 @@
 ﻿using OpenTK;
-using VectorEngine.Core.Rendering.LowLevel;
 
 namespace VectorEngine.Core.Rendering.LowLevel
 {
-    public class Mesh
+    public struct Mesh
     {
-        private int vaoID;
-        private int vertexCount;
-
-        public bool IsDirty { get; private set; }
-
+        public int VaoID        { get; private set; }
+        public int VertexCount  { get; private set; }
 
         public Mesh(int vaoID, int vertexCount)
         {
-            this.vaoID = vaoID;
-            this.vertexCount = vertexCount;
+            VaoID = vaoID;
+            VertexCount = vertexCount;
         }
-
-        public int GetVAOID()
-        {
-            return vaoID;
-        }
-
-        public int GetVertexCount() => vertexCount;
 
         public void UpdateMesh(Vector3d[] positions, Vector3d[] normals, Vector2d[] textureCoords, int[] indices)
         {
-            Mesh newMesh = RenderDataLoader.LoadMeshData(positions, indices, textureCoords, normals, vaoID);
-            vaoID = newMesh.GetVAOID();
-            vertexCount = newMesh.vertexCount;
+            Mesh newMesh = RenderDataLoader.LoadMeshData(positions, indices, textureCoords, normals, VaoID);
+            VaoID = newMesh.VaoID;
+            VertexCount = newMesh.VertexCount;
         }
     }
 }

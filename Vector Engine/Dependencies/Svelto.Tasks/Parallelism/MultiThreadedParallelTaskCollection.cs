@@ -179,8 +179,8 @@ namespace Svelto.Tasks.Parallelism
                 var ptask = TaskRunner.Instance.AllocateNewTaskRoutine(_runners[i]);
                 var ptc   = new ParallelTaskCollection("MultiThreaded ParallelTaskCollection ".FastConcat(_name," #").FastConcat(i));
 
-                ptc.onComplete  += ptcOnOnComplete;
-                ptc.onException += ptcOnOnException;
+                ptc.OnComplete  += ptcOnOnComplete;
+                ptc.OnException += ptcOnOnException;
 
                 ptask.SetEnumerator(ptc);
 
