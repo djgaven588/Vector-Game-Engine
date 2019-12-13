@@ -1,14 +1,30 @@
 ﻿using Svelto.ECS;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VectorEngine.Engine.Common
 {
-    public static class ReservedGroups
+    public static class ExclusiveGroups
     {
-        public static readonly ExclusiveGroup.ExclusiveGroupStruct DefaultGroup = ExclusiveGroup.ExclusiveGroupStruct.Generate();
+        public static readonly ExclusiveGroup DefaultGroup = new ExclusiveGroup("Default Group");
+
+#pragma warning disable CA1819 // Properties should not return arrays
+        public static ExclusiveGroup[] RenderedGroup { get; private set; }
+#pragma warning restore CA1819 // Properties should not return arrays
+
+        private static readonly List<ExclusiveGroup> renderedGroup;
+
+#pragma warning disable CA1810 // Initialize reference type static fields inline
+        static ExclusiveGroups()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
+        {
+            renderedGroup = new List<ExclusiveGroup>();
+            AddToRenderedGroup(DefaultGroup);
+        }
+
+        public static void AddToRenderedGroup(ExclusiveGroup group)
+        {
+            renderedGroup.Add(group);
+            RenderedGroup = renderedGroup.ToArray();
+        }
     }
 }

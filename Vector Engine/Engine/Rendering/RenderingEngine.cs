@@ -1,4 +1,5 @@
-﻿using Svelto.ECS;
+﻿using OpenTK;
+using Svelto.ECS;
 using System;
 using System.Collections;
 using VectorEngine.Core;
@@ -22,12 +23,12 @@ namespace VectorEngine.Engine.Rendering
         {
             while (true)
             {
-                var objectsToRender = entitiesDB.QueryEntities<Transform, RendersMesh>(ReservedGroups.DefaultGroup, out uint renderCount);
+                var objectsToRender = entitiesDB.QueryEntities<Transform, RendersMesh>(ExclusiveGroups.RenderedGroup);
 
-                for (int i = 0; i < renderCount; i++)
+                foreach (var entry in objectsToRender)
                 {
-                    Transform transform = objectsToRender.Item1[i];
-                    RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(transform.position, transform.rotation, transform.scale), objectsToRender.Item2[i].mesh, GameEngine.treeTexture);
+                    Transform transform = entry.Item1;
+                    RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(transform.position, transform.rotation, transform.scale), entry.Item2.mesh, GameEngine.treeTexture);
                 }
 
                 yield return null;

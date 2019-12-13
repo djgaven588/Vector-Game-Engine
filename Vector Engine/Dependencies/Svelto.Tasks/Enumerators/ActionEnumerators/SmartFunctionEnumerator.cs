@@ -4,13 +4,15 @@ using Svelto.Utilities;
 
 namespace Svelto.Tasks.Enumerators
 {
-    /// <summary>
-    /// /// Yield a function that control the flow execution through the return value.
-    /// </summary>
-    /// <typeparam name="T">
-    /// facilitate the use of counters that can be passed by reference to the callback function
-    /// </typeparam>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
+                              /// <summary>
+                              /// /// Yield a function that control the flow execution through the return value.
+                              /// </summary>
+                              /// <typeparam name="T">
+                              /// facilitate the use of counters that can be passed by reference to the callback function
+                              /// </typeparam>
     public class SmartFunctionEnumerator<T>:IEnumerator, IEnumerator<T>
+#pragma warning restore CA1063 // Implement IDisposable Correctly
     {
         public SmartFunctionEnumerator(FuncRef<T, bool> func)
         {
@@ -53,13 +55,14 @@ namespace Svelto.Tasks.Enumerators
             return _name;
         }
 
+#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
-        {}
+#pragma warning restore CA1063 // Implement IDisposable Correctly
+        { }
 
         FuncRef<T, bool> _func;
         T                _value;
 
         string _name;
-        T _current;
     }
 }

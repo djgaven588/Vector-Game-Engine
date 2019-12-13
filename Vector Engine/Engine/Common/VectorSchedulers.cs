@@ -1,4 +1,7 @@
-﻿using Svelto.Tasks;
+﻿using Svelto.ECS;
+using Svelto.ECS.Schedulers;
+using Svelto.Tasks;
+using Svelto.WeakEvents;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,16 +34,33 @@ namespace VectorEngine.Engine.Common
             }
         }
 
+        public static SimpleSubmissionEntityViewScheduler EntityScheduler
+        {
+            get
+            {
+                if (entityScheduler == null)
+                    entityScheduler = new SimpleSubmissionEntityViewScheduler();
+
+                return entityScheduler;
+            }
+        }
+
         public static void RunRender()
         {
-            render.Run();
+            if(render != null)
+                render.Run();
         }
 
         public static void RunUpdate()
         {
-            update.Run();
+            if(update != null)
+                update.Run();
+
+            if(entityScheduler != null)
+                entityScheduler.SubmitEntities();
         }
 
+        private static SimpleSubmissionEntityViewScheduler entityScheduler;
         private static VectorScheduler<IEnumerator> render;
         private static VectorScheduler<IEnumerator> update;
     }
@@ -57,7 +77,7 @@ namespace VectorEngine.Engine.Common
 
         public int numberOfQueuedTasks => runningTasks.Count > 1 ? runningTasks.Count - 1 : 0;
 
-        private HashSet<ISveltoTask<T>> runningTasks = new HashSet<ISveltoTask<T>>();
+        private readonly HashSet<ISveltoTask<T>> runningTasks = new HashSet<ISveltoTask<T>>();
 
         public void Dispose()
         {

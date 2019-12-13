@@ -41,9 +41,11 @@ namespace Svelto.Tasks
             for (int i = 0; i < initialSize; i++)
                 buffer[i] = new StructFriendlyStack(1);
         }
-        
+
+#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
-        {}
+#pragma warning restore CA1063 // Implement IDisposable Correctly
+        { }
 
         public bool MoveNext()
         {
@@ -212,8 +214,7 @@ namespace Svelto.Tasks
         CollectionTask                           _currentTask;
         int                                      _currentStackIndex;
         readonly FasterList<StructFriendlyStack> _listOfStacks;
-        T                                        _current;
-        string                                   _name;
+        string _name;
 
         const int _INITIAL_STACK_SIZE = 1;
         

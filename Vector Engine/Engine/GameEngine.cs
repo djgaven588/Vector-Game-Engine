@@ -9,6 +9,8 @@ using System;
 using System.Threading;
 using VectorEngine.Core.Rendering.LowLevel;
 using VectorEngine.Engine;
+using VectorEngine.Engine.Common.LowLevel;
+using VectorEngine.Engine.Common;
 
 namespace VectorEngine.Core
 {
@@ -37,9 +39,10 @@ namespace VectorEngine.Core
         StaticShader staticShader;
         Light light;
         Camera camera;
-        Mesh treeMesh;
-        Mesh testMesh;
+        public static Mesh treeMesh;
+        public static Mesh testMesh;
         public static int treeTexture;
+        private VectorCompositionRoot root;
 
         public void OnLoad(EventArgs e)
         {
@@ -78,6 +81,8 @@ namespace VectorEngine.Core
             treeTexture = RenderDataLoader.LoadTexture("Tree");
 
             RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
+
+            root = new VectorCompositionRoot();
         }
 
         public void OnClosed(EventArgs e)
@@ -103,6 +108,8 @@ namespace VectorEngine.Core
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
+            VectorSchedulers.RunUpdate();
+
             //TODO:
             //Look at SpinWait which would replace Thread.Sleep(), which is known for being inconsistent.
             if (windowHandler.Focused)
@@ -141,6 +148,8 @@ namespace VectorEngine.Core
             RenderEngine.PrepareForRendering();
             staticShader.LoadViewMatrix(camera);
             staticShader.LoadLight(light);
+
+            VectorSchedulers.RunRender();
 
             // Run render code here
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);

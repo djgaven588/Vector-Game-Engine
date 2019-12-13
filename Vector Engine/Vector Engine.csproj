@@ -206,6 +206,7 @@
     <Compile Include="Dependencies\Svelto.Tasks\TasksChain\SerialTaskCollection.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\TaskYieldsIEnumerableException.cs" />
     <Compile Include="Engine\Common\ExclusiveGroups.cs" />
+    <Compile Include="Engine\Common\LowLevel\VectorCompositionRoot.cs" />
     <Compile Include="Engine\Common\Mathmatics.cs" />
     <Compile Include="Engine\Common\VectorSchedulers.cs" />
     <Compile Include="Engine\Components\RendersMesh.cs" />
