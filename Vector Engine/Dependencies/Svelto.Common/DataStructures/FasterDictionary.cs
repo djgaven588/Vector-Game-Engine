@@ -20,8 +20,8 @@ namespace Svelto.DataStructures.Experimental
         public FasterDictionary(uint size)
         {
             _valuesInfo = new Node[size];
-            _values     = new TValue[size];
-            _buckets    = new int[HashHelpers.GetPrime((int) size)];
+            _values = new TValue[size];
+            _buckets = new int[HashHelpers.GetPrime((int)size)];
         }
 
         public FasterDictionary() : this(1) { }
@@ -37,14 +37,14 @@ namespace Svelto.DataStructures.Experimental
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)
         {
-            count = (uint) _freeValueCellIndex;
+            count = (uint)_freeValueCellIndex;
 
             return _values;
         }
 
         public uint Collisions => _collisions;
 
-        public int Count => (int) _freeValueCellIndex;
+        public int Count => (int)_freeValueCellIndex;
 
         public bool IsReadOnly => false;
 
@@ -59,7 +59,7 @@ namespace Svelto.DataStructures.Experimental
 
             return _freeValueCellIndex - 1;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Set(TKey key, ref TValue value)
         {
@@ -129,7 +129,7 @@ namespace Svelto.DataStructures.Experimental
             result = default;
             return false;
         }
-        
+
         public ref TValue GetValueByRef(TKey key)
         {
             if (TryFindIndex(key, _buckets, _valuesInfo, out var findIndex))
@@ -144,7 +144,7 @@ namespace Svelto.DataStructures.Experimental
 
         public void SetCapacity(uint size)
         {
-            var expandPrime = HashHelpers.ExpandPrime((int) size);
+            var expandPrime = HashHelpers.ExpandPrime((int)size);
 
             if (_values.Length < expandPrime)
             {
@@ -160,19 +160,19 @@ namespace Svelto.DataStructures.Experimental
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => AddValue(key, ref value);
         }
-        
+
         bool AddValue(TKey key, ref TValue value)
         {
             if (_freeValueCellIndex == _values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
-                
+                var expandPrime = HashHelpers.ExpandPrime((int)_freeValueCellIndex);
+
                 Array.Resize(ref _values, expandPrime);
                 Array.Resize(ref _valuesInfo, expandPrime);
             }
-            
-            int  hash        = key.GetHashCode();
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+
+            int hash = key.GetHashCode();
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.Length);
 
             //buckets value -1 means it's empty
             var valueIndex = _buckets[bucketIndex] - 1;
@@ -207,7 +207,7 @@ namespace Svelto.DataStructures.Experimental
                 _valuesInfo[_freeValueCellIndex] = new Node(ref key, hash, valueIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                _valuesInfo[valueIndex].next = (int) _freeValueCellIndex;
+                _valuesInfo[valueIndex].next = (int)_freeValueCellIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -216,7 +216,7 @@ namespace Svelto.DataStructures.Experimental
             //item with this bucketIndex will point to the last value created
             //ToDo: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            _buckets[bucketIndex] = (int) (_freeValueCellIndex + 1);
+            _buckets[bucketIndex] = (int)(_freeValueCellIndex + 1);
 
             _values[_freeValueCellIndex] = value;
 
@@ -226,7 +226,7 @@ namespace Svelto.DataStructures.Experimental
             if (_collisions > _buckets.Length)
             {
                 //we need more space and less collisions
-                _buckets = new int[HashHelpers.ExpandPrime((int) _collisions)];
+                _buckets = new int[HashHelpers.ExpandPrime((int)_collisions)];
 
                 _collisions = 0;
 
@@ -235,7 +235,7 @@ namespace Svelto.DataStructures.Experimental
                 for (int newValueIndex = 0; newValueIndex < _freeValueCellIndex; newValueIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    bucketIndex = Reduce((uint) _valuesInfo[newValueIndex].hashcode, (uint) _buckets.Length);
+                    bucketIndex = Reduce((uint)_valuesInfo[newValueIndex].hashcode, (uint)_buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
@@ -253,7 +253,7 @@ namespace Svelto.DataStructures.Experimental
                         //the bucket will point to this value, so 
                         //the previous index will be used as previous for the new value.
                         _valuesInfo[newValueIndex].previous = existingValueIndex;
-                        _valuesInfo[newValueIndex].next     = -1;
+                        _valuesInfo[newValueIndex].next = -1;
                         //and update the previous next index to the new one
                         _valuesInfo[existingValueIndex].next = newValueIndex;
                     }
@@ -261,7 +261,7 @@ namespace Svelto.DataStructures.Experimental
                     {
                         //ok nothing was indexed, the bucket was empty. We need to update the previous
                         //values of next and previous
-                        _valuesInfo[newValueIndex].next     = -1;
+                        _valuesInfo[newValueIndex].next = -1;
                         _valuesInfo[newValueIndex].previous = -1;
                     }
                 }
@@ -272,8 +272,8 @@ namespace Svelto.DataStructures.Experimental
 
         public bool Remove(TKey key)
         {
-            int  hash        = Hash(key);
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            int hash = Hash(key);
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.Length);
 
             //find the bucket
             int indexToValueToRemove = _buckets[bucketIndex] - 1;
@@ -331,27 +331,27 @@ namespace Svelto.DataStructures.Experimental
                 //in order to do so, we need to be sure that the bucket pointer is updated
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
-                var movingBucketIndex = Reduce((uint) _valuesInfo[_freeValueCellIndex].hashcode, (uint) _buckets.Length);
+                var movingBucketIndex = Reduce((uint)_valuesInfo[_freeValueCellIndex].hashcode, (uint)_buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
                 if (_buckets[movingBucketIndex] - 1 == _freeValueCellIndex)
-                    _buckets[movingBucketIndex] = (int) (indexToValueToRemove + 1);
+                    _buckets[movingBucketIndex] = (int)(indexToValueToRemove + 1);
 
                 //otherwise it means that there was more than one key with the same hash (collision), so 
                 //we need to update the linked list and its pointers
-                int next     = _valuesInfo[_freeValueCellIndex].next;
+                int next = _valuesInfo[_freeValueCellIndex].next;
                 int previous = _valuesInfo[_freeValueCellIndex].previous;
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
-                    _valuesInfo[next].previous = (int) indexToValueToRemove;
+                    _valuesInfo[next].previous = (int)indexToValueToRemove;
                 if (previous != -1)
-                    _valuesInfo[previous].next = (int) indexToValueToRemove;
+                    _valuesInfo[previous].next = (int)indexToValueToRemove;
 
                 //finally, actually move the values
                 _valuesInfo[indexToValueToRemove] = _valuesInfo[_freeValueCellIndex];
-                _values[indexToValueToRemove]     = _values[_freeValueCellIndex];
+                _values[indexToValueToRemove] = _values[_freeValueCellIndex];
             }
 
             return true;
@@ -359,12 +359,12 @@ namespace Svelto.DataStructures.Experimental
 
         public void Trim()
         {
-            var expandPrime = HashHelpers.ExpandPrime((int) _freeValueCellIndex);
-            
+            var expandPrime = HashHelpers.ExpandPrime((int)_freeValueCellIndex);
+
             if (expandPrime < _valuesInfo.Length)
             {
-                Array.Resize(ref _values, (int) expandPrime);
-                Array.Resize(ref _valuesInfo, (int) expandPrime);
+                Array.Resize(ref _values, (int)expandPrime);
+                Array.Resize(ref _valuesInfo, (int)expandPrime);
             }
         }
 
@@ -373,8 +373,8 @@ namespace Svelto.DataStructures.Experimental
         //I avoid to initialize the array to -1
         public bool TryFindIndex(TKey key, out uint findIndex)
         {
-            int  hash        = Hash(key);
-            uint bucketIndex = Reduce((uint) hash, (uint) _buckets.Length);
+            int hash = Hash(key);
+            uint bucketIndex = Reduce((uint)hash, (uint)_buckets.Length);
 
             int valueIndex = _buckets[bucketIndex] - 1;
 
@@ -385,7 +385,7 @@ namespace Svelto.DataStructures.Experimental
                 if (_valuesInfo[valueIndex].hashcode == hash && _valuesInfo[valueIndex].key.Equals(key) == true)
                 {
                     //this is the one
-                    findIndex = (uint) valueIndex;
+                    findIndex = (uint)valueIndex;
                     return true;
                 }
 
@@ -400,9 +400,9 @@ namespace Svelto.DataStructures.Experimental
         {
             return ref _values[index];
         }
-        
+
         protected uint GetValueIndex(TKey index) { return GetIndex(index, _buckets, _valuesInfo); }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static int Hash(TKey key) { return key.GetHashCode(); }
 
@@ -424,8 +424,8 @@ namespace Svelto.DataStructures.Experimental
 
         static bool TryFindIndex(TKey key, int[] buckets, Node[] valuesInfo, out uint findIndex)
         {
-            int hash        = Hash(key);
-            var bucketIndex = Reduce((uint) hash, (uint) buckets.Length);
+            int hash = Hash(key);
+            var bucketIndex = Reduce((uint)hash, (uint)buckets.Length);
 
             int valueIndex = buckets[bucketIndex] - 1;
 
@@ -434,7 +434,7 @@ namespace Svelto.DataStructures.Experimental
                 //for some reason this is way faster they use Comparer<TKey>.default, should investigate
                 if (valuesInfo[valueIndex].hashcode == hash && valuesInfo[valueIndex].key.Equals(key) == true)
                 {
-                    findIndex = (uint) valueIndex;
+                    findIndex = (uint)valueIndex;
                     return true;
                 }
 
@@ -448,7 +448,7 @@ namespace Svelto.DataStructures.Experimental
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static void UpdateLinkedList(int index, Node[] valuesInfo)
         {
-            int next     = valuesInfo[index].next;
+            int next = valuesInfo[index].next;
             int previous = valuesInfo[index].previous;
 
             if (next != -1)
@@ -461,7 +461,7 @@ namespace Svelto.DataStructures.Experimental
         {
             public FasterDictionaryKeyValueEnumerator(FasterDictionary<TKey, TValue> dic) : this()
             {
-                _dic   = dic;
+                _dic = dic;
                 _index = -1;
                 _count = dic.Count;
             }
@@ -489,7 +489,7 @@ namespace Svelto.DataStructures.Experimental
             object IEnumerator.Current => throw new NotImplementedException();
 
             readonly FasterDictionary<TKey, TValue> _dic;
-            readonly int                            _count;
+            readonly int _count;
 
             int _index;
         }
@@ -497,16 +497,16 @@ namespace Svelto.DataStructures.Experimental
         struct Node
         {
             public readonly TKey key;
-            public readonly int  hashcode;
-            public          int  previous;
-            public          int  next;
+            public readonly int hashcode;
+            public int previous;
+            public int next;
 
             public Node(ref TKey key, int hash, int previousNode)
             {
                 this.key = key;
                 hashcode = hash;
                 previous = previousNode;
-                next     = -1;
+                next = -1;
             }
 
             public Node(ref TKey key, int hash)
@@ -514,7 +514,7 @@ namespace Svelto.DataStructures.Experimental
                 this.key = key;
                 hashcode = hash;
                 previous = -1;
-                next     = -1;
+                next = -1;
             }
         }
 
@@ -538,7 +538,7 @@ namespace Svelto.DataStructures.Experimental
 
             public bool Remove(TKey item) { throw new NotImplementedException(); }
 
-            public int  Count      { get; }
+            public int Count { get; }
             public bool IsReadOnly { get; }
         }
 
@@ -557,10 +557,10 @@ namespace Svelto.DataStructures.Experimental
 
         protected TValue[] _values;
 
-        Node[]  _valuesInfo;
-        int[]   _buckets;
-        uint    _freeValueCellIndex;
-        uint     _collisions;
+        Node[] _valuesInfo;
+        int[] _buckets;
+        uint _freeValueCellIndex;
+        uint _collisions;
     }
 
     public struct KeyValuePairFast<TKey, TValue>
@@ -568,7 +568,9 @@ namespace Svelto.DataStructures.Experimental
         readonly TValue[] _dicValues;
         readonly int _index;
 
-        public KeyValuePairFast(TKey key, TValue[] dicValues, int index) { Key = key;
+        public KeyValuePairFast(TKey key, TValue[] dicValues, int index)
+        {
+            Key = key;
             _dicValues = dicValues;
             _index = index;
         }

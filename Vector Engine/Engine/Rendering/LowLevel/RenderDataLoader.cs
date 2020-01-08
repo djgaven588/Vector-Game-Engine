@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Drawing;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
-using OpenTK;
-using VectorEngine.Core.Rendering.Objects;
+using System.IO;
 
 namespace VectorEngine.Core.Rendering.LowLevel
 {
@@ -45,8 +44,9 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
-                GL.GenerateTextureMipmap(textureID);
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+                // TROUBLE LINE, STILL WORKING ON IT. DOESN'T WORK ON i5 6500 integrated graphics for some reason.
+                GL.GenerateTextureMipmap(textureID);
 
                 bitmap.UnlockBits(data);
 

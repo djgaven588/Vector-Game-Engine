@@ -1,5 +1,5 @@
-using System.Collections;
 using Svelto.Tasks.Internal;
+using System.Collections;
 
 namespace Svelto.Tasks
 {
@@ -28,12 +28,12 @@ namespace Svelto.Tasks
         {
             return new TaskRoutine<IEnumerator>(StandardSchedulers.standardScheduler);
         }
-        
-        public ITaskRoutine<T> AllocateNewTaskRoutine<T>(IRunner<T> runner) where T:IEnumerator
+
+        public ITaskRoutine<T> AllocateNewTaskRoutine<T>(IRunner<T> runner) where T : IEnumerator
         {
             return new TaskRoutine<T>(runner);
         }
-        
+
         public ITaskRoutine<IEnumerator> AllocateNewTaskRoutine(IRunner<IEnumerator> runner)
         {
             return new TaskRoutine<IEnumerator>(runner);
@@ -60,7 +60,7 @@ namespace Svelto.Tasks
         /// <param name="runner"></param>
         /// <param name="task"></param>
         /// <returns></returns>
-        public IContinuationWrapper RunOnScheduler(IRunner<IEnumerator> runner, IEnumerator task) 
+        public IContinuationWrapper RunOnScheduler(IRunner<IEnumerator> runner, IEnumerator task)
         {
             return _taskPool.RetrieveTaskFromPool().Start(runner, task);
         }
@@ -76,13 +76,13 @@ namespace Svelto.Tasks
             }
         }
 
-//TaskRunner is supposed to be used in the mainthread only
-//this should be enforced in future. 
-//Runners should be used directly on other threads 
-//than the main one
+        //TaskRunner is supposed to be used in the mainthread only
+        //this should be enforced in future. 
+        //Runners should be used directly on other threads 
+        //than the main one
 
-         static void InitInstance()
-         {
+        static void InitInstance()
+        {
             _instance = new TaskRunner();
             _instance._taskPool = new SveltoTasksPool();
 
@@ -98,5 +98,5 @@ namespace Svelto.Tasks
         }
 
         SveltoTasksPool _taskPool;
-     }
+    }
 }

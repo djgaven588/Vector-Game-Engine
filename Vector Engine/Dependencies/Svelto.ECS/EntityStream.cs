@@ -1,8 +1,6 @@
+using Svelto.DataStructures;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Svelto.DataStructures;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -25,12 +23,12 @@ namespace Svelto.ECS
 
             return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(name, capacity);
         }
-        
+
         public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged, IEntityStruct
         {
             if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
 
-            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer( @group, name, capacity);
+            return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(@group, name, capacity);
         }
 
         internal void PublishEntity<T>(ref T entity) where T : unmanaged, IEntityStruct
@@ -46,9 +44,9 @@ namespace Svelto.ECS
     }
 
     interface ITypeSafeStream
-    {}
+    { }
 
-    class EntityStream<T>:ITypeSafeStream where T:unmanaged, IEntityStruct
+    class EntityStream<T> : ITypeSafeStream where T : unmanaged, IEntityStruct
     {
         public void PublishEntity(ref T entity)
         {
@@ -69,18 +67,18 @@ namespace Svelto.ECS
         public Consumer<T> GenerateConsumer(string name, int capacity)
         {
             var consumer = new Consumer<T>(name, capacity, this);
-            
+
             _consumers.Add(consumer);
-            
+
             return consumer;
         }
-        
+
         public Consumer<T> GenerateConsumer(ExclusiveGroup @group, string name, int capacity)
         {
             var consumer = new Consumer<T>(group, name, capacity, this);
-            
+
             _consumers.Add(consumer);
-            
+
             return consumer;
         }
 
@@ -92,16 +90,16 @@ namespace Svelto.ECS
         readonly FasterListThreadSafe<Consumer<T>> _consumers = new FasterListThreadSafe<Consumer<T>>();
     }
 
-    public struct Consumer<T>: IDisposable where T:unmanaged, IEntityStruct
+    public struct Consumer<T> : IDisposable where T : unmanaged, IEntityStruct
     {
-        internal Consumer(string name, int capacity, EntityStream<T> stream): this()
+        internal Consumer(string name, int capacity, EntityStream<T> stream) : this()
         {
             _ringBuffer = new RingBuffer<T>(capacity);
             _name = name;
             _stream = stream;
         }
-        
-        internal Consumer(ExclusiveGroup @group, string name, int capacity, EntityStream<T> stream):this(name, capacity, stream)
+
+        internal Consumer(ExclusiveGroup @group, string name, int capacity, EntityStream<T> stream) : this(name, capacity, stream)
         {
             _group = group;
             _hasGroup = true;
@@ -111,15 +109,15 @@ namespace Svelto.ECS
         {
             _ringBuffer.Enqueue(ref entity, _name);
         }
-        
+
         public bool TryDequeue(out T entity) { return _ringBuffer.TryDequeue(out entity, _name); }
         public void Flush() { _ringBuffer.Reset(); }
         public void Dispose() { _stream.RemoveConsumer(this); }
 
-        readonly RingBuffer<T>   _ringBuffer;
+        readonly RingBuffer<T> _ringBuffer;
         readonly EntityStream<T> _stream;
-        readonly string          _name;
-        internal readonly ExclusiveGroup  _group;
+        readonly string _name;
+        internal readonly ExclusiveGroup _group;
         internal readonly bool _hasGroup;
     }
 }

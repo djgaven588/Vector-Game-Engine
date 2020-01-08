@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 using System;
 using VectorEngine.Core;
 
@@ -19,12 +20,13 @@ namespace VectorEngine.Engine
 
         protected override void OnLoad(EventArgs e)
         {
+            Debug.Log(GL.IsEnabled(EnableCap.CullFace));
             engine.OnLoad(e);
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            engine.OnClosed(e);   
+            engine.OnClosed(e);
         }
 
         protected override void OnResize(EventArgs e)

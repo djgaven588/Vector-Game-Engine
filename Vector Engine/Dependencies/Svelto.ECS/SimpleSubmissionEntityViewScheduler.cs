@@ -11,7 +11,7 @@ namespace Svelto.ECS
         {
             onTick.Invoke();
         }
-        
+
         public WeakAction onTick { set; private get; }
     }
 }

@@ -1,6 +1,6 @@
-﻿using VectorEngine.Core.Rendering.Objects;
-using OpenTK;
+﻿using OpenTK;
 using System;
+using VectorEngine.Core.Rendering.Objects;
 
 namespace VectorEngine.Core.Common
 {
@@ -48,7 +48,7 @@ namespace VectorEngine.Core.Common
         /// </summary>
         /// <param name="degrees"></param>
         /// <returns></returns>
-        public static double ConvertToRadians(double degrees) 
+        public static double ConvertToRadians(double degrees)
         {
             return (PI / 180) * degrees;
         }

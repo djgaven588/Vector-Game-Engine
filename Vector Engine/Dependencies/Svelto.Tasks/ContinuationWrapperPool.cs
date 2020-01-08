@@ -38,4 +38,3 @@ namespace Svelto.Tasks.Internal
         static readonly LockFreeQueue<ContinuationWrapper> _pool = new LockFreeQueue<ContinuationWrapper>();
     }
 }
-    

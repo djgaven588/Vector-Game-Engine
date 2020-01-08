@@ -1,6 +1,4 @@
-﻿using OpenTK;
-using Svelto.ECS;
-using System;
+﻿using Svelto.ECS;
 using System.Collections;
 using VectorEngine.Core;
 using VectorEngine.Core.Common;

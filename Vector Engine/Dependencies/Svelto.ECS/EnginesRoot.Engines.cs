@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
 using Svelto.WeakEvents;
+using System;
+using System.Collections.Generic;
 
 namespace Svelto.ECS
 {
@@ -33,7 +33,7 @@ namespace Svelto.ECS
 
             _entitiesStream = new EntitiesStream();
             _entitiesDB = new EntitiesDB(_groupEntityDB, _groupsPerEntity, _entitiesStream);
-            
+
             _scheduler = entityViewScheduler;
             _scheduler.onTick = new WeakAction(SubmitEntityViews);
         }
@@ -48,7 +48,7 @@ namespace Svelto.ECS
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
                     CheckEntityViewsEngine<IReactOnAddAndRemove>(viewEngine, _reactiveEnginesAddRemove);
-                
+
                 if (engine is IReactOnSwap viewEngineSwap)
                     CheckEntityViewsEngine<IReactOnSwap>(viewEngineSwap, _reactiveEnginesSwap);
 
@@ -72,7 +72,7 @@ namespace Svelto.ECS
 #endif                
             }
         }
-       
+
         void CheckEntityViewsEngine<T>(IEngine engine, Dictionary<Type, FasterList<IEngine>> engines)
         {
             var interfaces = engine.GetType().GetInterfaces();
@@ -89,7 +89,7 @@ namespace Svelto.ECS
         }
 
         static void AddEngine<T>(T engine, Type[] entityViewTypes,
-                              Dictionary<Type, FasterList<T>> engines) where T:IEngine
+                              Dictionary<Type, FasterList<T>> engines) where T : IEngine
         {
             for (int i = 0; i < entityViewTypes.Length; i++)
             {
@@ -111,11 +111,11 @@ namespace Svelto.ECS
             list.Add(engine);
         }
 
-        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesAddRemove;    
+        readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesAddRemove;
         readonly Dictionary<Type, FasterList<IEngine>> _reactiveEnginesSwap;
-        readonly HashSet<IEngine>                      _enginesSet;
-        readonly FasterList<IDisposable>               _disposableEngines;
-        
+        readonly HashSet<IEngine> _enginesSet;
+        readonly FasterList<IDisposable> _disposableEngines;
+
         //one datastructure rule them all:
         //split by group
         //split by type per group. It's possible to get all the entities of a give type T per group thanks 
@@ -126,13 +126,13 @@ namespace Svelto.ECS
         readonly FasterDictionary<uint, Dictionary<Type, ITypeSafeDictionary>> _groupEntityDB;
         //for each entity view type, return the groups (dictionary of entities indexed by entity id) where they are
         //found indexed by group id
-                    //EntityViewType           //groupID  //entityID, EntityStruct
+        //EntityViewType           //groupID  //entityID, EntityStruct
         readonly Dictionary<Type, FasterDictionary<uint, ITypeSafeDictionary>> _groupsPerEntity;
-        
+
         readonly EntitiesStream _entitiesStream;
-        readonly EntitiesDB     _entitiesDB;
-        
-        static readonly Type OBJECT_TYPE           = typeof(object);
+        readonly EntitiesDB _entitiesDB;
+
+        static readonly Type OBJECT_TYPE = typeof(object);
         static readonly Type ENTITY_INFO_VIEW_TYPE = typeof(EntityStructInfoView);
     }
 }

@@ -1,6 +1,6 @@
-﻿using VectorEngine.Core.Common;
+﻿using OpenTK;
+using VectorEngine.Core.Common;
 using VectorEngine.Core.Rendering.Objects;
-using OpenTK;
 
 namespace VectorEngine.Core.Rendering.Shaders
 {
@@ -15,7 +15,7 @@ namespace VectorEngine.Core.Rendering.Shaders
         private int location_lightPosition;
         private int location_lightColor;
 
-        public StaticShader() : base (VERTEX_FILE, FRAGMENT_FILE)
+        public StaticShader() : base(VERTEX_FILE, FRAGMENT_FILE)
         {
 
         }
@@ -30,10 +30,10 @@ namespace VectorEngine.Core.Rendering.Shaders
         protected override void GetAllUniformLocations()
         {
             location_transformationMatrix = GetUniformLocation("transformationMatrix");
-            location_projectionMatrix     = GetUniformLocation("projectionMatrix");
-            location_viewMatrix           = GetUniformLocation("viewMatrix");
-            location_lightPosition        = GetUniformLocation("lightPosition");
-            location_lightColor           = GetUniformLocation("lightColor");
+            location_projectionMatrix = GetUniformLocation("projectionMatrix");
+            location_viewMatrix = GetUniformLocation("viewMatrix");
+            location_lightPosition = GetUniformLocation("lightPosition");
+            location_lightColor = GetUniformLocation("lightColor");
         }
 
         public void LoadTransformationMatrix(Matrix4 matrix)
@@ -43,7 +43,7 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public void LoadProjectionMatrix(Matrix4 projection)
         {
-           LoadMatrix4(location_projectionMatrix, projection);
+            LoadMatrix4(location_projectionMatrix, projection);
         }
 
         public void LoadViewMatrix(Camera camera)

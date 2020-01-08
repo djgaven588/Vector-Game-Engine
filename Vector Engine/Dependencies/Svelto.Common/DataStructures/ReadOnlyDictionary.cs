@@ -172,7 +172,7 @@ namespace Svelto.DataStructures
         /// </summary>
         public struct KeyCollection : ICollection<TKey>, ICollection
         {
-    /// <summary>
+            /// <summary>
             /// Initializes a new instance of the <see cref="KeyCollection"/> class
             /// as a wrapper around the specified collection of keys.
             /// </summary>
@@ -186,19 +186,19 @@ namespace Svelto.DataStructures
                 _keys = keys;
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             bool ICollection.IsSynchronized => false;
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             object ICollection.SyncRoot => throw new NotImplementedException();
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index)
             {
                 throw new NotImplementedException();
             }
 
-    /// <summary>
+            /// <summary>
             /// Gets the number of elements in the collection.
             /// </summary>
             /// <value>
@@ -206,10 +206,10 @@ namespace Svelto.DataStructures
             /// </value>
             public int Count => _keys.Count;
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             bool ICollection<TKey>.IsReadOnly => true;
 
-    /// <summary>
+            /// <summary>
             /// Copies the elements of the collection to an array, starting at a specific array index.
             /// </summary>
             /// <param name="array">The one-dimensional array that is the destination of the elements copied from the collection. The array must have zero-based indexing.</param>
@@ -228,7 +228,7 @@ namespace Svelto.DataStructures
                 _keys.CopyTo(array, arrayIndex);
             }
 
-    /// <summary>
+            /// <summary>
             /// Returns an enumerator that iterates through the collection.
             /// </summary>
             /// <returns>An enumerator that can be used to iterate through the collection.</returns>
@@ -237,37 +237,37 @@ namespace Svelto.DataStructures
                 return _keys.GetEnumerator();
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             bool ICollection<TKey>.Contains(TKey item)
             {
                 return _keys.Contains(item);
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             void ICollection<TKey>.Add(TKey item)
             {
                 throw new NotSupportedException();
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             bool ICollection<TKey>.Remove(TKey item)
             {
                 throw new NotSupportedException();
             }
 
-    /// <inheritdoc/>
+            /// <inheritdoc/>
             void ICollection<TKey>.Clear()
             {
                 throw new NotSupportedException();
             }
 
-    /// <summary>
+            /// <summary>
             /// The wrapped collection of keys.
             /// </summary>
             readonly ICollection<TKey> _keys;
@@ -379,7 +379,7 @@ namespace Svelto.DataStructures
             readonly ICollection<TValue> _values;
         }
 
-        public struct DictionaryEnumerator:IEnumerator<KeyValuePair<TKey,TValue>>
+        public struct DictionaryEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             /// <inheritdoc/>
             public TKey Key => _enumerator.Current.Key;

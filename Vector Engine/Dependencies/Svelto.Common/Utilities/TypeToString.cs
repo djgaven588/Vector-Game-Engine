@@ -7,7 +7,7 @@ namespace Svelto.Common
             return new TypeToString<T>().Name();
         }
     }
-    
+
     public struct TypeToString<T>
     {
         static readonly string name = typeof(T).ToString();

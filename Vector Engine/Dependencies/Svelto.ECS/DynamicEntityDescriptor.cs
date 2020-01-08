@@ -8,7 +8,7 @@ namespace Svelto.ECS
     /// This method allocates, so it shouldn't be abused
     /// </summary>
     /// <typeparam name="TType"></typeparam>
-    public struct DynamicEntityDescriptor<TType>:IEntityDescriptor where TType : IEntityDescriptor, new()
+    public struct DynamicEntityDescriptor<TType> : IEntityDescriptor where TType : IEntityDescriptor, new()
     {
         public DynamicEntityDescriptor(IEntityBuilder[] extraEntities)
         {
@@ -25,8 +25,8 @@ namespace Svelto.ECS
 
             var builder = new EntityBuilder<EntityStructInfoView>
             {
-                _initializer = new EntityStructInfoView 
-                { 
+                _initializer = new EntityStructInfoView
+                {
                     entitiesToBuild = entitiesToBuild,
                     type = typeof(TType)
                 }

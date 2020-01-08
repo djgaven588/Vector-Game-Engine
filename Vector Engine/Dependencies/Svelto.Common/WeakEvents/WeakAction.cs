@@ -8,7 +8,7 @@ namespace Svelto.WeakEvents
     {
         public WeakAction(Action<T1, T2> listener)
             : base(listener.Target, listener.GetMethodInfoEx())
-        {}
+        { }
 
         public bool Invoke(T1 data1, T2 data2)
         {
@@ -25,7 +25,7 @@ namespace Svelto.WeakEvents
     {
         public WeakAction(Action<T> listener)
             : base(listener.Target, listener.GetMethodInfoEx())
-        {}
+        { }
 
         public bool Invoke(T data)
         {
@@ -40,10 +40,10 @@ namespace Svelto.WeakEvents
     public class WeakAction : WeakActionBase
     {
         public WeakAction(Action listener) : base(listener)
-        {}
+        { }
 
         public WeakAction(object listener, MethodInfo method) : base(listener, method)
-        {}
+        { }
 
         public bool Invoke()
         {
@@ -60,14 +60,14 @@ namespace Svelto.WeakEvents
 
         protected WeakActionBase(Action listener)
             : this(listener.Target, listener.GetMethodInfoEx())
-        {}
+        { }
 
         protected WeakActionBase(object listener, MethodInfo method)
         {
             objectRef = new DataStructures.WeakReference<object>(listener);
 
             this.method = method;
-            
+
             if (method.IsStatic == true)
                 throw new ArgumentException("Cannot create weak event to a static method");
 
@@ -90,12 +90,12 @@ namespace Svelto.WeakEvents
 
                 return true;
             }
-            
+
             Console.LogError("<color=orange>Svelto.Common.WeakAction</color> Target of weak action has been garbage collected");
 
             return false;
         }
-        
+
         public bool IsMatch(object thisObject, MethodInfo thisMethod)
         {
             return objectRef.Target == thisObject && method == thisMethod;

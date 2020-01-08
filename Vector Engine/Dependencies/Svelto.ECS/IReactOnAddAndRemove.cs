@@ -7,4 +7,4 @@ namespace Svelto.ECS
         void Add(ref T entityView);
         void Remove(ref T entityView);
     }
- }
+}

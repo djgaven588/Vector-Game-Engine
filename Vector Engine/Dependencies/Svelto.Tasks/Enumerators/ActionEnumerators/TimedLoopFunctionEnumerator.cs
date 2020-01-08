@@ -6,7 +6,7 @@ namespace Svelto.Tasks.Enumerators
     /// <summary>
     /// Yield a function that takes as parameter the time passed since the last yield
     /// </summary>
-    public class TimedLoopFunctionEnumerator:IEnumerator
+    public class TimedLoopFunctionEnumerator : IEnumerator
     {
         public TimedLoopFunctionEnumerator(Func<float, bool> action)
         {
@@ -27,7 +27,7 @@ namespace Svelto.Tasks.Enumerators
         }
 
         public void Reset()
-        {}
+        { }
 
         public override string ToString()
         {
@@ -40,10 +40,10 @@ namespace Svelto.Tasks.Enumerators
 
             return _name;
         }
-        
-        string            _name;
-        DateTime          _then = DateTime.MaxValue;
-        
+
+        string _name;
+        DateTime _then = DateTime.MaxValue;
+
         readonly Func<float, bool> _action;
     }
 }

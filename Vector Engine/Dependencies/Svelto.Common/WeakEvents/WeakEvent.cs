@@ -7,7 +7,7 @@ namespace Svelto.WeakEvents
 {
     public class WeakEvent
     {
-        public static WeakEvent operator+(WeakEvent c1, Action x)
+        public static WeakEvent operator +(WeakEvent c1, Action x)
         {
             if (c1 == null) c1 = new WeakEvent();
             c1.Add(x);
@@ -15,7 +15,7 @@ namespace Svelto.WeakEvents
             return c1;
         }
 
-        public static WeakEvent operator-(WeakEvent c1, Action x)
+        public static WeakEvent operator -(WeakEvent c1, Action x)
         {
             DBC.Common.Check.Require(x != null);
             c1.Remove(x);
@@ -37,10 +37,10 @@ namespace Svelto.WeakEvents
         {
             InternalInvoke(_invoke);
         }
-        
+
         protected virtual bool InvokeDelegate(WeakActionBase action)
         {
-            return ((WeakAction) action).Invoke();
+            return ((WeakAction)action).Invoke();
         }
 
         void InternalInvoke(System.Func<WeakActionBase, bool> invoke)
@@ -50,12 +50,12 @@ namespace Svelto.WeakEvents
             for (int i = 0; i < _subscribers.Count; i++)
                 if (invoke(_subscribers[i]) == false)
                     _subscribers.UnorderedRemoveAt(i--);
-            
+
             _isIterating = false;
 
             for (int i = 0; i < _toRemove.Count; i++)
                 RemoveInternal(_toRemove[i].Key, _toRemove[i].Value);
-            
+
             _toRemove.Clear();
         }
 
@@ -70,7 +70,7 @@ namespace Svelto.WeakEvents
                     if (otherObject.IsMatch(thisObject, thisMethod))
                     {
                         _subscribers.UnorderedRemoveAt(i);
-                        
+
                         return;
                     }
                 }
@@ -80,12 +80,12 @@ namespace Svelto.WeakEvents
                 _toRemove.Add(new KeyValuePair<object, MethodInfo>(thisObject, thisMethod));
             }
         }
-        
+
         public WeakEvent()
         {
             _invoke = InvokeDelegate;
         }
-        
+
         public void Clear()
         {
             _subscribers.Clear();
@@ -99,11 +99,11 @@ namespace Svelto.WeakEvents
         Func<WeakActionBase, bool> _invoke;
     }
 
-    public class WeakEvent<T1>:WeakEvent
+    public class WeakEvent<T1> : WeakEvent
     {
         T1 _arg;
 
-        public static WeakEvent<T1> operator+(WeakEvent<T1> c1, Action<T1> x)
+        public static WeakEvent<T1> operator +(WeakEvent<T1> c1, Action<T1> x)
         {
             if (c1 == null) c1 = new WeakEvent<T1>();
             c1.Add(x);
@@ -111,7 +111,7 @@ namespace Svelto.WeakEvents
             return c1;
         }
 
-        public static WeakEvent<T1> operator-(WeakEvent<T1> c1, Action<T1> x)
+        public static WeakEvent<T1> operator -(WeakEvent<T1> c1, Action<T1> x)
         {
             DBC.Common.Check.Require(x != null);
             c1.Remove(x);
@@ -128,26 +128,26 @@ namespace Svelto.WeakEvents
         {
             RemoveInternal(x.Target, x.GetMethodInfoEx());
         }
-        
+
         public void Invoke(T1 arg)
         {
             _arg = arg;
-            
+
             base.Invoke();
         }
 
         protected override bool InvokeDelegate(WeakActionBase action)
         {
-            return ((WeakAction<T1>) action).Invoke(_arg);
+            return ((WeakAction<T1>)action).Invoke(_arg);
         }
     }
 
-    public class WeakEvent<T1, T2>:WeakEvent
+    public class WeakEvent<T1, T2> : WeakEvent
     {
         T1 _arg1;
         T2 _arg2;
 
-        public static WeakEvent<T1, T2> operator+(WeakEvent<T1, T2> c1, Action<T1, T2> x)
+        public static WeakEvent<T1, T2> operator +(WeakEvent<T1, T2> c1, Action<T1, T2> x)
         {
             if (c1 == null) c1 = new WeakEvent<T1, T2>();
             c1._subscribers.Add(new WeakAction<T1, T2>(x));
@@ -155,7 +155,7 @@ namespace Svelto.WeakEvents
             return c1;
         }
 
-        public static WeakEvent<T1, T2> operator-(WeakEvent<T1, T2> c1, Action<T1, T2> x)
+        public static WeakEvent<T1, T2> operator -(WeakEvent<T1, T2> c1, Action<T1, T2> x)
         {
             DBC.Common.Check.Require(x != null);
             c1.Remove(x);
@@ -177,13 +177,13 @@ namespace Svelto.WeakEvents
         {
             _arg1 = arg1;
             _arg2 = arg2;
-            
+
             base.Invoke();
         }
 
         protected override bool InvokeDelegate(WeakActionBase action)
         {
-            return ((WeakAction<T1, T2>) action).Invoke(_arg1, _arg2);
+            return ((WeakAction<T1, T2>)action).Invoke(_arg1, _arg2);
         }
     }
 }

@@ -5,20 +5,20 @@ namespace Svelto.Observer
     public delegate void ObserverAction<DispatchType>(ref DispatchType parameter);
 
     public interface IObservable
-    { 
+    {
         event Action Notify;
 
         void Dispatch();
     }
 
     public interface IObservable<DispatchType>
-    { 
+    {
         event ObserverAction<DispatchType> Notify;
 
         void Dispatch(ref DispatchType parameter);
     }
 
-    public class Observable<DispatchType>:IObservable<DispatchType>
+    public class Observable<DispatchType> : IObservable<DispatchType>
     {
         public event ObserverAction<DispatchType> Notify;
 
@@ -29,7 +29,7 @@ namespace Svelto.Observer
         }
     }
 
-    public class Observable:IObservable
+    public class Observable : IObservable
     {
         public event Action Notify;
 

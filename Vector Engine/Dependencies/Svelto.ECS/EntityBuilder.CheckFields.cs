@@ -14,7 +14,7 @@ namespace Svelto.ECS
 #endif
         public static void CheckFields(Type type, bool needsReflection)
         {
-            if (type == ENTITY_STRUCT_INFO_VIEW || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE) 
+            if (type == ENTITY_STRUCT_INFO_VIEW || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE)
                 return;
 
             if (needsReflection == false)
@@ -28,7 +28,7 @@ namespace Svelto.ECS
                 {
                     var field = fields[i];
                     var fieldFieldType = field.FieldType;
-                    
+
                     SubCheckFields(fieldFieldType);
                 }
             }
@@ -38,14 +38,14 @@ namespace Svelto.ECS
 
                 if (fields.Length < 1)
                     ProcessError("Entity View Structs must hold only entity components interfaces.", type);
-                
+
                 for (int i = fields.Length - 1; i >= 0; --i)
                 {
                     var field = fields[i];
-                    
+
                     if (field.FieldType.IsInterfaceEx() == false)
                         ProcessError("Entity View Structs must hold only entity components interfaces.", type);
-                    
+
                     var properties = field.FieldType.GetProperties(BindingFlags.Public |
                                                         BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
@@ -77,11 +77,11 @@ namespace Svelto.ECS
 
                 return;
             }
-            
-            ProcessError("Entity Structs field and Entity View Struct components must hold value types.", 
+
+            ProcessError("Entity Structs field and Entity View Struct components must hold value types.",
                          fieldFieldType);
         }
-        
+
         static void ProcessError(string message, Type type)
         {
 #if !RELAXED_ECS
@@ -89,20 +89,20 @@ namespace Svelto.ECS
             throw new EntityStructException(message, ENTITY_VIEW_TYPE, type);
 #endif
         }
-        
-        static readonly Type EGIDType                = typeof(EGID);
+
+        static readonly Type EGIDType = typeof(EGID);
         static readonly Type ECLUSIVEGROUPSTRUCTTYPE = typeof(ExclusiveGroup.ExclusiveGroupStruct);
-        static readonly Type DISPATCHONSETTYPE       = typeof(DispatchOnSet<>);
-        static readonly Type DISPATCHONCHANGETYPE    = typeof(DispatchOnChange<>);
-        static readonly Type STRINGTYPE              = typeof(String);
-        static readonly Type ENTITY_VIEW_TYPE        = typeof(Type);
-        static readonly Type ENTITY_STRUCT_INFO_VIEW  = typeof(EntityStructInfoView);
+        static readonly Type DISPATCHONSETTYPE = typeof(DispatchOnSet<>);
+        static readonly Type DISPATCHONCHANGETYPE = typeof(DispatchOnChange<>);
+        static readonly Type STRINGTYPE = typeof(String);
+        static readonly Type ENTITY_VIEW_TYPE = typeof(Type);
+        static readonly Type ENTITY_STRUCT_INFO_VIEW = typeof(EntityStructInfoView);
     }
-    
+
     public class EntityStructException : Exception
     {
-        public EntityStructException(string message, Type entityViewType, Type type):
+        public EntityStructException(string message, Type entityViewType, Type type) :
             base(message.FastConcat(" entity view: ", entityViewType.ToString(), " field: ", type.ToString()))
-        {}
+        { }
     }
 }

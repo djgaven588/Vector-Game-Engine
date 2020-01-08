@@ -14,7 +14,7 @@ namespace Svelto.Tasks
 
             public StructFriendlyStack(int stackSize)
             {
-                _stack              = new T[stackSize];
+                _stack = new T[stackSize];
                 _nextFreeStackIndex = 0;
             }
 
@@ -24,7 +24,7 @@ namespace Svelto.Tasks
                 if (_nextFreeStackIndex == _stack.Length)
                 {
                     // Double for small stacks, and increase by 20% for larger stacks
-                    Array.Resize(ref _stack, _stack.Length < 100 ? 2 *_stack.Length : (int) (_stack.Length * 1.2));
+                    Array.Resize(ref _stack, _stack.Length < 100 ? 2 * _stack.Length : (int)(_stack.Length * 1.2));
                 }
 
                 // Store the value, and increase reference afterwards
@@ -33,12 +33,12 @@ namespace Svelto.Tasks
 
             public T Pop()
             {
-                if(_nextFreeStackIndex == 0)
+                if (_nextFreeStackIndex == 0)
                     throw new InvalidOperationException("The stack is empty");
 
                 // Decrease the reference before fetching the value as
                 // the reference points to the next free place
-                T returnValue = _stack[--_nextFreeStackIndex]; 
+                T returnValue = _stack[--_nextFreeStackIndex];
 
                 // As a safety/security measure, reset value to a default value
                 _stack[_nextFreeStackIndex] = default(T);
@@ -49,7 +49,7 @@ namespace Svelto.Tasks
             public T[] Peek(out int index)
             {
                 DBC.Tasks.Check.Require(_nextFreeStackIndex != 0);
-                
+
                 index = _nextFreeStackIndex - 1;
                 return _stack;
             }
@@ -57,7 +57,7 @@ namespace Svelto.Tasks
             public void Clear()
             {
                 Array.Clear(_stack, 0, _stack.Length);
-                
+
                 _nextFreeStackIndex = 0;
             }
         }

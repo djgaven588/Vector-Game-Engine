@@ -1,32 +1,32 @@
+using Svelto.DataStructures;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.DataStructures;
 
 namespace Svelto.Tasks
 {
     public interface ITaskCollection<T> : IEnumerator<TaskCollection<T>.CollectionTask>
         where T : IEnumerator
     {
-        event Action                OnComplete;
+        event Action OnComplete;
         event Func<Exception, bool> OnException;
-        
+
         T CurrentStack { get; }
-        
+
         void Add(T enumerator);
         void Clear();
-        
+
         bool IsRunning { get; }
     }
 
-    public abstract partial class TaskCollection<T>:ITaskCollection<T> where T:IEnumerator
+    public abstract partial class TaskCollection<T> : ITaskCollection<T> where T : IEnumerator
     {
-        public event Action                OnComplete;
+        public event Action OnComplete;
         public event Func<Exception, bool> OnException;
-        
-        public bool  IsRunning { private set; get; }
-        
-        protected TaskCollection(int initialStackCount): this(String.Empty, initialStackCount)
+
+        public bool IsRunning { private set; get; }
+
+        protected TaskCollection(int initialStackCount) : this(String.Empty, initialStackCount)
         {
             _name = base.ToString();
         }
@@ -35,7 +35,7 @@ namespace Svelto.Tasks
         {
             _name = name;
             _currentTask = new CollectionTask(this);
-            
+
             _listOfStacks = new FasterList<StructFriendlyStack>(initialSize);
             var buffer = _listOfStacks.ToArrayFast();
             for (int i = 0; i < initialSize; i++)
@@ -72,7 +72,7 @@ namespace Svelto.Tasks
 
                 throw;
             }
-            
+
             IsRunning = false;
 
             return false;
@@ -81,14 +81,14 @@ namespace Svelto.Tasks
         public void Add(T enumerator)
         {
             DBC.Tasks.Check.Require(IsRunning == false, "can't modify a task collection while its running");
-            
+
             var buffer = _listOfStacks.ToArrayFast();
             var count = _listOfStacks.Count;
             if (count < buffer.Length && buffer[count].isValid())
             {
                 buffer[count].Clear();
                 buffer[count].Push(enumerator);
-                
+
                 _listOfStacks.ReuseOneSlot();
             }
             else
@@ -99,14 +99,14 @@ namespace Svelto.Tasks
                 buffer[_listOfStacks.Count - 1].Push(enumerator);
             }
         }
-        
+
         /// <summary>
         /// Restore the list of stacks to their original state
         /// </summary>
         public void Reset()
         {
             IsRunning = false;
-            
+
             var count = _listOfStacks.Count;
             for (int index = 0; index < count; ++index)
             {
@@ -123,13 +123,13 @@ namespace Svelto.Tasks
             get
             {
                 var stacks = _listOfStacks[_currentStackIndex].Peek(out int enumeratorIndex);
-                return stacks[ enumeratorIndex];
+                return stacks[enumeratorIndex];
             }
         }
 
         public CollectionTask Current
         {
-            get { return _currentTask;  }
+            get { return _currentTask; }
         }
 
         object IEnumerator.Current
@@ -140,15 +140,15 @@ namespace Svelto.Tasks
         public void Clear()
         {
             IsRunning = false;
-            
+
             var buffer = _listOfStacks.ToArrayFast();
             var count = _listOfStacks.Count;
-            
+
             for (int index = 0; index < count; ++index)
                 buffer[index].Clear();
-            
+
             _listOfStacks.FastClear();
-         
+
             _currentStackIndex = 0;
         }
 
@@ -159,9 +159,9 @@ namespace Svelto.Tasks
             var stack = listOfStacks[_currentStackIndex].Peek(out int enumeratorIndex);
 
             ProcessTask(ref stack[enumeratorIndex]);
-                
-            bool isDone  = !stack[enumeratorIndex].MoveNext();
-            
+
+            bool isDone = !stack[enumeratorIndex].MoveNext();
+
             //Svelto.Tasks Tasks IEnumerator are always IEnumerator returning an object so Current is always an object
             var returnObject = _currentTask.current = stack[enumeratorIndex].Current;
 
@@ -175,49 +175,49 @@ namespace Svelto.Tasks
 
                 return TaskState.breakIt;
             }
-            
+
             _currentTask.breakIt = null;
-            
+
             //can yield for one iteration
-            if (returnObject == null) 
+            if (returnObject == null)
                 return TaskState.yieldIt;
 
 #if DEBUG && !PROFILER                
             if (returnObject is IServiceTask)
-                throw new ArgumentException("Svelto.Task 2.0 is not supporting IAsyncTask implicitly anymore, use TaskServiceEnumerator instead " + ToString()); 
+                throw new ArgumentException("Svelto.Task 2.0 is not supporting IAsyncTask implicitly anymore, use TaskServiceEnumerator instead " + ToString());
 
             if (returnObject is ITaskRoutine<IEnumerator>)
                 throw new ArgumentException("Returned a TaskRoutine without calling Start first " + ToString());
-#endif            
-              
+#endif
+
             if (returnObject is T) //can be a compatible IEnumerator
-            //careful it must be the array and not the list as it returns a struct!!
+                                   //careful it must be the array and not the list as it returns a struct!!
                 listOfStacks[_currentStackIndex].Push((T)returnObject); //push the new yielded task and execute it immediately
-            
+
             return TaskState.continueIt;
         }
 
         public override string ToString()
         {
             if (_name == null)
-                _name = base.ToString(); 
+                _name = base.ToString();
 
             return _name;
         }
-        
-        protected int TaskCount { get { return _listOfStacks.Count; }}
-        protected StructFriendlyStack[] RawListOfStacks => _listOfStacks.ToArrayFast(); 
+
+        protected int TaskCount { get { return _listOfStacks.Count; } }
+        protected StructFriendlyStack[] RawListOfStacks => _listOfStacks.ToArrayFast();
 
         protected abstract void ProcessTask(ref T Task);
         protected abstract bool RunTasksAndCheckIfDone();
-        
-        CollectionTask                           _currentTask;
-        int                                      _currentStackIndex;
+
+        CollectionTask _currentTask;
+        int _currentStackIndex;
         readonly FasterList<StructFriendlyStack> _listOfStacks;
         string _name;
 
         const int _INITIAL_STACK_SIZE = 1;
-        
+
         protected enum TaskState
         {
             doneIt,
@@ -230,7 +230,7 @@ namespace Svelto.Tasks
         {
             public object current { get; internal set; }
 
-            public CollectionTask(TaskCollection<T> collection):this()
+            public CollectionTask(TaskCollection<T> collection) : this()
             {
                 _collection = collection;
             }
@@ -242,7 +242,7 @@ namespace Svelto.Tasks
 
             public T Current
             {
-                get { return _collection.CurrentStack;  }
+                get { return _collection.CurrentStack; }
             }
 
             readonly TaskCollection<T> _collection;

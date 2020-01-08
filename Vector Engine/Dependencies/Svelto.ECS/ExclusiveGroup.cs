@@ -23,36 +23,36 @@ namespace Svelto.ECS
         {
             _group = ExclusiveGroupStruct.Generate();
         }
-        
+
         public ExclusiveGroup(string recognizeAs)
         {
             _group = ExclusiveGroupStruct.Generate();
-            
+
             _serialisedGroups.Add(recognizeAs, _group);
         }
-        
+
         public ExclusiveGroup(ushort range)
         {
             _group = new ExclusiveGroupStruct(range);
         }
-        
+
         public static implicit operator ExclusiveGroupStruct(ExclusiveGroup group)
         {
             return group._group;
         }
-        
-        public static explicit operator uint(ExclusiveGroup group) 
+
+        public static explicit operator uint(ExclusiveGroup group)
         {
             return group._group;
         }
 
-        public static ExclusiveGroupStruct operator+(ExclusiveGroup a, uint b)
+        public static ExclusiveGroupStruct operator +(ExclusiveGroup a, uint b)
         {
             return a._group + b;
         }
 
         readonly ExclusiveGroupStruct _group;
-        
+
         //I use this as parameter because it must not be possible to pass null Exclusive Groups.
         public struct ExclusiveGroupStruct : IEquatable<ExclusiveGroupStruct>, IComparable<ExclusiveGroupStruct>,
                                 IEqualityComparer<ExclusiveGroupStruct>
@@ -103,11 +103,11 @@ namespace Svelto.ECS
             /// </summary>
             internal ExclusiveGroupStruct(ushort range)
             {
-                _id =  _globalId;
+                _id = _globalId;
                 DBC.ECS.Check.Require(_globalId + range < ushort.MaxValue, "too many exclusive groups created");
                 _globalId += range;
             }
-            
+
             internal ExclusiveGroupStruct(uint groupID)
             {
                 _id = groupID;
@@ -117,8 +117,8 @@ namespace Svelto.ECS
             {
                 return groupStruct._id;
             }
-            
-            public static ExclusiveGroupStruct operator+(ExclusiveGroupStruct a, uint b)
+
+            public static ExclusiveGroupStruct operator +(ExclusiveGroupStruct a, uint b)
             {
                 var group = new ExclusiveGroupStruct();
 
@@ -127,7 +127,7 @@ namespace Svelto.ECS
                 return group;
             }
 
-            uint         _id;
+            uint _id;
             static uint _globalId;
         }
 
@@ -135,11 +135,11 @@ namespace Svelto.ECS
         {
             if (_serialisedGroups.ContainsKey(holderGroupName) == false)
                 throw new Exception("Serialized Group Not Found ".FastConcat(holderGroupName));
-            
+
             return _serialisedGroups[holderGroupName];
         }
 
-        static readonly Dictionary<string, ExclusiveGroupStruct> _serialisedGroups = new Dictionary<string, 
-            ExclusiveGroupStruct>(); 
+        static readonly Dictionary<string, ExclusiveGroupStruct> _serialisedGroups = new Dictionary<string,
+            ExclusiveGroupStruct>();
     }
 }

@@ -9,7 +9,7 @@ public static class SafeEvent
             var length = onEvent.GetInvocationList().Length;
             for (int index = 0; index < length; index++)
             {
-                Action<T> handler = (Action<T>) onEvent.GetInvocationList()[index];
+                Action<T> handler = (Action<T>)onEvent.GetInvocationList()[index];
 
                 try
                 {

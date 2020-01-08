@@ -1,5 +1,4 @@
 ﻿using VectorEngine.Core;
-using System.Threading;
 using VectorEngine.Engine;
 
 namespace VectorEngine

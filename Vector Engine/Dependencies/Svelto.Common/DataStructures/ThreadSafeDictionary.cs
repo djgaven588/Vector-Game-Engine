@@ -193,7 +193,7 @@ namespace Svelto.DataStructures
                 LockQ.ExitWriteLock();
             }
         }
-        
+
         public virtual void Add(TKey key, ref TValue value)
         {
             LockQ.EnterWriteLock();

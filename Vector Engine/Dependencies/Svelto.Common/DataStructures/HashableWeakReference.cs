@@ -23,8 +23,8 @@ namespace Svelto.DataStructures
             if (a._hash != b._hash)
                 return false;
 
-            var tmpTargetA = (T) a._weakRef.Target;
-            var tmpTargetB = (T) b._weakRef.Target;
+            var tmpTargetA = (T)a._weakRef.Target;
+            var tmpTargetB = (T)b._weakRef.Target;
 
             if (tmpTargetA == null || tmpTargetB == null)
                 return false;
@@ -50,7 +50,7 @@ namespace Svelto.DataStructures
             return _hash;
         }
 
-        int             _hash;
-        WeakReference   _weakRef;
+        int _hash;
+        WeakReference _weakRef;
     }
 }

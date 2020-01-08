@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace Svelto.Tasks
@@ -6,16 +5,16 @@ namespace Svelto.Tasks
     public class SerialTaskCollection : SerialTaskCollection<IEnumerator>
     {
         public SerialTaskCollection() : base()
-        {}
-        
+        { }
+
         public SerialTaskCollection(int initialSize) : base(initialSize)
-        {}
-        
-        public SerialTaskCollection(string name): base(name)
-        {}
+        { }
+
+        public SerialTaskCollection(string name) : base(name)
+        { }
 
         public SerialTaskCollection(string name, int initialSize) : base(name, initialSize)
-        {}
+        { }
     }
 
     public class SerialTaskCollection<T> : TaskCollection<T> where T : IEnumerator
@@ -23,16 +22,16 @@ namespace Svelto.Tasks
         const int _INITIAL_STACK_COUNT = 1;
 
         public SerialTaskCollection() : base(_INITIAL_STACK_COUNT)
-        {}
-        
+        { }
+
         public SerialTaskCollection(int initialSize) : base(initialSize)
-        {}
+        { }
 
         public SerialTaskCollection(string name) : base(name, _INITIAL_STACK_COUNT)
-        {}
+        { }
 
         public SerialTaskCollection(string name, int initialSize) : base(name, initialSize)
-        {}
+        { }
 
         protected override bool RunTasksAndCheckIfDone()
         {
@@ -57,14 +56,14 @@ namespace Svelto.Tasks
                             break;
                         case TaskState.breakIt:
                             return true; //iteration done
-                        case TaskState.continueIt: 
+                        case TaskState.continueIt:
                             continue; //continue with the current task 
                         case TaskState.yieldIt:
                             return false; //continue the iteration next frame
                     }
                 }
 
-                breakInnerLoop: ; //move to the next task
+            breakInnerLoop:; //move to the next task
             }
 
             _stackOffset = 0;
@@ -73,8 +72,8 @@ namespace Svelto.Tasks
         }
 
         protected override void ProcessTask(ref T Task)
-        {}
-        
+        { }
+
         int _stackOffset;
     }
 }

@@ -1,7 +1,7 @@
 //https: //github.com/dave-hillier/disruptor-unity3d/blob/master/DisruptorUnity3d/Assets/RingBuffer.cs
 
-using System;
 using Svelto.Utilities;
+using System;
 
 namespace Svelto.DataStructures
 {
@@ -43,7 +43,7 @@ namespace Svelto.DataStructures
         public ref T Dequeue(string name)
         {
             var next = _consumerCursor.ReadAcquireFence() + 1;
-            
+
             int quickIterations = 0;
 
             // makes sure we read the data from _entries after we have read the producer cursor
@@ -51,7 +51,7 @@ namespace Svelto.DataStructures
             {
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
-            
+
             if (quickIterations >= 1024) throw new RingBufferExceptionDequeue<T>(name, next);
 
             _consumerCursor.WriteReleaseFence(next); // makes sure we read the data from _entries before we update the consumer cursor
@@ -73,18 +73,18 @@ namespace Svelto.DataStructures
                 obj = default(T);
                 return false;
             }
-            
+
             obj = Dequeue(name);
             return true;
         }
-        
+
         /// <summary>
         /// The number of items in the buffer
         /// </summary>
         /// <remarks>for indicative purposes only, may contain stale data</remarks>
         public int Count => (int)(_producerCursor.ReadAcquireFence() - _consumerCursor.ReadAcquireFence());
 
-        public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadAcquireFence());}
+        public void Reset() { _consumerCursor.WriteReleaseFence(_producerCursor.ReadAcquireFence()); }
 
         public void Enqueue(ref T item, string name)
         {
@@ -92,16 +92,16 @@ namespace Svelto.DataStructures
 
             long wrapPoint = next - _entries.Length;
             long min = _consumerCursor.ReadAcquireFence();
-            
+
             int quickIterations = 0;
 
             while (wrapPoint > min && quickIterations < 1024)
             {
                 min = _consumerCursor.ReadAcquireFence();
-                
+
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
-            
+
             if (quickIterations >= 1024) throw new RingBufferExceptionEnqueue<T>(name, next);
 
             this[next] = item;
@@ -125,15 +125,15 @@ namespace Svelto.DataStructures
         public RingBufferExceptionDequeue(string name, long count) : base(
             "Consumer is consuming too fast. Type: "
                .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
-        {}
+        { }
     }
-    
+
     public class RingBufferExceptionEnqueue<T> : Exception
     {
         public RingBufferExceptionEnqueue(string name, long count) : base(
             "Entity Stream capacity has been saturated Type: "
                .FastConcat(typeof(T).ToString(), " Consumer Name: ", name, " count ").FastConcat(count))
-        {}
+        { }
     }
 
     public static class Volatile

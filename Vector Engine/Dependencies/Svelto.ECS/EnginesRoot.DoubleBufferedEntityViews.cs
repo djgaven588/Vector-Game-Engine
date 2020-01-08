@@ -28,17 +28,17 @@ namespace Svelto.ECS
                     //do not remove the dictionaries of entities per type created so far, they will be reused
                     foreach (var entitiesPerType in groups.Value)
                     {
-                       //clear the dictionary of entities create do far (it won't allocate though)
+                        //clear the dictionary of entities create do far (it won't allocate though)
                         entitiesPerType.Value.Clear();
                     }
                 }
 
                 otherEntitiesCreatedPerGroup.Clear();
             }
-            
+
             internal FasterDictionary<uint, uint> currentEntitiesCreatedPerGroup;
             internal FasterDictionary<uint, uint> otherEntitiesCreatedPerGroup;
-            
+
             internal EntitiesDB current;
             internal EntitiesDB other;
 
@@ -47,12 +47,12 @@ namespace Svelto.ECS
 
             readonly FasterDictionary<uint, uint> _entitiesCreatedPerGroupA = new FasterDictionary<uint, uint>();
             readonly FasterDictionary<uint, uint> _entitiesCreatedPerGroupB = new FasterDictionary<uint, uint>();
-            
+
             public DoubleBufferedEntitiesToAdd()
             {
                 currentEntitiesCreatedPerGroup = _entitiesCreatedPerGroupA;
                 otherEntitiesCreatedPerGroup = _entitiesCreatedPerGroupB;
-                
+
                 current = _entityViewsToAddBufferA;
                 other = _entityViewsToAddBufferB;
             }

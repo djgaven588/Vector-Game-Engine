@@ -1,6 +1,6 @@
 namespace Svelto.ECS
 {
-    class StaticEntityDescriptorInfo<TType>: IEntityDescriptor where TType : IEntityDescriptor
+    class StaticEntityDescriptorInfo<TType> : IEntityDescriptor where TType : IEntityDescriptor
     {
         internal StaticEntityDescriptorInfo(TType descriptor)
         {

@@ -1,6 +1,6 @@
+using Svelto.Tasks.Chain;
 using System;
 using System.Collections;
-using Svelto.Tasks.Chain;
 
 namespace Svelto.Tasks.Enumerators
 {
@@ -12,7 +12,7 @@ namespace Svelto.Tasks.Enumerators
     /// (some ITask some not). Otherwise it should never be used
     /// explicitly 
     /// </summary>
-    public class TaskServiceEnumerator: IEnumerator
+    public class TaskServiceEnumerator : IEnumerator
     {
         public object Current { get { return null; } }
 
@@ -21,7 +21,7 @@ namespace Svelto.Tasks.Enumerators
             DBC.Tasks.Check.Require((task is IEnumerable == false) && (task is IEnumerator == false), "Tasks and IEnumerators are mutually exclusive");
 
             this.task = task;
-            
+
             DBC.Tasks.Check.Ensure(task != null, "a valid task must be assigned");
         }
 
@@ -33,7 +33,7 @@ namespace Svelto.Tasks.Enumerators
 
                 _started = true;
             }
-            
+
             if (task.isDone == false)
             {
                 var taskException = task as IServiceTaskExceptionHandler;
@@ -63,7 +63,7 @@ namespace Svelto.Tasks.Enumerators
         {
             var task1 = task as IServiceTask;
             if (task1 != null)
-                task1.Execute();    
+                task1.Execute();
             else
                 throw new Exception("not supported task " + task.GetType());
         }
@@ -76,7 +76,7 @@ namespace Svelto.Tasks.Enumerators
     public class TaskServiceEnumerator<Token> : TaskServiceEnumerator, ITaskChain<Token>
     {
         public TaskServiceEnumerator(IServiceTask task) : base(task)
-        {}
+        { }
 
         public Token token { get; set; }
     }

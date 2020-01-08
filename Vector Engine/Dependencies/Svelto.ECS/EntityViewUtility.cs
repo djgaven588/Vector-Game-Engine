@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Svelto.DataStructures;
+﻿using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.Utilities;
+using System;
+using System.Collections.Generic;
 
 namespace Svelto.ECS
 {
@@ -11,11 +11,11 @@ namespace Svelto.ECS
     struct ECSTuple<T1, T2>
     {
         public readonly T1 implementorType;
-        public          T2 numberOfImplementations;
+        public T2 numberOfImplementations;
 
         public ECSTuple(T1 implementor, T2 v)
         {
-            implementorType         = implementor;
+            implementorType = implementor;
             numberOfImplementations = v;
         }
     }
@@ -26,7 +26,7 @@ namespace Svelto.ECS
     {
 
         public static void FillEntityView<T>(this IEntityBuilder entityBuilder
-                                           , ref  T              entityView
+                                           , ref T entityView
                                            , FasterList<KeyValuePair<Type, ActionCast<T>>>
                                                  entityViewBlazingFastReflection
                                            , object[] implementors,
@@ -82,7 +82,7 @@ namespace Svelto.ECS
             for (var i = 0; i < count; i++)
             {
                 var fieldSetter = setters[i];
-                var fieldType   = fieldSetter.Key;
+                var fieldType = fieldSetter.Key;
 
 #if DEBUG && !PROFILER
                 ECSTuple<object, int> component;
@@ -93,7 +93,7 @@ namespace Svelto.ECS
                 if (implementorsByType.TryGetValue(fieldType, out component) == false)
                 {
                     var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name +
-                                             " - EntityView: "   + entityBuilder.GetEntityType().Name);
+                                             " - EntityView: " + entityBuilder.GetEntityType().Name);
 
                     throw e;
                 }
@@ -104,7 +104,7 @@ namespace Svelto.ECS
                                                                                   " implementor: ",
                                                                                   component.implementorType
                                                                                            .ToString()) +
-                                           " - EntityView: "                                            +
+                                           " - EntityView: " +
                                            entityBuilder.GetEntityType().Name);
 #endif
 #if DEBUG && !PROFILER

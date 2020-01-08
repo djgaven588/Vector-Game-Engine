@@ -10,13 +10,13 @@ namespace Svelto.Utilities
             var dataString = string.Empty;
 
             string stack = null;
-            
+
             if (e != null)
                 stack = e.StackTrace;
 
             if (data != null)
                 dataString = DataToString.DetailString(data);
-            
+
             switch (type)
             {
                 case LogType.Log:
@@ -34,6 +34,6 @@ namespace Svelto.Utilities
         }
 
         public void OnLoggerAdded()
-        {}
+        { }
     }
 }

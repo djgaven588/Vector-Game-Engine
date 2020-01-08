@@ -2,11 +2,11 @@
 #define ENABLE_DEBUG_FUNC
 #endif
 
+using Svelto.DataStructures;
+using Svelto.DataStructures.Experimental;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
-using Svelto.DataStructures.Experimental;
 
 namespace Svelto.ECS.Internal
 {
@@ -32,7 +32,7 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref T QueryEntity<T>(EGID entityGID) where T : struct, IEntityStruct
         {
-            T[]  array;
+            T[] array;
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out var index)) != null)
                 return ref array[index];
 
@@ -74,7 +74,7 @@ namespace Svelto.ECS.Internal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (T1[], T2[]) QueryEntities<T1, T2>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count)
-            where T1 : struct, IEntityStruct 
+            where T1 : struct, IEntityStruct
             where T2 : struct, IEntityStruct
         {
             var T1entities = QueryEntities<T1>(@groupStruct, out var countCheck);
@@ -186,7 +186,7 @@ namespace Svelto.ECS.Internal
         {
             _entityStream.PublishEntity(ref QueryEntity<T>(egid));
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         T[] QueryEntitiesAndIndexInternal<T>(EGID entityGID, out uint index) where T : struct, IEntityStruct
         {
@@ -218,7 +218,7 @@ namespace Svelto.ECS.Internal
 
             return true;
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static ReadOnlyCollectionStruct<T> RetrieveEmptyEntityViewList<T>()
         {

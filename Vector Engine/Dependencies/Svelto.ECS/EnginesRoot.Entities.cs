@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.ECS
 {
@@ -108,8 +108,8 @@ namespace Svelto.ECS
         void Preallocate<T>(uint groupID, uint size) where T : IEntityDescriptor, new()
         {
             var entityViewsToBuild = EntityDescriptorTemplate<T>.descriptor.entitiesToBuild;
-            var numberOfEntityViews              = entityViewsToBuild.Length;
-            
+            var numberOfEntityViews = entityViewsToBuild.Length;
+
             //reserve space in the database
             if (_groupEntityDB.TryGetValue(groupID, out var @group) == false)
                 group = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
@@ -158,7 +158,7 @@ namespace Svelto.ECS
                     if (toEntityGID != null)
                     {
                         var toGroupID = toEntityGID.Value.groupID;
-                        
+
                         if (_groupEntityDB.TryGetValue(toGroupID, out toGroup) == false)
                             toGroup = _groupEntityDB[toGroupID] = new Dictionary<Type, ITypeSafeDictionary>();
                     }
@@ -172,17 +172,17 @@ namespace Svelto.ECS
                 {
 #if DEBUG && !PROFILER
                     if (correctEntityDescriptorFound == false)
-                    throw new ECSException(INVALID_DYNAMIC_DESCRIPTOR_ERROR.FastConcat(" ID ").FastConcat(fromEntityGID.entityID)
-                                               .FastConcat(" group ID ").FastConcat(fromEntityGID.groupID).FastConcat(
-                                                " descriptor found: ", entityInfoView.type.Name, " descriptor Excepted ",
-                                                originalDescriptorType.Name));
+                        throw new ECSException(INVALID_DYNAMIC_DESCRIPTOR_ERROR.FastConcat(" ID ").FastConcat(fromEntityGID.entityID)
+                                                   .FastConcat(" group ID ").FastConcat(fromEntityGID.groupID).FastConcat(
+                                                    " descriptor found: ", entityInfoView.type.Name, " descriptor Excepted ",
+                                                    originalDescriptorType.Name));
 #endif
 
                     Dictionary<Type, ITypeSafeDictionary> toGroup = null;
                     if (toEntityGID != null)
                     {
                         var toGroupID = toEntityGID.Value.groupID;
-                        
+
                         if (_groupEntityDB.TryGetValue(toGroupID, out toGroup) == false)
                             toGroup = _groupEntityDB[toGroupID] = new Dictionary<Type, ITypeSafeDictionary>();
                     }
@@ -293,8 +293,8 @@ namespace Svelto.ECS
             return _entitiesStream.GenerateConsumer<T>(name, capacity);
         }
 
-        
-        public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged, 
+
+        public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged,
             IEntityStruct
         {
             return _entitiesStream.GenerateConsumer<T>(@group, name, capacity);

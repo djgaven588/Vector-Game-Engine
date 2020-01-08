@@ -17,7 +17,7 @@ namespace Svelto.DataStructures
         {
             return new ReadOnlyCollectionStructEnumerator<T>(_values, _count);
         }
-        
+
         public T this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64,7 +64,7 @@ namespace Svelto.DataStructures
             throw new NotImplementedException();
         }
 
-        public int Count => (int) _count;
+        public int Count => (int)_count;
 
         public bool IsReadOnly => true;
 
@@ -75,12 +75,12 @@ namespace Svelto.DataStructures
         readonly T[] _values;
         readonly uint _count;
     }
-    
-    public struct ReadOnlyCollectionStructEnumerator<T>:IEnumerator<T>
+
+    public struct ReadOnlyCollectionStructEnumerator<T> : IEnumerator<T>
     {
         public ReadOnlyCollectionStructEnumerator(T[] values, uint count) : this()
         {
-            _index  = 0;
+            _index = 0;
             _values = values;
             _count = count;
         }
@@ -95,12 +95,12 @@ namespace Svelto.DataStructures
 
             return false;
         }
-        
+
         bool IEnumerator.MoveNext()
         {
             return MoveNext();
         }
-        
+
         void IEnumerator.Reset()
         {
             Reset();
@@ -110,17 +110,17 @@ namespace Svelto.DataStructures
         {
             _index = 0;
         }
-        
+
         public T Current => _current;
 
         T IEnumerator<T>.Current => _current;
 
         object IEnumerator.Current => _current;
-        public void   Dispose() { }
+        public void Dispose() { }
 
         readonly T[] _values;
-        T            _current;
-        int          _index;
-        readonly uint          _count;
+        T _current;
+        int _index;
+        readonly uint _count;
     }
 }

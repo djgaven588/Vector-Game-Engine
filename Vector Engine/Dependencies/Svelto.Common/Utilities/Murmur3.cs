@@ -27,12 +27,12 @@ namespace Svelto.Utilities
                 uint k1l = BitConverter.ToUInt32(data, i);
 
                 k1l *= c1;
-                k1l =  rotl32(k1l, 15);
+                k1l = rotl32(k1l, 15);
                 k1l *= c2;
 
                 h1 ^= k1l;
-                h1 =  rotl32(h1, 13);
-                h1 =  h1 * 5 + 0xe6546b64;
+                h1 = rotl32(h1, 13);
+                h1 = h1 * 5 + 0xe6546b64;
 
                 i += 4;
             }
@@ -47,14 +47,14 @@ namespace Svelto.Utilities
             uint tailLength = length & 3;
 
             if (tailLength == 3)
-                k1 ^= (uint) data[2 + nblocks] << 16;
+                k1 ^= (uint)data[2 + nblocks] << 16;
             if (tailLength >= 2)
-                k1 ^= (uint) data[1 + nblocks] << 8;
+                k1 ^= (uint)data[1 + nblocks] << 8;
             if (tailLength >= 1)
             {
                 k1 ^= data[nblocks];
                 k1 *= c1;
-                k1 =  rotl32(k1, 15);
+                k1 = rotl32(k1, 15);
                 k1 *= c2;
                 h1 ^= k1;
             }
@@ -87,16 +87,16 @@ namespace Svelto.Utilities
 
         static public bool VerificationTest()
         {
-            byte[] key    = new byte[256];
+            byte[] key = new byte[256];
             byte[] hashes = new byte[1024];
 
             for (uint i = 0; i < 256; i++)
             {
-                key[i] = (byte) i;
+                key[i] = (byte)i;
 
                 uint result = MurmurHash3_x86_32(key, i, 256 - i);
 
-                Buffer.BlockCopy(BitConverter.GetBytes(result), 0, hashes, (int) i * 4, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(result), 0, hashes, (int)i * 4, 4);
             }
 
             // Then hash the result array

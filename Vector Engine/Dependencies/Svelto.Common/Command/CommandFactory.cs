@@ -5,7 +5,7 @@ namespace Svelto.Command
     public sealed class CommandFactory : ICommandFactory
     {
         public CommandFactory()
-        {}
+        { }
 
         public CommandFactory(Action<ICommand> onNewCommand)
         {
@@ -14,7 +14,7 @@ namespace Svelto.Command
 
         public TCommand Build<TCommand>() where TCommand : ICommand, new()
         {
-            TCommand command = new TCommand();            
+            TCommand command = new TCommand();
 
             OnNewCommand(command);
 
@@ -24,7 +24,7 @@ namespace Svelto.Command
 
         public TCommand Build<TCommand, T>(T dependency) where TCommand : ICommand, new()
         {
-            TCommand command = (TCommand) Activator.CreateInstance(typeof(TCommand), dependency);
+            TCommand command = (TCommand)Activator.CreateInstance(typeof(TCommand), dependency);
 
             OnNewCommand(command);
 
@@ -37,6 +37,6 @@ namespace Svelto.Command
                 _onNewCommand(command);
         }
 
-        Action<ICommand>    _onNewCommand;
+        Action<ICommand> _onNewCommand;
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Svelto.DataStructures;
+﻿using Svelto.DataStructures;
 using Svelto.ECS.Internal;
 using Svelto.Utilities;
+using System;
+using System.Collections.Generic;
 
 namespace Svelto.ECS
 {
@@ -29,14 +29,14 @@ namespace Svelto.ECS
             {
                 DBC.ECS.Check.Require(implementors != null, "Implementors not found while building an EntityView");
                 DBC.ECS.Check.Require(castedDic.ContainsKey(entityID.entityID) == false,
-                              "building an entity with already used entity id! id: ".FastConcat((ulong) entityID)
+                              "building an entity with already used entity id! id: ".FastConcat((ulong)entityID)
                                  .FastConcat(" ", ENTITY_VIEW_NAME));
 
                 EntityView<T>.BuildEntityView(out var entityView);
 
                 this.FillEntityView(ref entityView, entityViewBlazingFastReflection, implementors, implementorsByType,
                                     cachedTypes);
-                
+
                 castedDic.Add(entityID.entityID, ref entityView);
             }
             else
@@ -75,10 +75,10 @@ namespace Svelto.ECS
         static FasterList<KeyValuePair<Type, ActionCast<T>>> entityViewBlazingFastReflection =>
             EntityView<T>.cachedFields;
 
-        internal static readonly Type   ENTITY_VIEW_TYPE    = typeof(T);
-        static readonly T      DEFAULT_IT          = default;
-        static readonly bool   NEEDS_REFLECTION    = false;
-        static readonly string ENTITY_VIEW_NAME    = ENTITY_VIEW_TYPE.ToString();
+        internal static readonly Type ENTITY_VIEW_TYPE = typeof(T);
+        static readonly T DEFAULT_IT = default;
+        static readonly bool NEEDS_REFLECTION = false;
+        static readonly string ENTITY_VIEW_NAME = ENTITY_VIEW_TYPE.ToString();
         internal static readonly bool HAS_EGID = typeof(INeedEGID).IsAssignableFrom(ENTITY_VIEW_TYPE);
 
         internal T _initializer;

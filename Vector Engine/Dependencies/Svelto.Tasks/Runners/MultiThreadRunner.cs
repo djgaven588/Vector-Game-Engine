@@ -1,9 +1,9 @@
+using Svelto.DataStructures;
+using Svelto.Utilities;
 using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Threading;
-using Svelto.DataStructures;
-using Svelto.Utilities;
 
 #if NETFX_CORE
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Svelto.Tasks
 {
-    public sealed class MultiThreadRunner:MultiThreadRunner<IEnumerator>
+    public sealed class MultiThreadRunner : MultiThreadRunner<IEnumerator>
     {
         public MultiThreadRunner(string name, bool relaxed = false, bool tightTasks = false) : base(name, relaxed, tightTasks)
         {
@@ -23,7 +23,7 @@ namespace Svelto.Tasks
     }
     //The multithread runner always uses just one thread to run all the couroutines
     //If you want to use a separate thread, you will need to create another MultiThreadRunner
-    public class MultiThreadRunner<T> : IRunner<T> where T:IEnumerator
+    public class MultiThreadRunner<T> : IRunner<T> where T : IEnumerator
     {
         public bool isPaused
         {
@@ -52,10 +52,10 @@ namespace Svelto.Tasks
         {
             get { return _runnerData.Count; }
         }
-        
+
         public int numberOfQueuedTasks
         {
-            get { return  _runnerData.newTaskRoutines.Count; }
+            get { return _runnerData.newTaskRoutines.Count; }
         }
 
         public override string ToString()
@@ -67,7 +67,7 @@ namespace Svelto.Tasks
         {
             Console.LogWarning("MultiThreadRunner has been garbage collected, this could have serious" +
                                                         "consequences, are you sure you want this? ".FastConcat(_runnerData.name));
-                                                        
+
             Dispose();
         }
 
@@ -75,7 +75,7 @@ namespace Svelto.Tasks
         {
             if (_runnerData != null)
                 Kill(null);
-            
+
             GC.SuppressFinalize(this);
         }
 
@@ -112,7 +112,7 @@ namespace Svelto.Tasks
 #if !NETFX_CORE
             //threadpool doesn't work well with Unity apparently
             //it seems to choke when too meany threads are started
-            new Thread(() => runnerData.RunCoroutineFiber()) {IsBackground = true}.Start();
+            new Thread(() => runnerData.RunCoroutineFiber()) { IsBackground = true }.Start();
 #else
             Task.Factory.StartNew(() => runnerData.RunCoroutineFiber(), TaskCreationOptions.LongRunning);
 #endif
@@ -122,7 +122,7 @@ namespace Svelto.Tasks
         {
             if (_runnerData == null)
                 throw new MultiThreadRunnerException("Trying to start a task on a killed runner");
-            
+
             isPaused = false;
 
             _runnerData.newTaskRoutines.Enqueue(task);
@@ -133,7 +133,7 @@ namespace Svelto.Tasks
         {
             if (_runnerData == null)
                 throw new MultiThreadRunnerException("Trying to stop tasks on a killed runner");
-            
+
             _runnerData.newTaskRoutines.Clear();
             _runnerData.waitForFlush = true;
 
@@ -144,7 +144,7 @@ namespace Svelto.Tasks
         {
             if (_runnerData == null)
                 throw new MultiThreadRunnerException("Trying to kill an already killed runner");
-            
+
             _runnerData.Kill(onThreadKilled);
             _runnerData = null;
         }
@@ -153,12 +153,12 @@ namespace Svelto.Tasks
         {
             public RunnerData(bool relaxed, float interval, string name, bool isRunningTightTasks)
             {
-                _mevent              = new ManualResetEventEx();
-                _watch               = new Stopwatch();
-                _coroutines          = new FasterList<ISveltoTask<T>>();
-                newTaskRoutines      = new ThreadSafeQueue<ISveltoTask<T>>();
-                _intervalInTicks     = (long) (interval * Stopwatch.Frequency / 1000);
-                this.name            = name;
+                _mevent = new ManualResetEventEx();
+                _watch = new Stopwatch();
+                _coroutines = new FasterList<ISveltoTask<T>>();
+                newTaskRoutines = new ThreadSafeQueue<ISveltoTask<T>>();
+                _intervalInTicks = (long)(interval * Stopwatch.Frequency / 1000);
+                this.name = name;
                 _isRunningTightTasks = isRunningTightTasks;
 
                 if (relaxed)
@@ -175,12 +175,12 @@ namespace Svelto.Tasks
 
                     return _coroutines.Count;
                 }
-            }    
+            }
 
             void QuickLockingMechanism()
             {
                 var quickIterations = 0;
-                var frequency       = 1024;
+                var frequency = 1024;
 
                 while (ThreadUtility.VolatileRead(ref _interlock) != 1 && quickIterations < 4096)
                 {
@@ -222,7 +222,7 @@ namespace Svelto.Tasks
             {
                 if (_mevent == null)
                     return;
-                
+
                 _interlock = 1;
 
                 _mevent.Set();
@@ -235,7 +235,7 @@ namespace Svelto.Tasks
                 if (_mevent != null) //already disposed
                 {
                     _onThreadKilled = onThreadKilled;
-                    _breakThread    = true;
+                    _breakThread = true;
                     ThreadUtility.MemoryBarrier();
 
                     UnlockThread();
@@ -322,32 +322,32 @@ namespace Svelto.Tasks
             }
 
             internal readonly ThreadSafeQueue<ISveltoTask<T>> newTaskRoutines;
-            internal volatile bool                            waitForFlush;
+            internal volatile bool waitForFlush;
             internal bool isPaused
             {
                 get { return _isPaused; }
                 set
                 {
                     if (value == false) UnlockThread();
-                    
+
                     _isPaused = value;
-                } 
+                }
             }
 
             readonly FasterList<ISveltoTask<T>> _coroutines;
-            readonly long                       _intervalInTicks;
-            readonly bool                       _isRunningTightTasks;
-            readonly Action                     _lockingMechanism;
-            
+            readonly long _intervalInTicks;
+            readonly bool _isRunningTightTasks;
+            readonly Action _lockingMechanism;
+
             internal string name;
 
             ManualResetEventEx _mevent;
-            Action             _onThreadKilled;
-            Stopwatch          _watch;
-            int                _interlock;
-            int                _yieldingCount;
-            bool               _isPaused;
-            bool               _breakThread;
+            Action _onThreadKilled;
+            Stopwatch _watch;
+            int _interlock;
+            int _yieldingCount;
+            bool _isPaused;
+            bool _breakThread;
         }
 
         RunnerData _runnerData;
@@ -355,7 +355,7 @@ namespace Svelto.Tasks
 
     public class MultiThreadRunnerException : Exception
     {
-        public MultiThreadRunnerException(string message): base(message)
-        {}
+        public MultiThreadRunnerException(string message) : base(message)
+        { }
     }
 }

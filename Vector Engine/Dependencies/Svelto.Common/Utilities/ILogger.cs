@@ -11,10 +11,10 @@ namespace Svelto.Utilities
     }
     public interface ILogger
     {
-        void Log(string                                                txt,
-                 LogType                                               type  = LogType.Log,
-                 Exception                                             e = null,
-                 System.Collections.Generic.Dictionary<string, string> data  = null);
+        void Log(string txt,
+                 LogType type = LogType.Log,
+                 Exception e = null,
+                 System.Collections.Generic.Dictionary<string, string> data = null);
 
         void OnLoggerAdded();
     }

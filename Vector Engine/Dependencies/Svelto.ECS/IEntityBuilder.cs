@@ -1,5 +1,5 @@
-﻿using System;
-using Svelto.ECS.Internal;
+﻿using Svelto.ECS.Internal;
+using System;
 
 namespace Svelto.ECS
 {

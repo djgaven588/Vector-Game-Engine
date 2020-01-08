@@ -1,6 +1,6 @@
-﻿using VectorEngine.Core.Rendering.Shaders;
-using OpenTK;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
+using VectorEngine.Core.Rendering.Shaders;
 
 namespace VectorEngine.Core.Rendering.LowLevel
 {

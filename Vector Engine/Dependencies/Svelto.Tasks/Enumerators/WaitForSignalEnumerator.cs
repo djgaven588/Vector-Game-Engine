@@ -1,6 +1,6 @@
+using Svelto.Utilities;
 using System;
 using System.Collections;
-using Svelto.Utilities;
 
 namespace Svelto.Tasks.Enumerators
 {
@@ -10,7 +10,7 @@ namespace Svelto.Tasks.Enumerators
     /// as way to improve the readability of the code and make its debugging simpler.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class WaitForSignalEnumerator<T>:IEnumerator where T:WaitForSignalEnumerator<T>
+    public abstract class WaitForSignalEnumerator<T> : IEnumerator where T : WaitForSignalEnumerator<T>
     {
         /// <summary>
         /// the signal times out automatically, so specify the time out time according your needs. Autoreset
@@ -29,11 +29,11 @@ namespace Svelto.Tasks.Enumerators
             _signal = startUnlocked;
         }
 
-        public WaitForSignalEnumerator(string name, Func<bool> extraDoneCondition, float timeout = 1000, bool autoreset = true, bool startUnlocked = false):this(name, timeout, autoreset, startUnlocked)
+        public WaitForSignalEnumerator(string name, Func<bool> extraDoneCondition, float timeout = 1000, bool autoreset = true, bool startUnlocked = false) : this(name, timeout, autoreset, startUnlocked)
         {
             _extraDoneCondition = extraDoneCondition;
         }
-        
+
         public bool MoveNext()
         {
             if (_started == false)
@@ -44,20 +44,20 @@ namespace Svelto.Tasks.Enumerators
 
             var timedOut = DateTime.Now > _then;
             _isDone = ThreadUtility.VolatileRead(ref _signal) || timedOut;
-            
+
             if (_extraDoneCondition != null) _isDone |= _extraDoneCondition();
-            
+
             if (_isDone == true)
             {
                 if (_autoreset == true)
                     Reset();
-                
+
                 if (timedOut)
                     Console.LogWarning("WaitForSignalEnumerator ".FastConcat(_name, " timedOut"));
-                
+
                 return false;
             }
-            
+
             return !_isDone;
         }
 
@@ -65,7 +65,7 @@ namespace Svelto.Tasks.Enumerators
         {
             _signal = false;
             _started = false;
-            
+
             ThreadUtility.MemoryBarrier();
         }
 
@@ -83,10 +83,10 @@ namespace Svelto.Tasks.Enumerators
         public bool isDone()
         {
             DBC.Tasks.Check.Require(_autoreset == false, "Can't check if done if the signal auto resets, change behaviour through the constructor parameter");
-            
+
             return _isDone;
         }
-        
+
         public IEnumerator WaitBack()
         {
             return _waitBack;
@@ -97,20 +97,20 @@ namespace Svelto.Tasks.Enumerators
             _waitBack.Signal();
         }
 
-        WaitForSignalEnumerator(float timeout , bool startUnlocked)
+        WaitForSignalEnumerator(float timeout, bool startUnlocked)
         {
             _initialTimeOut = timeout;
-            _autoreset      = true;
-            _name           = "waitBack";
-            _signal         = startUnlocked;
+            _autoreset = true;
+            _name = "waitBack";
+            _signal = startUnlocked;
         }
 
         class WaitBackC : WaitForSignalEnumerator<WaitBackC>
         {
             internal WaitBackC(float timeOut, bool startUnlocked) : base(timeOut, startUnlocked)
-            {}
+            { }
         }
-        
+
         public object Current
         {
             get
@@ -118,18 +118,18 @@ namespace Svelto.Tasks.Enumerators
                 return _return;
             }
         }
-        
+
         volatile object _return;
 
-        readonly bool       _autoreset;
+        readonly bool _autoreset;
         readonly Func<bool> _extraDoneCondition;
-        readonly float      _initialTimeOut;
-        readonly WaitBackC  _waitBack;
-        readonly string     _name;
-        
-        bool     _signal;
-        bool     _started;
+        readonly float _initialTimeOut;
+        readonly WaitBackC _waitBack;
+        readonly string _name;
+
+        bool _signal;
+        bool _started;
         DateTime _then;
-        bool     _isDone;
+        bool _isDone;
     }
 }

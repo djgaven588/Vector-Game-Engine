@@ -1,8 +1,7 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using OpenTK;
-using VectorEngine.Core.Rendering.LowLevel;
 
 namespace VectorEngine.Core.Rendering.LowLevel
 {

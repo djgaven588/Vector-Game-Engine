@@ -1,19 +1,18 @@
 using System;
-using Svelto.Common.Internal;
 
 namespace Svelto.Common
 {
-    public interface IPlatformProfiler: IDisposable
+    public interface IPlatformProfiler : IDisposable
     {
         DisposableStruct Sample(string samplerName, string samplerInfo = null);
         DisposableStruct Sample<T>(T sampled, string samplerInfo = null);
     }
-    
+
     public struct DisposableStruct : IDisposable
     {
         readonly Action _endAction;
         readonly Action<object> _beginAction;
-        readonly object         _beginInfo;
+        readonly object _beginInfo;
 
         public DisposableStruct(Action<object> beginAction, object beginInfo, Action endEndAction)
         {
@@ -36,7 +35,7 @@ namespace Svelto.Common
             return new InverseDisposableStruct(_beginAction, _beginInfo);
         }
     }
-    
+
     public struct InverseDisposableStruct : IDisposable
     {
         readonly object _beginInfo;
@@ -126,8 +125,8 @@ namespace Svelto.Common
     public struct PlatformProfilerMT : IPlatformProfiler
     {
         public PlatformProfilerMT(string info)
-        {}
-        
+        { }
+
         public DisposableStruct Sample(string samplerName, string samplerInfo = null)
         {
             return new DisposableStruct();
@@ -139,26 +138,26 @@ namespace Svelto.Common
         }
 
         public void Dispose()
-        {}
+        { }
     }
 
-    public struct PlatformProfiler: IPlatformProfiler
+    public struct PlatformProfiler : IPlatformProfiler
     {
         public PlatformProfiler(string info)
-        {}
+        { }
 
         public DisposableStruct Sample(string samplerName, string samplerInfo = null)
         {
             return new DisposableStruct();
         }
-        
+
         public DisposableStruct Sample<T>(T samplerName, string samplerInfo = null)
         {
             return new DisposableStruct();
         }
 
         public void Dispose()
-        {}
+        { }
     }
 #endif
 }

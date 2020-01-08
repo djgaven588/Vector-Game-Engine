@@ -22,15 +22,15 @@ namespace Svelto.Tasks.Profiler
         public static bool MonitorUpdateDuration<T>(ISveltoTask<T> sveltoTask, string runnerName) where T : IEnumerator
         {
             var key = sveltoTask.ToString().FastConcat(runnerName);
-#if ENABLE_PIX_EVENTS            
+#if ENABLE_PIX_EVENTS
             PixWrapper.PIXBeginEventEx(0x11000000, key);
-#endif    
+#endif
             _stopwatch.Start();
             var result = sveltoTask.MoveNext();
             _stopwatch.Stop();
-#if ENABLE_PIX_EVENTS            
+#if ENABLE_PIX_EVENTS
             PixWrapper.PIXEndEventEx();
-#endif      
+#endif
             lock (LOCK_OBJECT)
             {
                 TaskInfo info;

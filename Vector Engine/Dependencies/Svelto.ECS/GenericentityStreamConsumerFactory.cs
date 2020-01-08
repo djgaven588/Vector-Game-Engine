@@ -19,11 +19,11 @@ namespace Svelto.ECS
 
         readonly DataStructures.WeakReference<EnginesRoot> _enginesRoot;
     }
-    
+
     public interface IEntityStreamConsumerFactory
     {
         Consumer<T> GenerateConsumer<T>(string name, int capacity) where T : unmanaged, IEntityStruct;
-        Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, int capacity) 
+        Consumer<T> GenerateConsumer<T>(ExclusiveGroup group, string name, int capacity)
             where T : unmanaged, IEntityStruct;
     }
 }

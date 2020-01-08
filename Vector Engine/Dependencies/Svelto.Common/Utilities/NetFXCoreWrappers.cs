@@ -1,8 +1,8 @@
+using Svelto.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Svelto.DataStructures;
 
 public static class NetFXCoreWrappers
 {
@@ -112,7 +112,7 @@ public static class NetFXCoreWrappers
     }
 
     public static MemberInfo[] FindWritablePropertiesWithCustomAttribute(this Type contract,
-                                                                         Type      customAttributeType)
+                                                                         Type customAttributeType)
     {
         var propertyList = new FasterList<MemberInfo>(8);
 

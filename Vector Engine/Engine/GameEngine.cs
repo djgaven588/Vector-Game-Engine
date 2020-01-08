@@ -1,16 +1,15 @@
-﻿using VectorEngine.Core.Common;
-using VectorEngine.Core.Rendering.Objects;
-using VectorEngine.Core.Rendering.Shaders;
-using OpenTK;
-using OpenTK.Graphics;
+﻿using OpenTK;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 using System;
 using System.Threading;
+using VectorEngine.Core.Common;
 using VectorEngine.Core.Rendering.LowLevel;
+using VectorEngine.Core.Rendering.Objects;
+using VectorEngine.Core.Rendering.Shaders;
 using VectorEngine.Engine;
-using VectorEngine.Engine.Common.LowLevel;
 using VectorEngine.Engine.Common;
+using VectorEngine.Engine.Common.LowLevel;
 
 namespace VectorEngine.Core
 {
@@ -156,7 +155,7 @@ namespace VectorEngine.Core
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
 
             ShaderProgram.DisableShader();
-            
+
             windowHandler.SwapBuffers();
 
             if (EntryPoint.VSyncEnabled && e.Time < 1000d / EntryPoint.TargetFPS)

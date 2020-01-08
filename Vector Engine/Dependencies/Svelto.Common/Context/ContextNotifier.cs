@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using WeakReferenceI = Svelto.DataStructures.WeakReference<Svelto.Context.IWaitForFrameworkInitialization>;
 using WeakReferenceD = Svelto.DataStructures.WeakReference<Svelto.Context.IWaitForFrameworkDestruction>;
+using WeakReferenceI = Svelto.DataStructures.WeakReference<Svelto.Context.IWaitForFrameworkInitialization>;
 
 namespace Svelto.Context
 {

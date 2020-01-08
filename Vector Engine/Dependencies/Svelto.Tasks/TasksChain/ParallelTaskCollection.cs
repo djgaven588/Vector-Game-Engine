@@ -4,7 +4,7 @@ namespace Svelto.Tasks.Chain
 {
     public class ParallelTaskCollection<Token> : Svelto.Tasks.ParallelTaskCollection<ITaskChain<Token>>, ITaskChain<Token>
     {
-        public ParallelTaskCollection(Token token):base()
+        public ParallelTaskCollection(Token token) : base()
         {
             this.token = token;
         }
@@ -13,7 +13,7 @@ namespace Svelto.Tasks.Chain
         {
             if (task == null)
                 throw new ArgumentNullException();
-            
+
             base.Add(task);
 
             return this;

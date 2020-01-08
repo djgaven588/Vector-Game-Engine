@@ -21,10 +21,10 @@ namespace Svelto.Tasks.Enumerators
             try
             {
                 moveNext = _enumerator.MoveNext();
-                if(moveNext == false)
+                if (moveNext == false)
                     succeeded = true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 succeeded = false;
                 error = e;

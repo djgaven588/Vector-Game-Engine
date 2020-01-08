@@ -122,7 +122,7 @@ namespace Svelto.Utilities
                         if (!string.IsNullOrEmpty(projectFolder) && str2.StartsWith(projectFolder))
                             
                         str2 = str2.Substring(projectFolder.Length, str2.Length - projectFolder.Length);
-#endif                        
+#endif
                         stringBuilder.Append(str2);
                         stringBuilder.Append(":");
                         stringBuilder.Append(frame.GetFileLineNumber().ToString());

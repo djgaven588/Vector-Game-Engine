@@ -23,7 +23,7 @@ namespace Svelto.Utilities
 #elif NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
             Thread.Yield(); 
 #else
-            Thread.Sleep(0); 
+            Thread.Sleep(0);
 #endif
         }
 
@@ -32,7 +32,7 @@ namespace Svelto.Utilities
 #if NETFX_CORE && !NET_STANDARD_2_0 && !NETSTANDARD2_0
             throw new Exception("Svelto doesn't support UWP without NET_STANDARD_2_0 support");
 #else
-            Thread.Sleep(1); 
+            Thread.Sleep(1);
 #endif
         }
 
@@ -46,7 +46,7 @@ namespace Svelto.Utilities
             if ((quickIterations++ & (frequency - 1)) == 0)
                 Yield();
         }
-        
+
 
         public static bool VolatileRead(ref bool val)
         {
@@ -58,7 +58,7 @@ namespace Svelto.Utilities
             return val;
 #endif
         }
-        
+
         public static long VolatileRead(ref long val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -69,7 +69,7 @@ namespace Svelto.Utilities
             return val;
 #endif
         }
-        
+
         public static byte VolatileRead(ref byte val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -80,7 +80,7 @@ namespace Svelto.Utilities
             return val;
 #endif
         }
-        
+
         public static int VolatileRead(ref int val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -91,7 +91,7 @@ namespace Svelto.Utilities
             return val;
 #endif
         }
-        
+
         public static float VolatileRead(ref float val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -112,7 +112,7 @@ namespace Svelto.Utilities
             Thread.MemoryBarrier();
 #endif
         }
-        
+
         public static void VolatileWrite(ref long var, long val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -122,7 +122,7 @@ namespace Svelto.Utilities
             Thread.MemoryBarrier();
 #endif
         }
-        
+
         public static void VolatileWrite(ref byte var, byte val)
         {
 #if NET_4_6 || NET_STANDARD_2_0 || NETSTANDARD2_0
@@ -178,7 +178,7 @@ namespace Svelto.Utilities
     public class ManualResetEventEx
     {
         readonly ManualResetEvent _manualReset = new ManualResetEvent(false);
-        
+
         public void Wait()
         {
             _manualReset.WaitOne();

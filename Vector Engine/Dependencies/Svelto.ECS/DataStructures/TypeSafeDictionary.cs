@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.ECS.Internal
 {
     public interface ITypeSafeDictionary
     {
-        int                 Count { get; }
+        int Count { get; }
         ITypeSafeDictionary Create();
 
         void RemoveEntitiesFromEngines(
@@ -32,17 +32,17 @@ namespace Svelto.ECS.Internal
     class TypeSafeDictionary<TValue> : FasterDictionary<uint, TValue>,
         ITypeSafeDictionary where TValue : struct, IEntityStruct
     {
-        static readonly Type   _type     = typeof(TValue);
+        static readonly Type _type = typeof(TValue);
         static readonly string _typeName = _type.Name;
-        static readonly bool   _hasEgid   = typeof(INeedEGID).IsAssignableFrom(_type);
-        
+        static readonly bool _hasEgid = typeof(INeedEGID).IsAssignableFrom(_type);
+
         public TypeSafeDictionary(uint size) : base(size) { }
-        public TypeSafeDictionary() {}
-        
+        public TypeSafeDictionary() { }
+
         public void AddEntitiesFromDictionary(ITypeSafeDictionary entitiesToSubmit, uint groupId)
         {
             var typeSafeDictionary = entitiesToSubmit as TypeSafeDictionary<TValue>;
-            
+
             foreach (var tuple in typeSafeDictionary)
             {
                 try
@@ -51,8 +51,8 @@ namespace Svelto.ECS.Internal
                     {
                         var needEgid = (INeedEGID)tuple.Value;
                         needEgid.ID = new EGID(tuple.Key, groupId);
-                        
-                        Add(tuple.Key, (TValue) needEgid);
+
+                        Add(tuple.Key, (TValue)needEgid);
                     }
                     else
                         Add(tuple.Key, ref tuple.Value);
@@ -73,7 +73,7 @@ namespace Svelto.ECS.Internal
             foreach (var value in this)
             {
                 var typeSafeDictionary = realDic as TypeSafeDictionary<TValue>;
-               
+
                 AddEntityViewToEngines(entityViewEnginesDB, ref typeSafeDictionary.GetValueByRef(value.Key), null,
                     in profiler);
             }
@@ -90,34 +90,34 @@ namespace Svelto.ECS.Internal
             if (toGroup != null)
             {
                 RemoveEntityViewFromEngines(engines, ref _values[valueIndex], fromEntityGid.groupID, in profiler);
-                
+
                 var toGroupCasted = toGroup as TypeSafeDictionary<TValue>;
                 ref var entity = ref _values[valueIndex];
                 var previousGroup = fromEntityGid.groupID;
-                
+
                 ///
                 /// NOTE I WOULD EVENTUALLY NEED TO REUSE THE REAL ID OF THE REMOVING ELEMENT
                 /// SO THAT I CAN DECREASE THE GLOBAL GROUP COUNT
                 /// 
-                
-          //      entity.ID = EGID.UPDATE_REAL_ID_AND_GROUP(entity.ID, toEntityID.groupID, entityCount);
-                  if (_hasEgid)
-                  {
-                      var needEgid = (INeedEGID)entity;
-                      needEgid.ID = toEntityID.Value;
-                      entity = (TValue) needEgid;
-                  }
-                
+
+                //      entity.ID = EGID.UPDATE_REAL_ID_AND_GROUP(entity.ID, toEntityID.groupID, entityCount);
+                if (_hasEgid)
+                {
+                    var needEgid = (INeedEGID)entity;
+                    needEgid.ID = toEntityID.Value;
+                    entity = (TValue)needEgid;
+                }
+
                 var index = toGroupCasted.Add(fromEntityGid.entityID, ref entity);
 
-                 AddEntityViewToEngines(engines, ref toGroupCasted._values[index], previousGroup,
-                     in profiler);
+                AddEntityViewToEngines(engines, ref toGroupCasted._values[index], previousGroup,
+                    in profiler);
             }
             else
                 RemoveEntityViewFromEngines(engines, ref _values[valueIndex], null, in profiler);
 
 
-             Remove(fromEntityGid.entityID);
+            Remove(fromEntityGid.entityID);
         }
 
         public void RemoveEntitiesFromEngines(
@@ -133,9 +133,9 @@ namespace Svelto.ECS.Internal
         public ITypeSafeDictionary Create() { return new TypeSafeDictionary<TValue>(); }
 
         void AddEntityViewToEngines(Dictionary<Type, FasterList<IEngine>> entityViewEnginesDB,
-                                    ref TValue                             entity,
-                                    ExclusiveGroup.ExclusiveGroupStruct?   previousGroup,
-                                    in PlatformProfiler                   profiler)
+                                    ref TValue entity,
+                                    ExclusiveGroup.ExclusiveGroupStruct? previousGroup,
+                                    in PlatformProfiler profiler)
         {
             //get all the engines linked to TValue
             if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines)) return;

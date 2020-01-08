@@ -23,25 +23,25 @@ namespace Svelto.ECS.Internal
                 false)
             {
                 @group = new Dictionary<Type, ITypeSafeDictionary>();
-                
+
                 groupEntityViewsByType.current.Add(groupID, @group);
             }
 
             groupEntityViewsByType.currentEntitiesCreatedPerGroup.TryGetValue(groupID, out var value);
-            groupEntityViewsByType.currentEntitiesCreatedPerGroup[groupID] = value+1;
-            
+            groupEntityViewsByType.currentEntitiesCreatedPerGroup[groupID] = value + 1;
+
             return @group;
         }
 
-        static void BuildEntitiesAndAddToGroup(EGID                                    entityID,
-                                               Dictionary<Type, ITypeSafeDictionary>   @group,
-                                               IEntityBuilder[]                        entitiesToBuild,
-                                               object[]                                implementors)
+        static void BuildEntitiesAndAddToGroup(EGID entityID,
+                                               Dictionary<Type, ITypeSafeDictionary> @group,
+                                               IEntityBuilder[] entitiesToBuild,
+                                               object[] implementors)
         {
             var count = entitiesToBuild.Length;
 #if DEBUG && !PROFILER
             HashSet<Type> types = new HashSet<Type>();
-            
+
             for (var index = 0; index < count; ++index)
             {
                 var entityViewType = entitiesToBuild[index].GetEntityType();
@@ -49,7 +49,7 @@ namespace Svelto.ECS.Internal
                 {
                     throw new ECSException("EntityBuilders must be unique inside an EntityDescriptor");
                 }
-                
+
                 types.Add(entityViewType);
             }
 #endif

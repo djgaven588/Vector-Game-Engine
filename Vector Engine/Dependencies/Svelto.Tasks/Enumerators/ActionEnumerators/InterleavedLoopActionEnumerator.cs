@@ -10,8 +10,8 @@ namespace Svelto.Tasks.Enumerators
     {
         public InterleavedLoopActionEnumerator(Action action, int intervalMS)
         {
-            _action   = action;
-            _then     = DateTime.UtcNow.AddMilliseconds(intervalMS);
+            _action = action;
+            _then = DateTime.UtcNow.AddMilliseconds(intervalMS);
             _interval = intervalMS;
         }
 
@@ -35,7 +35,7 @@ namespace Svelto.Tasks.Enumerators
         {
             _then = DateTime.UtcNow.AddMilliseconds(_interval);
         }
-        
+
         public override string ToString()
         {
             if (_name == null)
@@ -47,10 +47,10 @@ namespace Svelto.Tasks.Enumerators
 
             return _name;
         }
-        
+
         string _name;
         readonly Action _action;
-        DateTime        _then = DateTime.MaxValue;
-        readonly int    _interval;
+        DateTime _then = DateTime.MaxValue;
+        readonly int _interval;
     }
 }

@@ -1,8 +1,8 @@
 namespace Svelto.Context
 {
-	public interface IWaitForFrameworkDestruction
-	{
-		void OnFrameworkDestroyed();
-	}
+    public interface IWaitForFrameworkDestruction
+    {
+        void OnFrameworkDestroyed();
+    }
 }
 

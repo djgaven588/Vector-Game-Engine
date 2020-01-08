@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Svelto.Common;
+﻿using Svelto.Common;
 using Svelto.DataStructures;
 using Svelto.DataStructures.Experimental;
 using Svelto.ECS.Internal;
 using Svelto.ECS.Schedulers;
+using System;
+using System.Collections.Generic;
 
 namespace Svelto.ECS
 {
     public partial class EnginesRoot
     {
         readonly FasterList<EntitySubmitOperation> _transientEntitiesOperations;
-        
+
         void SubmitEntityViews()
         {
             using (var profiler = new PlatformProfiler("Svelto.ECS - Entities Submission"))
@@ -106,30 +106,30 @@ namespace Svelto.ECS
             //each group is indexed by entity view type. for each type there is a dictionary indexed by entityID
             var groupsOfEntitiesToSubmit = dbgroupsOfEntitiesToSubmit.other;
             foreach (var groupOfEntitiesToSubmit in groupsOfEntitiesToSubmit)
-            { 
+            {
                 var groupID = groupOfEntitiesToSubmit.Key;
-                
+
                 if (dbgroupsOfEntitiesToSubmit.otherEntitiesCreatedPerGroup.ContainsKey(groupID) == false) continue;
-                
+
                 //if the group doesn't exist in the current DB let's create it first
                 if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
                     groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
-                
+
                 //add the entityViews in the group
                 foreach (var entityViewsToSubmit in groupOfEntitiesToSubmit.Value)
                 {
-                    var type               = entityViewsToSubmit.Key;
+                    var type = entityViewsToSubmit.Key;
                     var typeSafeDictionary = entityViewsToSubmit.Value;
-                    
+
                     if (groupDB.TryGetValue(type, out var dbDic) == false)
                         dbDic = groupDB[type] = typeSafeDictionary.Create();
-                    
+
                     //Fill the DB with the entity views generate this frame.
                     dbDic.AddEntitiesFromDictionary(typeSafeDictionary, groupID);
 
                     if (_groupsPerEntity.TryGetValue(type, out var groupedGroup) == false)
                         groupedGroup = _groupsPerEntity[type] = new FasterDictionary<uint, ITypeSafeDictionary>();
-                    
+
                     groupedGroup[groupID] = dbDic;
                 }
             }
@@ -142,21 +142,21 @@ namespace Svelto.ECS
                 {
                     var groupID = groupToSubmit.Key;
                     var groupDB = _groupEntityDB[groupID];
-                    
+
                     foreach (var entityViewsPerType in groupToSubmit.Value)
                     {
                         var realDic = groupDB[entityViewsPerType.Key];
-                            
+
                         entityViewsPerType.Value.AddEntitiesToEngines(_reactiveEnginesAddRemove, realDic, in profiler);
                     }
                 }
             }
         }
 
-        readonly DoubleBufferedEntitiesToAdd                    _groupedEntityToAdd;
-        readonly IEntitySubmissionScheduler                     _scheduler;
+        readonly DoubleBufferedEntitiesToAdd _groupedEntityToAdd;
+        readonly IEntitySubmissionScheduler _scheduler;
         readonly FasterDictionary<ulong, EntitySubmitOperation> _entitiesOperations;
-        
+
         //temp
     }
 }

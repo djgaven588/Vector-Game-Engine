@@ -10,7 +10,7 @@ namespace Svelto.ObjectPool
         int GetNumberOfObjectsReusedSinceLastTime();
         int GetNumberOfObjectsRecycledSinceLastTime();
 
-        List<ObjectPoolDebugStructureInt>    DebugPoolInfo(List<ObjectPoolDebugStructureInt>         debugInfo);
+        List<ObjectPoolDebugStructureInt> DebugPoolInfo(List<ObjectPoolDebugStructureInt> debugInfo);
         List<ObjectPoolDebugStructureString> DebugNamedPoolInfo(List<ObjectPoolDebugStructureString> debugInfo);
     }
 
@@ -18,11 +18,11 @@ namespace Svelto.ObjectPool
     public struct ObjectPoolDebugStructureString
     {
         public string key;
-        public int    count;
+        public int count;
 
         public ObjectPoolDebugStructureString(string key, int count) : this()
         {
-            this.key   = key;
+            this.key = key;
             this.count = count;
         }
     }
@@ -35,7 +35,7 @@ namespace Svelto.ObjectPool
 
         public ObjectPoolDebugStructureInt(int key, int count) : this()
         {
-            this.key   = key;
+            this.key = key;
             this.count = count;
         }
     }

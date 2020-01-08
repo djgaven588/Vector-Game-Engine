@@ -9,7 +9,7 @@ namespace Svelto.ECS
         /// ECS systems are meant to work on a set of Entities. These methods allow to iterate over entity
         /// structs inside a given group or an array of groups
         ///////////////////////////////////////////////////
-        
+
         /// <summary>
         /// Fast and raw return of entities buffer. 
         /// </summary>
@@ -22,7 +22,7 @@ namespace Svelto.ECS
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct;
         (T1[], T2[], T3[]) QueryEntities<T1, T2, T3>(ExclusiveGroup.ExclusiveGroupStruct groupStruct, out uint count)
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct where T3 : struct, IEntityStruct;
-        
+
         /// <summary>
         /// return entities that can be iterated through the EntityCollection iterator
         /// </summary>
@@ -31,7 +31,7 @@ namespace Svelto.ECS
         /// <returns></returns>
         EntityCollection<T> QueryEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct)
             where T : struct, IEntityStruct;
-        
+
         /// <summary>
         /// return entities found in multiple groups, that can be iterated through the EntityCollection iterator
         /// This method is useful to write abstracted engines
@@ -42,7 +42,7 @@ namespace Svelto.ECS
         EntityCollections<T> QueryEntities<T>(ExclusiveGroup[] groups) where T : struct, IEntityStruct;
         EntityCollections<T1, T2> QueryEntities<T1, T2>(ExclusiveGroup[] groups)
             where T1 : struct, IEntityStruct where T2 : struct, IEntityStruct;
-        
+
         ///////////////////////////////////////////////////
         /// Query entities regardless the group
         /// these methods are necessary to create abstracted engines. Engines that can iterate over entities regardless
@@ -77,7 +77,7 @@ namespace Svelto.ECS
         /// However Because of the double hashing required to identify a specific entity, these function are slower than
         /// other query methods when used multiple times!
         ///////////////////////////////////////////////////
-        
+
         /// <summary>
         /// QueryUniqueEntity is a contract method that explicitly declare the intention to have just on entity in a
         /// specific group, usually used for GUI elements
@@ -86,7 +86,7 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         ref T QueryUniqueEntity<T>(ExclusiveGroup.ExclusiveGroupStruct group) where T : struct, IEntityStruct;
-        
+
         /// <summary>
         /// return a specific entity by reference.
         /// </summary>
@@ -118,7 +118,7 @@ namespace Svelto.ECS
         T[] QueryEntitiesAndIndex<T>(EGID entityGid, out uint index) where T : struct, IEntityStruct;
         T[] QueryEntitiesAndIndex<T>(uint id, ExclusiveGroup.ExclusiveGroupStruct group, out uint index)
             where T : struct, IEntityStruct;
-        
+
         /// <summary>
         /// Like QueryEntitiesAndIndex and only way to get an index only if exists  
         /// </summary>
@@ -130,7 +130,7 @@ namespace Svelto.ECS
         bool TryQueryEntitiesAndIndex
             <T>(uint id, ExclusiveGroup.ExclusiveGroupStruct group, out uint index, out T[] array)
             where T : struct, IEntityStruct;
-        
+
         /// <summary>
         /// this method returns a mapped version of the entity array so that is possible to work on multiple entities
         /// inside the group through their EGID. This version skip a level of indirection so it's a bit faster than
@@ -143,11 +143,11 @@ namespace Svelto.ECS
         /// <returns></returns>
         EGIDMapper<T> QueryMappedEntities<T>(ExclusiveGroup.ExclusiveGroupStruct groupStructId)
             where T : struct, IEntityStruct;
-        
+
         ///////////////////////////////////////////////////
         /// Utility methods
         ///////////////////////////////////////////////////
-        
+
         /// <summary>
         /// check if a specific entity exists
         /// </summary>
@@ -172,7 +172,7 @@ namespace Svelto.ECS
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         uint Count<T>(ExclusiveGroup.ExclusiveGroupStruct groupStruct) where T : struct, IEntityStruct;
-        
+
         ///////////////////////////////////////////////////
         /// Publish entities in the entity stream
         /// The Entity Stream is a communication mean based on the Publisher/Consumer model. The pattern is
@@ -184,23 +184,23 @@ namespace Svelto.ECS
         /// Publish an Entity Change, through the Entity Stream linked to this database
         /// Use case:
         ///   public void Add(ref ButtonEntityViewStruct buttonEntityViewStruct)
-///        {
-///            buttonEntityViewStruct.buttonClick.buttonEvent = new DispatchOnSet<ButtonEvents>(buttonEntityViewStruct.ID);
-///            
-///            buttonEntityViewStruct.buttonClick.buttonEvent.NotifyOnValueSet(_enqueueButtonChange);            
-///        }
-///
-///        public void Remove(ref ButtonEntityViewStruct buttonEntityViewStruct)
-///        {
-///            buttonEntityViewStruct.buttonClick.buttonEvent.StopNotify(_enqueueButtonChange);
-///        }
-///
-///        void EnqueueButtonChange(EGID egid, ButtonEvents value)
-///        {
-///            entitiesDB.QueryEntity<ButtonEntityStruct>(egid) = new ButtonEntityStruct(egid, value);
-///            
-///            entitiesDB.PublishEntityChange<ButtonEntityStruct>(egid);
-///        }
+        ///        {
+        ///            buttonEntityViewStruct.buttonClick.buttonEvent = new DispatchOnSet<ButtonEvents>(buttonEntityViewStruct.ID);
+        ///            
+        ///            buttonEntityViewStruct.buttonClick.buttonEvent.NotifyOnValueSet(_enqueueButtonChange);            
+        ///        }
+        ///
+        ///        public void Remove(ref ButtonEntityViewStruct buttonEntityViewStruct)
+        ///        {
+        ///            buttonEntityViewStruct.buttonClick.buttonEvent.StopNotify(_enqueueButtonChange);
+        ///        }
+        ///
+        ///        void EnqueueButtonChange(EGID egid, ButtonEvents value)
+        ///        {
+        ///            entitiesDB.QueryEntity<ButtonEntityStruct>(egid) = new ButtonEntityStruct(egid, value);
+        ///            
+        ///            entitiesDB.PublishEntityChange<ButtonEntityStruct>(egid);
+        ///        }
         /// </summary>
         /// <param name="egid"></param>
         /// <typeparam name="T"></typeparam>

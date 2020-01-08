@@ -5,7 +5,7 @@ namespace Svelto.ECS
     /// to swap and remove specialized entities from abstract engines
     /// </summary>
     /// <typeparam name="TType"></typeparam>
-    public abstract class ExtendibleEntityDescriptor<TType>:IEntityDescriptor where TType : IEntityDescriptor, new()
+    public abstract class ExtendibleEntityDescriptor<TType> : IEntityDescriptor where TType : IEntityDescriptor, new()
     {
         protected ExtendibleEntityDescriptor(IEntityBuilder[] extraEntities)
         {

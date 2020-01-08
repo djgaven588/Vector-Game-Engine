@@ -1,19 +1,14 @@
 ﻿using Svelto.ECS;
-using Svelto.ECS.Schedulers;
 using Svelto.Tasks;
-using Svelto.WeakEvents;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VectorEngine.Engine.Common
 {
     public static class VectorSchedulers
     {
-        public static VectorScheduler<IEnumerator> RenderScheduler { 
+        public static VectorScheduler<IEnumerator> RenderScheduler
+        {
             get
             {
                 if (render == null)
@@ -47,16 +42,16 @@ namespace VectorEngine.Engine.Common
 
         public static void RunRender()
         {
-            if(render != null)
+            if (render != null)
                 render.Run();
         }
 
         public static void RunUpdate()
         {
-            if(update != null)
+            if (update != null)
                 update.Run();
 
-            if(entityScheduler != null)
+            if (entityScheduler != null)
                 entityScheduler.SubmitEntities();
         }
 
@@ -112,7 +107,7 @@ namespace VectorEngine.Engine.Common
 
             foreach (ISveltoTask<T> task in runningTasks)
             {
-                if (!task.MoveNext()) 
+                if (!task.MoveNext())
                 {
                     task.Stop();
                     runningTasks.Remove(task);

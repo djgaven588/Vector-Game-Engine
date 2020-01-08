@@ -12,13 +12,13 @@ namespace Svelto.Common.Internal
         }
     }
 
-     public static class GetName<T>
-     {
-         static GetName()
-         {
-             Name = typeof(T).ToString();
-         }
-    
-         public static string Name;
-     }
+    public static class GetName<T>
+    {
+        static GetName()
+        {
+            Name = typeof(T).ToString();
+        }
+
+        public static string Name;
+    }
 }

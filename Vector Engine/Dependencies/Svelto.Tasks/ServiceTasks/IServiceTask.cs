@@ -21,13 +21,13 @@ namespace Svelto.Tasks
     public interface IServiceTask
     {
         bool isDone { get; }
-        
-        void		Execute();	
+
+        void Execute();
     }
 
     public interface IServiceTaskExceptionHandler
     {
-        Exception   throwException { get; }
+        Exception throwException { get; }
     }
 }
 

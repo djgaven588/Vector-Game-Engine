@@ -15,11 +15,16 @@ namespace Svelto.Tasks
         static UpdateMonoRunner<IEnumerator> _updateScheduler;
         static EarlyUpdateMonoRunner<IEnumerator> _earlyScheduler;
 #endif
-        
-        public static IRunner<IEnumerator> multiThreadScheduler { get { if (_multiThreadScheduler == null) _multiThreadScheduler = new MultiThreadRunner("MultiThreadRunner", false);
-            return _multiThreadScheduler;
-        } }
-        
+
+        public static IRunner<IEnumerator> multiThreadScheduler
+        {
+            get
+            {
+                if (_multiThreadScheduler == null) _multiThreadScheduler = new MultiThreadRunner("MultiThreadRunner", false);
+                return _multiThreadScheduler;
+            }
+        }
+
 #if UNITY_5 || UNITY_5_3_OR_NEWER
         public static IRunner<IEnumerator> standardScheduler 
         { 
@@ -49,12 +54,12 @@ namespace Svelto.Tasks
             (coroutineScheduler as CoroutineMonoRunner).StartYieldInstruction(instruction);
         }
 #else
-        public static IRunner<IEnumerator> standardScheduler 
-        { 
-            get 
-            { 
+        public static IRunner<IEnumerator> standardScheduler
+        {
+            get
+            {
                 return _multiThreadScheduler;
-            } 
+            }
         }
 #endif
 
@@ -65,7 +70,7 @@ namespace Svelto.Tasks
             if (_multiThreadScheduler != null && multiThreadScheduler.isKilled == false)
                 _multiThreadScheduler.Dispose();
             _multiThreadScheduler = null;
-            
+
 #if UNITY_5 || UNITY_5_3_OR_NEWER
             if (_coroutineScheduler != null)
                  _coroutineScheduler.Dispose();

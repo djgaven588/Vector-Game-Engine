@@ -1,5 +1,5 @@
-using System.Runtime.CompilerServices;
 using Svelto.ECS.Internal;
+using System.Runtime.CompilerServices;
 
 namespace Svelto.ECS
 {
@@ -12,7 +12,7 @@ namespace Svelto.ECS
         {
             return ref map.FindElement(entityID);
         }
-        
+
         public bool TryQueryEntity(uint entityID, out T @value)
         {
             if (map.TryFindIndex(entityID, out var index))

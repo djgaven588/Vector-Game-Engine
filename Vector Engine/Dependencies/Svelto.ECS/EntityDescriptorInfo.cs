@@ -7,7 +7,7 @@ namespace Svelto.ECS
 
     static class EntityDescriptorTemplate<TType> where TType : IEntityDescriptor, new()
     {
-        internal static readonly StaticEntityDescriptorInfo<TType> descriptor 
+        internal static readonly StaticEntityDescriptorInfo<TType> descriptor
             = new StaticEntityDescriptorInfo<TType>(new TType());
     }
 }

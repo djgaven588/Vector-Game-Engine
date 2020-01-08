@@ -111,11 +111,11 @@ namespace Svelto.DataStructures
             try
             {
                 int i = list.Count;
-                
-                list.ExpandBy((uint) m_Queue.Count);
+
+                list.ExpandBy((uint)m_Queue.Count);
 
                 var array = list.ToArrayFast();
-                
+
                 while (m_Queue.Count > 0)
                     array[i++] = m_Queue.Dequeue();
             }
@@ -134,7 +134,7 @@ namespace Svelto.DataStructures
                 int originalSize = m_Queue.Count;
                 while (m_Queue.Count > 0 && originalSize - m_Queue.Count < count)
                     list.Add(m_Queue.Dequeue());
-            }   
+            }
 
             finally
             {
@@ -142,7 +142,7 @@ namespace Svelto.DataStructures
             }
         }
 
-        public FasterList<U> DequeueAllAs<U>() where U:class
+        public FasterList<U> DequeueAllAs<U>() where U : class
         {
             LockQ.EnterWriteLock();
             try

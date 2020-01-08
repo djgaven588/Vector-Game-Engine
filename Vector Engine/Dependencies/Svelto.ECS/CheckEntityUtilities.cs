@@ -2,9 +2,9 @@
 #define DISABLE_CHECKS
 using System.Diagnostics;
 #endif
+using Svelto.ECS.Internal;
 using System;
 using System.Collections.Generic;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -15,9 +15,9 @@ namespace Svelto.ECS
 #endif        
         void CheckRemoveEntityID(EGID entityID, IEntityDescriptor descriptorEntity)
         {
-            
+
             var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
-            
+
             if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
             {
                 for (int i = 0; i < descriptorEntitiesToBuild.Length; i++)
@@ -66,10 +66,10 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif        
-        void CheckAddEntityID<T>(EGID entityID, T descriptorEntity) where T:IEntityDescriptor
+        void CheckAddEntityID<T>(EGID entityID, T descriptorEntity) where T : IEntityDescriptor
         {
             var descriptorEntitiesToBuild = descriptorEntity.entitiesToBuild;
-            
+
             //these are the entities added in this frame
             if (_groupEntityDB.TryGetValue(entityID.groupID, out var @group))
             {
@@ -84,7 +84,7 @@ namespace Svelto.ECS
 #if DISABLE_CHECKS        
         [Conditional("_CHECKS_DISABLED")]
 #endif        
-        static void CheckAddEntityID(EGID   entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group,
+        static void CheckAddEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group,
                                      string name)
         {
             ITypeSafeDictionary entities;

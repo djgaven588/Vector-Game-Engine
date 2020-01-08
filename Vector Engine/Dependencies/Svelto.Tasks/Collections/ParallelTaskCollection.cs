@@ -5,32 +5,32 @@ namespace Svelto.Tasks
     public class ParallelTaskCollection : ParallelTaskCollection<IEnumerator>
     {
         public ParallelTaskCollection() : base()
-        
-        {}
+
+        { }
         public ParallelTaskCollection(string name, int initialSize) : base(name, initialSize)
-        {}
-        
+        { }
+
         public ParallelTaskCollection(string name, IEnumerator[] ptasks) : base(name, ptasks)
-        {}
+        { }
 
         public ParallelTaskCollection(string name) : base(name)
-        {}
+        { }
     }
-    
-    public class ParallelTaskCollection<T>: TaskCollection<T> where T:IEnumerator
+
+    public class ParallelTaskCollection<T> : TaskCollection<T> where T : IEnumerator
     {
         const int _INITIAL_STACK_COUNT = 3;
-        
-        public  ParallelTaskCollection() : base(_INITIAL_STACK_COUNT)
-        {}
-        
-        public ParallelTaskCollection(string name):base(name, _INITIAL_STACK_COUNT)
-        {}
-        
-        public ParallelTaskCollection(string name, int initialSize) : base(name, initialSize)
-        {}
 
-        public ParallelTaskCollection(string name, T[] ptasks):base(name, ptasks.Length)
+        public ParallelTaskCollection() : base(_INITIAL_STACK_COUNT)
+        { }
+
+        public ParallelTaskCollection(string name) : base(name, _INITIAL_STACK_COUNT)
+        { }
+
+        public ParallelTaskCollection(string name, int initialSize) : base(name, initialSize)
+        { }
+
+        public ParallelTaskCollection(string name, T[] ptasks) : base(name, ptasks.Length)
         {
             for (int i = 0; i < ptasks.Length; i++)
                 Add(ptasks[i]);
@@ -67,7 +67,7 @@ namespace Svelto.Tasks
                                 //in its original state. The tasks will be shuffled, but due to the nature
                                 //of the parallel execution, it doesn't matter.
                                 index = SwapStack(index, stacks, TaskCount);
-                                _stackOffset++; 
+                                _stackOffset++;
                                 //move to the next task
                             }
                             break;
@@ -91,7 +91,7 @@ namespace Svelto.Tasks
         }
 
         protected override void ProcessTask(ref T Task)
-        {}
+        { }
 
         int SwapStack(int index, StructFriendlyStack[] buffer, int count)
         {
@@ -102,8 +102,8 @@ namespace Svelto.Tasks
 
             var item = buffer[lastIndex];
             buffer[lastIndex] = buffer[index];
-            buffer[index]     = item;
-                
+            buffer[index] = item;
+
             return --index;
         }
 

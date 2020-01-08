@@ -1,7 +1,7 @@
+using Svelto.ECS.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Svelto.ECS.Internal;
 
 namespace Svelto.ECS
 {
@@ -45,7 +45,7 @@ namespace Svelto.ECS
             T IEnumerator<T>.Current => throw new NotImplementedException();
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public void Dispose()  {}
+            public void Dispose() { }
 
             readonly T[] _array;
             readonly uint _count;
@@ -102,7 +102,7 @@ namespace Svelto.ECS
             T IEnumerator<T>.Current => throw new NotImplementedException();
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public void Dispose() {}
+            public void Dispose() { }
 
             readonly IEntitiesDB _db;
             readonly ExclusiveGroup[] _groups;
@@ -161,7 +161,7 @@ namespace Svelto.ECS
             {
                 _index = -1;
                 _indexGroup = -1;
-                
+
                 _array1 = _db.QueryEntities<T1>(_groups[0], out _count);
                 _array2 = _db.QueryEntities<T2>(_groups[0], out var count1);
 #if DEBUG && !PROFILER
@@ -170,12 +170,12 @@ namespace Svelto.ECS
 #endif
             }
 
-            public ValueRef Current => new ValueRef(_array1, _array2, (uint) _index);
+            public ValueRef Current => new ValueRef(_array1, _array2, (uint)_index);
 
             ValueRef IEnumerator<ValueRef>.Current => throw new NotImplementedException();
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public void Dispose() {}
+            public void Dispose() { }
 
             readonly IEntitiesDB _db;
             readonly ExclusiveGroup[] _groups;

@@ -6,6 +6,6 @@ namespace Svelto.ECS
     {
         public EntityNotFoundException(EGID entityGidEntityId, Type type)
             : base("entity not found ".FastConcat(type.ToString()))
-        {}
+        { }
     }
 }

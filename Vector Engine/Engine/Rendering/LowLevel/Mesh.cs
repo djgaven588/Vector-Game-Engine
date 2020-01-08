@@ -4,8 +4,8 @@ namespace VectorEngine.Core.Rendering.LowLevel
 {
     public struct Mesh
     {
-        public int VaoID        { get; private set; }
-        public int VertexCount  { get; private set; }
+        public int VaoID { get; private set; }
+        public int VertexCount { get; private set; }
 
         public Mesh(int vaoID, int vertexCount)
         {

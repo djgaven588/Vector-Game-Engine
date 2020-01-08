@@ -2,11 +2,11 @@ using System.Collections;
 
 namespace Svelto.Tasks.Enumerators
 {
-    public class WaitForSecondsEnumerator:IEnumerator
+    public class WaitForSecondsEnumerator : IEnumerator
     {
         public WaitForSecondsEnumerator(float seconds)
         {
-            _wait = new ReusableWaitForSecondsEnumerator(seconds); 
+            _wait = new ReusableWaitForSecondsEnumerator(seconds);
         }
 
         public bool MoveNext()

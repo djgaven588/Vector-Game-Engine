@@ -3,7 +3,7 @@ using System.Text;
 public static class FastConcatUtility
 {
 #if DEBUG    
-    static readonly StringBuilder _stringBuilder = new StringBuilder(256, 1024*1024);
+    static readonly StringBuilder _stringBuilder = new StringBuilder(256, 1024 * 1024);
 #else    
     static readonly StringBuilder _stringBuilder = new StringBuilder(256);
 #endif
@@ -30,7 +30,7 @@ public static class FastConcatUtility
             return _stringBuilder.ToString();
         }
     }
-    
+
     public static string FastConcat(this string str1, uint value)
     {
         lock (_stringBuilder)
@@ -42,7 +42,7 @@ public static class FastConcatUtility
             return _stringBuilder.ToString();
         }
     }
-    
+
     public static string FastConcat(this string str1, long value)
     {
         lock (_stringBuilder)
@@ -53,8 +53,8 @@ public static class FastConcatUtility
 
             return _stringBuilder.ToString();
         }
-    }    
-    
+    }
+
     public static string FastConcat(this string str1, float value)
     {
         lock (_stringBuilder)
@@ -66,7 +66,7 @@ public static class FastConcatUtility
             return _stringBuilder.ToString();
         }
     }
-    
+
     public static string FastConcat(this string str1, double value)
     {
         lock (_stringBuilder)

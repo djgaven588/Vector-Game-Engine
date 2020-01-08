@@ -198,7 +198,7 @@ namespace Svelto.ObjectPool
             return aObj == null || aObj.Equals(null);
         }
 
-        Dictionary<int, Stack<T>>    _pools      = new Dictionary<int, Stack<T>>();
+        Dictionary<int, Stack<T>> _pools = new Dictionary<int, Stack<T>>();
         Dictionary<string, Stack<T>> _namedPools = new Dictionary<string, Stack<T>>();
 
         int _objectsReused;
