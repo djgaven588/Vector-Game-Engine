@@ -8,7 +8,7 @@ using VectorEngine.Engine.Components;
 
 namespace VectorEngine.Engine.Rendering
 {
-    class RenderingEngine : IQueryingEntitiesEngine
+    public class EntityRenderingEngine : IQueryingEntitiesEngine
     {
         public IEntitiesDB entitiesDB { set; get; }
 

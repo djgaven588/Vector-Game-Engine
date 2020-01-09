@@ -16,7 +16,7 @@ namespace VectorEngine.Engine.Common.LowLevel
             IEntityFactory entityFactory = _enginesRoot.GenerateEntityFactory();
             IEntityFunctions entityFunctions = _enginesRoot.GenerateEntityFunctions();
 
-            RenderingEngine renderEngine = new RenderingEngine();
+            EntityRenderingEngine renderEngine = new EntityRenderingEngine();
 
             _enginesRoot.AddEngine(renderEngine);
 

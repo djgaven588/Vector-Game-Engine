@@ -45,8 +45,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
 
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-                // TROUBLE LINE, STILL WORKING ON IT. DOESN'T WORK ON i5 6500 integrated graphics for some reason.
-                GL.GenerateTextureMipmap(textureID);
+                GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
                 bitmap.UnlockBits(data);
 

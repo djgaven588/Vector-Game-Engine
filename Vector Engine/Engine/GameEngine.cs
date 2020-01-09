@@ -10,6 +10,7 @@ using VectorEngine.Core.Rendering.Shaders;
 using VectorEngine.Engine;
 using VectorEngine.Engine.Common;
 using VectorEngine.Engine.Common.LowLevel;
+using VectorEngine.Engine.Particles;
 
 namespace VectorEngine.Core
 {
@@ -42,6 +43,7 @@ namespace VectorEngine.Core
         public static Mesh testMesh;
         public static int treeTexture;
         private VectorCompositionRoot root;
+        private ParticleSystem testParticles;
 
         public void OnLoad(EventArgs e)
         {
@@ -82,6 +84,34 @@ namespace VectorEngine.Core
             RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
 
             root = new VectorCompositionRoot();
+
+            testParticles = new ParticleSystem(10, TestParticleGenerator, TestParticleCreator);
+            testParticles.VelocityChangeOverLifeTime(TestParticleVelocityChange);
+        }
+
+        private static float lastSpawned = 0f;
+        private static int TestParticleGenerator((int particleCount, float lifeTime) systemData)
+        {
+            if(systemData.lifeTime - lastSpawned > 0.25 && systemData.particleCount < 10)
+            {
+                lastSpawned += 0.25f;
+                return 1;
+            }
+
+            return 0;
+        }
+
+        private static Random rand = new Random();
+        private static (Vector3, Vector3, float) TestParticleCreator()
+        {
+            float orbitalPosition = (float)rand.NextDouble() * 2;
+            //return (Vector3.One, Vector3.Zero, 1);
+            return (new Vector3((float)Math.Sin(orbitalPosition), orbitalPosition, (float)Math.Cos(orbitalPosition)), Vector3.Zero, orbitalPosition);
+        }
+
+        private static Vector3 TestParticleVelocityChange(float remainingLifetime, Vector3 position)
+        {
+            return (Vector3.Zero - position) * (5 - remainingLifetime) * 5;
         }
 
         public void OnClosed(EventArgs e)
@@ -134,6 +164,8 @@ namespace VectorEngine.Core
                     camera.Rotate(new Vector3d(-80 * e.Time, 0, 0));
                 if (keyboard.IsKeyDown(Key.Z))
                     camera.Rotate(new Vector3d(80 * e.Time, 0, 0));
+                if(keyboard.IsKeyDown(Key.K))
+                    testParticles.RunUpdate((float)e.Time);
             }
         }
 
@@ -153,6 +185,7 @@ namespace VectorEngine.Core
             // Run render code here
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
             RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
+            testParticles.RenderParticles(Mathmatics.CreateTransformationMatrix(Vector3d.Zero, Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
 
             ShaderProgram.DisableShader();
 

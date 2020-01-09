@@ -210,8 +210,9 @@
     <Compile Include="Engine\Components\Transform.cs" />
     <Compile Include="Engine\Debug.cs" />
     <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="Engine\Particles\ParticleSystem.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />
-    <Compile Include="Engine\Rendering\RenderingEngine.cs" />
+    <Compile Include="Engine\Rendering\EntityRenderingEngine.cs" />
     <Compile Include="Engine\WindowHandler.cs" />
     <Compile Include="Engine\Rendering\LowLevel\RenderDataLoader.cs" />
     <Compile Include="Engine\Components\Camera.cs" />
