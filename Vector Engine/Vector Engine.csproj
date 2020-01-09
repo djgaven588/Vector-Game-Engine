@@ -213,6 +213,7 @@
     <Compile Include="Engine\Particles\ParticleSystem.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />
     <Compile Include="Engine\Rendering\EntityRenderingEngine.cs" />
+    <Compile Include="Engine\Rendering\Material.cs" />
     <Compile Include="Engine\WindowHandler.cs" />
     <Compile Include="Engine\Rendering\LowLevel\RenderDataLoader.cs" />
     <Compile Include="Engine\Components\Camera.cs" />
