@@ -10,6 +10,8 @@ namespace VectorEngine
         public const int MaxFPS = 300;
         public const bool VSyncEnabled = true;
 
+        private GameEngine engine;
+
         public static void Main(string[] args)
         {
             new EntryPoint().Start(args);
@@ -37,7 +39,7 @@ namespace VectorEngine
 
         public void Start(string[] startParameters)
         {
-            new GameEngine(startParameters, this);
+            engine = new GameEngine(startParameters, this);
 
             Debug.Log("Game engine exited. Closing!");
         }

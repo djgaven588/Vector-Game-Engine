@@ -6,7 +6,7 @@ namespace ExampleGame
     {
         private static void Main(string[] args)
         {
-            EntryPoint.Start(args);
+            EntryPoint.Main(args);
         }
     }
 }

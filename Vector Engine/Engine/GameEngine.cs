@@ -9,8 +9,7 @@ using VectorEngine.Core.Rendering.Objects;
 using VectorEngine.Core.Rendering.Shaders;
 using VectorEngine.Engine;
 using VectorEngine.Engine.Common;
-using VectorEngine.Engine.Common.LowLevel;
-using VectorEngine.Engine.Particles;
+using VectorEngine.Engine.Input;
 
 namespace VectorEngine.Core
 {
@@ -22,7 +21,7 @@ namespace VectorEngine.Core
 
         public static WindowHandler windowHandler;
 
-        private IStartEngine entryPoint;
+        private readonly IStartEngine entryPoint;
 
         public GameEngine(string[] startParameters, IStartEngine entryPoint)
         {
@@ -48,16 +47,16 @@ namespace VectorEngine.Core
         public static Mesh treeMesh;
         public static Mesh testMesh;
         public static int treeTexture;
-        private VectorCompositionRoot root;
-        private ParticleSystem testParticles;
 
         public void OnLoad(EventArgs e)
         {
             entryPoint.OnLoad();
             light = new Light(new Vector3d(-500, 500, 500), new Vector3d(1, 1, 1));
-            camera = new Camera();
-            camera.Position = new Vector3d(0, 0, 0);
-            camera.Rotation = new Vector3d(0, 0, 0);
+            camera = new Camera
+            {
+                Position = new Vector3d(0, 0, 0),
+                Rotation = new Vector3d(0, 0, 0)
+            };
 
             treeMesh = OBJLoader.LoadObjModel("Tree");
 
@@ -90,36 +89,6 @@ namespace VectorEngine.Core
             RenderEngine.Setup(staticShader);
 
             RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
-
-            root = new VectorCompositionRoot();
-
-            testParticles = new ParticleSystem(10, TestParticleGenerator, TestParticleCreator);
-            testParticles.VelocityChangeOverLifeTime(TestParticleVelocityChange);
-        }
-
-        private static float lastSpawned = 0f;
-        private static int TestParticleGenerator((int particleCount, float lifeTime) systemData)
-        {
-            if (systemData.lifeTime - lastSpawned > 0.25 && systemData.particleCount < 10)
-            {
-                lastSpawned += 0.25f;
-                return 1;
-            }
-
-            return 0;
-        }
-
-        private static Random rand = new Random();
-        private static (Vector3, Vector3, float) TestParticleCreator()
-        {
-            float orbitalPosition = (float)rand.NextDouble() * 2;
-            //return (Vector3.One, Vector3.Zero, 1);
-            return (new Vector3((float)Math.Sin(orbitalPosition), orbitalPosition, (float)Math.Cos(orbitalPosition)), Vector3.Zero, orbitalPosition);
-        }
-
-        private static Vector3 TestParticleVelocityChange(float remainingLifetime, Vector3 position)
-        {
-            return (Vector3.Zero - position) * (5 - remainingLifetime) * 5;
         }
 
         public void OnClosed(EventArgs e)
@@ -146,68 +115,20 @@ namespace VectorEngine.Core
 
         public void OnUpdateFrame(FrameEventArgs e)
         {
-            VectorSchedulers.RunUpdate();
+            InputManager.UpdateInput();
             entryPoint.OnUpdate(e.Time);
             //TODO:
             //Look at SpinWait which would replace Thread.Sleep(), which is known for being inconsistent.
-            if (windowHandler.Focused)
-            {
-                KeyboardState keyboard = Keyboard.GetState();
-                if (keyboard.IsKeyDown(Key.W))
-                {
-                    camera.MoveDirectionBased(new Vector3d(0, 0, -10 * e.Time));
-                }
+            double xAxis = InputManager.IsKeyDown(Key.D) && !InputManager.IsKeyDown(Key.A) ? 1 : !InputManager.IsKeyDown(Key.D) && InputManager.IsKeyDown(Key.A) ? -1 : 0;
+            double yAxis = InputManager.IsKeyDown(Key.Space) && !InputManager.IsKeyDown(Key.ShiftLeft) ? 1 : !InputManager.IsKeyDown(Key.Space) && InputManager.IsKeyDown(Key.ShiftLeft) ? -1 : 0;
+            double zAxis = -(InputManager.IsKeyDown(Key.W) && !InputManager.IsKeyDown(Key.S) ? 1 : !InputManager.IsKeyDown(Key.W) && InputManager.IsKeyDown(Key.S) ? -1 : 0);
 
-                if (keyboard.IsKeyDown(Key.A))
-                {
-                    camera.MoveDirectionBased(new Vector3d(10 * e.Time, 0, 0));
-                }
+            double yRotation = InputManager.IsKeyDown(Key.E) && !InputManager.IsKeyDown(Key.Q) ? 1 : !InputManager.IsKeyDown(Key.E) && InputManager.IsKeyDown(Key.Q) ? -1 : 0;
+            double xRotation = InputManager.IsKeyDown(Key.Z) && !InputManager.IsKeyDown(Key.X) ? 1 : !InputManager.IsKeyDown(Key.Z) && InputManager.IsKeyDown(Key.X) ? -1 : 0;
 
-                if (keyboard.IsKeyDown(Key.S))
-                {
-                    camera.MoveDirectionBased(new Vector3d(0, 0, 10 * e.Time));
-                }
+            camera.Rotation += new Vector3d(xRotation, yRotation, 0) * 90 * e.Time;
 
-                if (keyboard.IsKeyDown(Key.D))
-                {
-                    camera.MoveDirectionBased(new Vector3d(-10 * e.Time, 0, 0));
-                }
-
-                if (keyboard.IsKeyDown(Key.Space))
-                {
-                    camera.Position += new Vector3d(0, 10 * e.Time, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.ShiftLeft))
-                {
-                    camera.Position += new Vector3d(0, -10 * e.Time, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.Q))
-                {
-                    camera.Rotation += new Vector3d(0, -80 * e.Time, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.E))
-                {
-                    camera.Rotation += new Vector3d(0, 80 * e.Time, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.X))
-                {
-                    camera.Rotation += new Vector3d(-80 * e.Time, 0, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.Z))
-                {
-                    camera.Rotation += new Vector3d(80 * e.Time, 0, 0);
-                }
-
-                if (keyboard.IsKeyDown(Key.K))
-                {
-                    testParticles.RunUpdate((float)e.Time);
-                }
-            }
+            camera.MoveDirectionBased(new Vector3d(xAxis, yAxis, zAxis) * 10 * e.Time);
         }
 
         public void OnRenderFrame(FrameEventArgs e)
@@ -221,12 +142,10 @@ namespace VectorEngine.Core
             staticShader.LoadViewMatrix(camera);
             staticShader.LoadLight(light);
 
-            VectorSchedulers.RunRender();
             entryPoint.OnRender(e.Time);
             // Run render code here
             RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
             RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
-            testParticles.RenderParticles(Mathmatics.CreateTransformationMatrix(Vector3d.Zero, Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
 
             staticShader.DisableShader();
 

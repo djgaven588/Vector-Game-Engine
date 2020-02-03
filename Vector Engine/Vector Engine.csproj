@@ -46,10 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Dependencies\Svelto.ECS\EntityBuilder.cs.rej" />
-    <None Include="Dependencies\Svelto.ECS\LICENSE" />
-    <None Include="Dependencies\Svelto.ECS\README.md" />
-    <None Include="Dependencies\Svelto.ECS\Svelto.ECS.asmdef" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -67,154 +63,13 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dependencies\Svelto.Common\Command\CommandFactory.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Command\ICommand.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Command\ICommandFactory.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Command\IInjectableCommand.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\ContextNotifier.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\ICompositionRoot.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\IContextNotifer.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkDestruction.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Context\IWaitForFrameworkInitialization.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\CircularBufferIndexer.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterDictionary.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\FasterList.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\HashableWeakReference.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\HashHelpers.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\LockFreeQueue.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyCollectionStruct.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\ReadOnlyDictionary.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\RingBuffer.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeDictionary.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\ThreadSafeQueue.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DataStructures\WeakReference.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DBC.cs" />
-    <Compile Include="Dependencies\Svelto.Common\DebugExtensions.cs" />
-    <Compile Include="Dependencies\Svelto.Common\ObjectPool\IObjectPool.cs" />
-    <Compile Include="Dependencies\Svelto.Common\ObjectPool\IObjectPoolDebug.cs" />
-    <Compile Include="Dependencies\Svelto.Common\ObjectPool\ObjectPool.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Observer\Observable.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Observer\Observer.cs" />
-    <Compile Include="Dependencies\Svelto.Common\PlatformProfiler\PlatformProfiler.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\ActionRef.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\Console.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\DataToString.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\FastConcatUtility.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\FastInvoke.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\ILogger.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\Murmur3.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\NetFXCoreWrappers.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\SimpleLogger.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\SlowLoggerUnity.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\ThreadUtility.cs" />
-    <Compile Include="Dependencies\Svelto.Common\Utilities\TypeToString.cs" />
-    <Compile Include="Dependencies\Svelto.Common\WeakEvents\SafeEvent.cs" />
-    <Compile Include="Dependencies\Svelto.Common\WeakEvents\WeakAction.cs" />
-    <Compile Include="Dependencies\Svelto.Common\WeakEvents\WeakEvent.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\CheckEntityUtilities.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionary.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\DataStructures\TypeSafeDictionaryException.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\DBC.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Dispatcher\DispatchOnChange.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Dispatcher\DispatchOnSet.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\DynamicEntityDescriptor.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ECSException.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EGID.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EGIDMapper.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.DoubleBufferedEntityViews.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Engines.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Entities.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.GenericEntityFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.GenericEntityFunctions.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EnginesRoot.Submission.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntitiesDB.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.CheckFields.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityBuilder.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityCollection.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityDescriptorInfo.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityGroupNotFoundException.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityHierarchyStruct.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityInfoView.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityNotFoundException.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityStream.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityStructInitializer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntitySubmissionScheduler.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntitySubmitOperation.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityView.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\EntityViewUtility.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ExclusiveGroup.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ExecuteOnEntitiesDB.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\ExtendibleEntityDescriptor.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\GenericEntityDescriptor.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\GenericentityStreamConsumerFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEngine.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntitiesDB.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntityBuilder.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntityDescriptorHolder.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntityFactory.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntityFunctions.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IEntityStruct.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IQueryingEntitiesEngine.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IReactOnAddAndRemove.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\IReactOnSwap.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\Sequencer.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\SimpleSubmissionEntityViewScheduler.cs" />
-    <Compile Include="Dependencies\Svelto.ECS\StaticEntityDescriptorInfo.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\BreakIt.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Collections\ParallelTaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Collections\SerialTaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Collections\TaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Collections\TaskCollection.StructFriendlyStack.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\ContinuationWrapperPool.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\DBC.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ActionEnumerators\InterleavedLoopActionEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ActionEnumerators\SmartFunctionEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ActionEnumerators\TimedLoopFunctionEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\EnumeratorWithProgress.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ExceptionHandlingEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\ReusableWaitForSecondsEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\TaskServiceEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\WaitForSecondsEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Enumerators\WaitForSignalEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\ITaskRoutine.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Parallelism\ISveltoJob.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Parallelism\MultiThreadedParallelTaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Parallelism\ParallelRunEnumerator.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\Editor\TaskProfiler\ProfilerEditorLayout.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\Editor\TaskProfiler\TaskProfilerMenuItem.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\Editor\TaskProfiler\TasksMonitor.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\Editor\TaskProfiler\TasksProfilerInspector.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\Pix\PIXWrapper.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\TaskInfo.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\TaskProfiler.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Profiler\TasksProfilerBehaviour.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\IRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\MultiThreadRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\Runners\SyncRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\ServiceTasks\IServiceTask.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\StandardSchedulers.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\SveltoTask.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\SveltoTasksPool.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TaskRunner.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TaskRunnerExtensions.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TasksChain\ITaskChain.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TasksChain\ParallelTaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TasksChain\SerialTaskCollection.cs" />
-    <Compile Include="Dependencies\Svelto.Tasks\TaskYieldsIEnumerableException.cs" />
-    <Compile Include="Engine\Common\ExclusiveGroups.cs" />
+    <Compile Include="Engine\Common\GameLayer.cs" />
     <Compile Include="Engine\Common\IStartEngine.cs" />
-    <Compile Include="Engine\Common\LowLevel\VectorCompositionRoot.cs" />
     <Compile Include="Engine\Common\Mathmatics.cs" />
-    <Compile Include="Engine\Common\VectorSchedulers.cs" />
-    <Compile Include="Engine\Components\RendersMesh.cs" />
-    <Compile Include="Engine\Components\Transform.cs" />
     <Compile Include="Engine\Debug.cs" />
     <Compile Include="Engine\GameEngine.cs" />
     <Compile Include="Engine\Input\InputManager.cs" />
-    <Compile Include="Engine\Particles\ParticleSystem.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />
-    <Compile Include="Engine\Rendering\EntityRenderingEngine.cs" />
     <Compile Include="Engine\Rendering\Material.cs" />
     <Compile Include="Engine\WindowHandler.cs" />
     <Compile Include="Engine\Rendering\LowLevel\RenderDataLoader.cs" />
@@ -227,7 +82,6 @@
     <Compile Include="EntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Dependencies\Svelto.ECS\Svelto.ECS.csproj" />
     <Content Include="Engine\Rendering\Shaders\FragmentShader.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -235,7 +89,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets" Condition="Exists('..\packages\BulletSharp.0.11.1\build\net40-client\BulletSharp.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

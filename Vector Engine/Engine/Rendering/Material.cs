@@ -44,6 +44,15 @@ namespace VectorEngine.Engine.Rendering
             UsesViewMatrix = viewBased;
             UsesTime = useTime;
             Shader = shader;
+
+            if (InstancedMaterial)
+            {
+                instancedUniformLocations = new Dictionary<string, int>();
+            }
+            else
+            {
+                staticUniformLocations = new Dictionary<string, int>();
+            }
         }
 
         /// <summary>

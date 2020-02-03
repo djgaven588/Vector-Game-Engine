@@ -13,8 +13,8 @@ namespace VectorEngine.Core.Rendering.LowLevel
         private static Matrix4 projectionMatrix;
         private static StaticShader staticShader;
         private static double timeSinceStart;
-        private static Queue<Light> lights = new Queue<Light>();
-        private static Queue<Camera> cameras = new Queue<Camera>();
+        private static readonly Queue<Light> lights = new Queue<Light>();
+        private static readonly Queue<Camera> cameras = new Queue<Camera>();
 
         private static Queue<(Material, Queue<(Mesh, Queue<Matrix4>)>)> renderingQueue = new Queue<(Material, Queue<(Mesh, Queue<Matrix4>)>)>();
 

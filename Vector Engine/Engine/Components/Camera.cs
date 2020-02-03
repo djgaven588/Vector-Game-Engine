@@ -26,8 +26,7 @@ namespace VectorEngine.Core.Rendering.Objects
 
         public void MoveDirectionBased(Vector3d movement)
         {
-            Vector3d toAdd = (Vector3d)(Quaternion.FromEulerAngles(0, (float)Mathmatics.ConvertToRadians(Rotation.Y), 0) * (Vector3)movement);
-            toAdd.X = -toAdd.X;
+            Vector3d toAdd = (Vector3d)(Quaternion.FromEulerAngles(0, (float)Mathmatics.ConvertToRadians(-Rotation.Y), 0) * (Vector3)movement);
             Position += toAdd;
         }
     }
