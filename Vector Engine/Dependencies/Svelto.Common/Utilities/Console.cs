@@ -51,7 +51,9 @@ namespace Svelto
             for (int i = 0; i < _loggers.Count; i++)
             {
                 if (_loggers[i].IsValid == true)
+                {
                     _loggers[i].Target.Log(txt, type, e, extraData);
+                }
                 else
                 {
                     _loggers.UnorderedRemoveAt(i);
@@ -90,7 +92,9 @@ namespace Svelto
         public static void LogException(string message, Exception e, Dictionary<string, string> extraData = null)
         {
             if (extraData == null)
+            {
                 extraData = new Dictionary<string, string>();
+            }
 
             string toPrint;
 

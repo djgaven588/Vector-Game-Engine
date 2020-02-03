@@ -55,7 +55,9 @@ namespace Svelto.ECS.Internal
                         Add(tuple.Key, (TValue)needEgid);
                     }
                     else
+                    {
                         Add(tuple.Key, ref tuple.Value);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -114,8 +116,9 @@ namespace Svelto.ECS.Internal
                     in profiler);
             }
             else
+            {
                 RemoveEntityViewFromEngines(engines, ref _values[valueIndex], null, in profiler);
-
+            }
 
             Remove(fromEntityGid.entityID);
         }
@@ -127,7 +130,9 @@ namespace Svelto.ECS.Internal
             var values = GetValuesArray(out var count);
 
             for (var i = 0; i < count; i++)
+            {
                 RemoveEntityViewFromEngines(entityViewEnginesDB, ref values[i], null, in profiler);
+            }
         }
 
         public ITypeSafeDictionary Create() { return new TypeSafeDictionary<TValue>(); }
@@ -138,11 +143,15 @@ namespace Svelto.ECS.Internal
                                     in PlatformProfiler profiler)
         {
             //get all the engines linked to TValue
-            if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines)) return;
+            if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines))
+            {
+                return;
+            }
 
             if (previousGroup == null)
             {
                 for (var i = 0; i < entityViewsEngines.Count; i++)
+                {
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
@@ -155,10 +164,12 @@ namespace Svelto.ECS.Internal
                         throw new ECSException(
                             "Code crashed inside Add callback ".FastConcat(typeof(TValue).ToString()), e);
                     }
+                }
             }
             else
             {
                 for (var i = 0; i < entityViewsEngines.Count; i++)
+                {
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
@@ -171,6 +182,7 @@ namespace Svelto.ECS.Internal
                         throw new ECSException(
                             "Code crashed inside Add callback ".FastConcat(typeof(TValue).ToString()), e);
                     }
+                }
             }
         }
 
@@ -178,35 +190,46 @@ namespace Svelto.ECS.Internal
             Dictionary<Type, FasterList<IEngine>> entityViewEnginesDB, ref TValue entity,
             ExclusiveGroup.ExclusiveGroupStruct? previousGroup, in PlatformProfiler profiler)
         {
-            if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines)) return;
+            if (!entityViewEnginesDB.TryGetValue(_type, out var entityViewsEngines))
+            {
+                return;
+            }
 
             if (previousGroup == null)
             {
                 for (var i = 0; i < entityViewsEngines.Count; i++)
+                {
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
+                        {
                             (entityViewsEngines[i] as IReactOnAddAndRemove<TValue>).Remove(ref entity);
+                        }
                     }
                     catch (Exception e)
                     {
                         throw new ECSException(
                             "Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()), e);
                     }
+                }
             }
             else
             {
                 for (var i = 0; i < entityViewsEngines.Count; i++)
+                {
                     try
                     {
                         using (profiler.Sample(entityViewsEngines[i], _typeName))
+                        {
                             (entityViewsEngines[i] as IReactOnSwap<TValue>).MovedFrom(ref entity);
+                        }
                     }
                     catch (Exception e)
                     {
                         throw new ECSException(
                             "Code crashed inside Remove callback ".FastConcat(typeof(TValue).ToString()), e);
                     }
+                }
             }
         }
 
@@ -215,7 +238,9 @@ namespace Svelto.ECS.Internal
         {
 #if DEBUG && !PROFILER         
             if (TryFindIndex(entityGidEntityId, out var findIndex) == false)
+            {
                 throw new Exception("Entity not found in this group ".FastConcat(typeof(TValue).ToString()));
+            }
 #else
             TryFindIndex(entityGidEntityId, out var findIndex);
 #endif

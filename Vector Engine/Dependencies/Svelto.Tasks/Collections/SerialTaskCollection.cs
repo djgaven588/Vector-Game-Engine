@@ -45,7 +45,9 @@ namespace Svelto.Tasks
                     {
                         case TaskState.doneIt:
                             if (listBuffer[_stackOffset].count > 1) //there is still something to do with this task
+                            {
                                 listBuffer[_stackOffset].Pop(); //now it can be popped, we continue the iteration
+                            }
                             else
                             {
                                 //in order to be able to reuse the task collection, we will keep the stack 

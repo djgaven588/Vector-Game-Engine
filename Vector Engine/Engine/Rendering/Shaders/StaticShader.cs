@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics.OpenGL4;
 using VectorEngine.Core.Common;
 using VectorEngine.Core.Rendering.Objects;
 
@@ -14,10 +15,11 @@ namespace VectorEngine.Core.Rendering.Shaders
         private int location_viewMatrix;
         private int location_lightPosition;
         private int location_lightColor;
+        private int textureId;
 
-        public StaticShader() : base(VERTEX_FILE, FRAGMENT_FILE)
+        public StaticShader(int textureId) : base(VERTEX_FILE, FRAGMENT_FILE)
         {
-
+            this.textureId = textureId;
         }
 
         protected override void BindAttributes()
@@ -53,8 +55,29 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public void LoadLight(Light light)
         {
-            LoadVector(location_lightPosition, (Vector3)light.getPosition());
-            LoadVector(location_lightColor, (Vector3)light.getColor());
+            LoadVector(location_lightPosition, (Vector3)light.Position);
+            LoadVector(location_lightColor, (Vector3)light.Position);
+        }
+
+        public override void BeforeRenderShader()
+        {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, textureId);
+        }
+
+        public override void BeforeRenderObject()
+        {
+
+        }
+
+        public override void AfterRenderObject()
+        {
+
+        }
+
+        public override void AfterRenderShader()
+        {
+
         }
     }
 }

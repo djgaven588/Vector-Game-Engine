@@ -26,7 +26,9 @@ namespace Svelto.ECS
                 }
 
                 if (dictionary.TryFindIndex(ID.entityID, out var findElementIndex))
+                {
                     dictionary.GetDirectValue(findElementIndex) = initializer;
+                }
             }
         }
 

@@ -258,7 +258,9 @@ namespace Svelto.DataStructures
             {
                 // take a writelock immediately since we will always be writing
                 if (dict.ContainsKey(key))
+                {
                     dict.Remove(key);
+                }
 
                 dict.Add(key, newValue);
             }
@@ -278,7 +280,10 @@ namespace Svelto.DataStructures
             try
             {
                 if (dict.ContainsKey(key))
+                {
                     LockQ.EnterWriteLock();
+                }
+
                 try
                 {
                     dict.Remove(key);

@@ -177,7 +177,11 @@ namespace Svelto.DataStructures
     {
         public FasterListThreadSafe(FasterList<T> list)
         {
-            if (list == null) throw new ArgumentException("invalid list");
+            if (list == null)
+            {
+                throw new ArgumentException("invalid list");
+            }
+
             _list = list;
             _lockQ = new ReaderWriterLockSlim();
         }
@@ -586,7 +590,9 @@ namespace Svelto.DataStructures
         public void Add(T item)
         {
             if (_count == _buffer.Length)
+            {
                 AllocateMore();
+            }
 
             _buffer[_count++] = item;
         }
@@ -594,7 +600,9 @@ namespace Svelto.DataStructures
         public void AddRef(ref T item)
         {
             if (_count == _buffer.Length)
+            {
                 AllocateMore();
+            }
 
             _buffer[_count++] = item;
         }
@@ -620,7 +628,9 @@ namespace Svelto.DataStructures
             if (typeof(U).IsClass)
             {
                 for (int i = 0; i < initialSize; i++)
+                {
                     list._buffer[(uint)(i)] = new U();
+                }
             }
 
             return list;
@@ -643,10 +653,14 @@ namespace Svelto.DataStructures
         public void AddRange(IEnumerator<T> items, uint count)
         {
             if (_count + count > _buffer.Length)
+            {
                 AllocateMore(_count + count);
+            }
 
             while (items.MoveNext())
+            {
                 _buffer[_count++] = items.Current;
+            }
         }
 
         public void AddRange(ICollection<T> items)
@@ -661,10 +675,15 @@ namespace Svelto.DataStructures
 
         public void AddRange(T[] items, uint count)
         {
-            if (count == 0) return;
+            if (count == 0)
+            {
+                return;
+            }
 
             if (_count + count > _buffer.Length)
+            {
                 AllocateMore(_count + count);
+            }
 
             Array.Copy(items, 0, _buffer, _count, count);
             _count += count;
@@ -688,10 +707,12 @@ namespace Svelto.DataStructures
         {
 #if DEBUG && !PROFILER
             if (typeof(T).IsClass)
+            {
                 Svelto.Console.LogWarning(
                     "Warning: objects held by this list won't be garbage collected. Use ResetToReuse or Clear " +
                     "to avoid this warning");
-#endif            
+            }
+#endif
             _count = 0;
         }
 
@@ -705,7 +726,9 @@ namespace Svelto.DataStructures
             result = null;
 
             if (_count >= _buffer.Length)
+            {
                 return false;
+            }
 
             result = (U)_buffer[_count];
 
@@ -722,7 +745,9 @@ namespace Svelto.DataStructures
         public bool ReuseOneSlot()
         {
             if (_count >= _buffer.Length)
+            {
                 return false;
+            }
 
             _count++;
 
@@ -758,8 +783,12 @@ namespace Svelto.DataStructures
             var comp = EqualityComparer<T>.Default;
 
             for (var index = 0; index < _count; index++)
+            {
                 if (comp.Equals(_buffer[index], item))
+                {
                     return index;
+                }
+            }
 
             return -1;
         }
@@ -768,7 +797,10 @@ namespace Svelto.DataStructures
         {
             DBC.Common.Check.Require(index < _count, "out of bound index");
 
-            if (_count == _buffer.Length) AllocateMore();
+            if (_count == _buffer.Length)
+            {
+                AllocateMore();
+            }
 
             Array.Copy(_buffer, index, _buffer, index + 1, _count - index);
 
@@ -787,7 +819,9 @@ namespace Svelto.DataStructures
             var index = IndexOf(item);
 
             if (index == -1)
+            {
                 return false;
+            }
 
             RemoveAt(index);
 
@@ -799,7 +833,9 @@ namespace Svelto.DataStructures
             DBC.Common.Check.Require(index < _count, "out of bound index");
 
             if (index == --_count)
+            {
                 return;
+            }
 
             Array.Copy(_buffer, index + 1, _buffer, index, _count - index);
 
@@ -808,10 +844,15 @@ namespace Svelto.DataStructures
 
         public void Resize(uint newSize)
         {
-            if (newSize == _buffer.Length) return;
+            if (newSize == _buffer.Length)
+            {
+                return;
+            }
 
             if (newSize < MIN_SIZE)
+            {
                 newSize = MIN_SIZE;
+            }
 
             Array.Resize(ref _buffer, (int)newSize);
         }
@@ -850,7 +891,9 @@ namespace Svelto.DataStructures
             var index = IndexOf(item);
 
             if (index == -1)
+            {
                 return false;
+            }
 
             UnorderedRemoveAt(index);
 
@@ -886,7 +929,11 @@ namespace Svelto.DataStructures
         void AllocateMore()
         {
             var newList = new T[(_buffer.Length + 1) << 1];
-            if (_count > 0) _buffer.CopyTo(newList, 0);
+            if (_count > 0)
+            {
+                _buffer.CopyTo(newList, 0);
+            }
+
             _buffer = newList;
         }
 
@@ -896,17 +943,25 @@ namespace Svelto.DataStructures
             var newLength = Math.Max(_buffer.Length, 1);
 
             while (newLength < newSize)
+            {
                 newLength <<= 1;
+            }
 
             var newList = new T[newLength];
-            if (_count > 0) Array.Copy(_buffer, newList, _count);
+            if (_count > 0)
+            {
+                Array.Copy(_buffer, newList, _count);
+            }
+
             _buffer = newList;
         }
 
         public void Trim()
         {
             if (_count < _buffer.Length)
+            {
                 Resize(_count);
+            }
         }
 
         public void TrimCount(uint newCount)
@@ -926,7 +981,9 @@ namespace Svelto.DataStructures
             uint count = _count + increment;
 
             if (_buffer.Length < count)
+            {
                 AllocateMore(count);
+            }
 
             _count = count;
         }
@@ -934,10 +991,14 @@ namespace Svelto.DataStructures
         public void Expand(uint newSize)
         {
             if (_buffer.Length < newSize)
+            {
                 AllocateMore(newSize);
+            }
 
             if (_count < newSize)
+            {
                 _count = newSize;
+            }
         }
 
         T[] _buffer;

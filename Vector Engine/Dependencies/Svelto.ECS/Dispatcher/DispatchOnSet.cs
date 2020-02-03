@@ -19,7 +19,9 @@ namespace Svelto.ECS
                 _value = value;
 
                 if (_paused == false)
+                {
                     _subscribers.Invoke(_senderID, value);
+                }
             }
         }
 

@@ -10,7 +10,7 @@ namespace Svelto.Tasks
             int _nextFreeStackIndex;
 
             public bool isValid() { return _stack != null; }
-            public int count { get { return _nextFreeStackIndex; } }
+            public int count => _nextFreeStackIndex;
 
             public StructFriendlyStack(int stackSize)
             {
@@ -34,7 +34,9 @@ namespace Svelto.Tasks
             public T Pop()
             {
                 if (_nextFreeStackIndex == 0)
+                {
                     throw new InvalidOperationException("The stack is empty");
+                }
 
                 // Decrease the reference before fetching the value as
                 // the reference points to the next free place

@@ -35,13 +35,17 @@ namespace Svelto.ObjectPool
         public void Preallocate(string poolName, int size, Func<T> onFirstUse)
         {
             for (int i = size - 1; i >= 0; --i)
+            {
                 Create(poolName, onFirstUse);
+            }
         }
 
         public void Preallocate(int pool, int size, Func<T> onFirstUse)
         {
             for (int i = size - 1; i >= 0; --i)
+            {
                 Create(pool, onFirstUse);
+            }
         }
 
         public T Use(string poolName, Func<T> onFirstUse)
@@ -103,7 +107,9 @@ namespace Svelto.ObjectPool
         {
 #if DEBUG
             if (alreadyRecycled.Add(obj) == false)
+            {
                 throw new Exception("An object already Recycled in the pool has been Recycled again");
+            }
 #endif
             DBC.Common.Check.Assert(_pools.ContainsKey(pool) == true,
                              "Cannot recycle object without being preallocated or used");
@@ -117,7 +123,9 @@ namespace Svelto.ObjectPool
         {
 #if DEBUG
             if (alreadyRecycled.Add(obj) == false)
+            {
                 throw new Exception("An object already Recycled in the pool has been Recycled again");
+            }
 #endif
             DBC.Common.Check.Assert(_namedPools.ContainsKey(poolName) == true,
                              "Cannot recycle object without being preallocated or used");
@@ -151,20 +159,22 @@ namespace Svelto.ObjectPool
 
         Stack<T> ReturnValidPool(int pool)
         {
-            Stack<T> localPool;
 
-            if (_pools.TryGetValue(pool, out localPool) == false)
+            if (_pools.TryGetValue(pool, out Stack<T> localPool) == false)
+            {
                 _pools[pool] = localPool = new Stack<T>();
+            }
 
             return localPool;
         }
 
         Stack<T> ReturnValidPool(string poolName)
         {
-            Stack<T> localPool;
 
-            if (_namedPools.TryGetValue(poolName, out localPool) == false)
+            if (_namedPools.TryGetValue(poolName, out Stack<T> localPool) == false)
+            {
                 localPool = _namedPools[poolName] = new Stack<T>();
+            }
 
             return localPool;
         }
@@ -174,7 +184,9 @@ namespace Svelto.ObjectPool
             T obj = null;
 
             while (IsNull(obj) == true && pool.Count > 0)
+            {
                 obj = pool.Pop();
+            }
 
             if (IsNull(obj) == true)
             {
@@ -211,7 +223,9 @@ namespace Svelto.ObjectPool
             debugInfo.Clear();
 
             for (var enumerator = _pools.GetEnumerator(); enumerator.MoveNext();)
+            {
                 debugInfo.Add(new ObjectPoolDebugStructureInt(enumerator.Current.Key, enumerator.Current.Value.Count));
+            }
 
             return debugInfo;
         }
@@ -221,8 +235,10 @@ namespace Svelto.ObjectPool
             debugInfo.Clear();
 
             for (var enumerator = _namedPools.GetEnumerator(); enumerator.MoveNext();)
+            {
                 debugInfo.Add(new ObjectPoolDebugStructureString(enumerator.Current.Key,
                                                                  enumerator.Current.Value.Count));
+            }
 
             return debugInfo;
         }

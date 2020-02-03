@@ -73,8 +73,7 @@ namespace Svelto.DataStructures
             SingleLinkNode<T> oldTail = null;
             SingleLinkNode<T> oldTailNext;
 
-            SingleLinkNode<T> newNode;
-            if (!trash.Pop(out newNode))
+            if (!trash.Pop(out SingleLinkNode<T> newNode))
             {
                 newNode = new SingleLinkNode<T>();
             }
@@ -93,9 +92,13 @@ namespace Svelto.DataStructures
                 if (tail == oldTail)
                 {
                     if (oldTailNext == null)
+                    {
                         newNodeWasAdded = SyncMethods.CAS<SingleLinkNode<T>>(ref tail.Next, null, newNode);
+                    }
                     else
+                    {
                         SyncMethods.CAS<SingleLinkNode<T>>(ref tail, oldTail, oldTailNext);
+                    }
                 }
             }
             SyncMethods.CAS<SingleLinkNode<T>>(ref tail, oldTail, newNode);

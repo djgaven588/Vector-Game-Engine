@@ -39,7 +39,7 @@ namespace Svelto.Tasks.Enumerators
             _init = false;
         }
 
-        public object Current { get { return null; } }
+        public object Current => null;
 
         DateTime _future;
         float _seconds;

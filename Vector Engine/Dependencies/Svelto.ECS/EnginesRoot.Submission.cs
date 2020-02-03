@@ -45,10 +45,14 @@ namespace Svelto.ECS
                                         break;
                                     case EntitySubmitOperationType.RemoveGroup:
                                         if (entitiesOperations[i].entityDescriptor == null)
+                                        {
                                             RemoveGroupAndEntitiesFromDB(entitiesOperations[i].fromID.groupID);
+                                        }
                                         else
+                                        {
                                             RemoveGroupAndEntitiesFromDB(entitiesOperations[i].fromID.groupID,
                                                                          entitiesOperations[i].entityDescriptor);
+                                        }
 
                                         break;
                                 }
@@ -109,11 +113,16 @@ namespace Svelto.ECS
             {
                 var groupID = groupOfEntitiesToSubmit.Key;
 
-                if (dbgroupsOfEntitiesToSubmit.otherEntitiesCreatedPerGroup.ContainsKey(groupID) == false) continue;
+                if (dbgroupsOfEntitiesToSubmit.otherEntitiesCreatedPerGroup.ContainsKey(groupID) == false)
+                {
+                    continue;
+                }
 
                 //if the group doesn't exist in the current DB let's create it first
                 if (_groupEntityDB.TryGetValue(groupID, out var groupDB) == false)
+                {
                     groupDB = _groupEntityDB[groupID] = new Dictionary<Type, ITypeSafeDictionary>();
+                }
 
                 //add the entityViews in the group
                 foreach (var entityViewsToSubmit in groupOfEntitiesToSubmit.Value)
@@ -122,13 +131,17 @@ namespace Svelto.ECS
                     var typeSafeDictionary = entityViewsToSubmit.Value;
 
                     if (groupDB.TryGetValue(type, out var dbDic) == false)
+                    {
                         dbDic = groupDB[type] = typeSafeDictionary.Create();
+                    }
 
                     //Fill the DB with the entity views generate this frame.
                     dbDic.AddEntitiesFromDictionary(typeSafeDictionary, groupID);
 
                     if (_groupsPerEntity.TryGetValue(type, out var groupedGroup) == false)
+                    {
                         groupedGroup = _groupsPerEntity[type] = new FasterDictionary<uint, ITypeSafeDictionary>();
+                    }
 
                     groupedGroup[groupID] = dbDic;
                 }

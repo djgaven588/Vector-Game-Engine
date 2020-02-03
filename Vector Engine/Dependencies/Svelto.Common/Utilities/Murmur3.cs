@@ -47,9 +47,15 @@ namespace Svelto.Utilities
             uint tailLength = length & 3;
 
             if (tailLength == 3)
+            {
                 k1 ^= (uint)data[2 + nblocks] << 16;
+            }
+
             if (tailLength >= 2)
+            {
                 k1 ^= (uint)data[1 + nblocks] << 8;
+            }
+
             if (tailLength >= 1)
             {
                 k1 ^= data[nblocks];

@@ -47,15 +47,21 @@ namespace Svelto.ECS
             try
             {
                 if (engine is IReactOnAddAndRemove viewEngine)
+                {
                     CheckEntityViewsEngine<IReactOnAddAndRemove>(viewEngine, _reactiveEnginesAddRemove);
+                }
 
                 if (engine is IReactOnSwap viewEngineSwap)
+                {
                     CheckEntityViewsEngine<IReactOnSwap>(viewEngineSwap, _reactiveEnginesSwap);
+                }
 
                 _enginesSet.Add(engine);
 
                 if (engine is IDisposable)
+                {
                     _disposableEngines.Add(engine as IDisposable);
+                }
 
                 if (engine is IQueryingEntitiesEngine queryableEntityViewEngine)
                 {

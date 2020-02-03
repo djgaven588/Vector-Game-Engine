@@ -33,7 +33,9 @@ namespace Svelto.Tasks
         public ParallelTaskCollection(string name, T[] ptasks) : base(name, ptasks.Length)
         {
             for (int i = 0; i < ptasks.Length; i++)
+            {
                 Add(ptasks[i]);
+            }
         }
 
         /// <summary>
@@ -83,7 +85,9 @@ namespace Svelto.Tasks
             }
 
             if (TaskCount - _stackOffset > 0)
+            {
                 return false;
+            }
 
             _stackOffset = 0;
 
@@ -98,7 +102,9 @@ namespace Svelto.Tasks
             var lastIndex = count - _stackOffset - 1;
 
             if (index == lastIndex) //is this the last index available, then don't swap 
+            {
                 return index;
+            }
 
             var item = buffer[lastIndex];
             buffer[lastIndex] = buffer[index];

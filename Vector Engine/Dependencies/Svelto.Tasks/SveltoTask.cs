@@ -38,7 +38,9 @@ namespace Svelto.Tasks
             {
                 _completed = false;
                 if (_poolIt)
+                {
                     ContinuationWrapperPool.Push(this);
+                }
 
                 ThreadUtility.MemoryBarrier();
 
@@ -62,7 +64,7 @@ namespace Svelto.Tasks
             ThreadUtility.MemoryBarrier();
         }
 
-        public object Current { get { return null; } }
+        public object Current => null;
 
         ~ContinuationWrapper()
         {
@@ -125,7 +127,7 @@ namespace Svelto.Tasks.Internal
             _sveltoTask._coroutineWrapper.Clear();
         }
 
-        public TaskCollection<IEnumerator>.CollectionTask Current { get { return _sveltoTask.Current; } }
+        public TaskCollection<IEnumerator>.CollectionTask Current => _sveltoTask.Current;
 
         public ContinuationWrapper Start(IRunner<IEnumerator> runner, IEnumerator task)
         {
@@ -215,7 +217,7 @@ namespace Svelto.Tasks.Internal
             return true;
         }
 
-        public TaskCollection<T>.CollectionTask Current { get { return _sveltoTask.Current; } }
+        public TaskCollection<T>.CollectionTask Current => _sveltoTask.Current;
 
         /// <summary>
         /// Calling SetEnumeratorProvider, SetEnumerator
@@ -231,7 +233,9 @@ namespace Svelto.Tasks.Internal
             _taskGenerator = null;
 
             if (IS_TASK_STRUCT == true || (IEnumerator)_taskEnumerator != (IEnumerator)taskEnumerator)
+            {
                 _sveltoTask._threadSafeStates.taskEnumeratorJustSet = true;
+            }
 
             _taskEnumerator = taskEnumerator;
         }
@@ -290,7 +294,9 @@ namespace Svelto.Tasks.Internal
                     _runner.StartCoroutine(this);
                 }
                 else
+                {
                     _sveltoTask._threadSafeStates.paused = false;
+                }
             }
 
             return continuationWrapper;
@@ -302,9 +308,9 @@ namespace Svelto.Tasks.Internal
 
         public void Stop() { _sveltoTask.Stop(); }
 
-        public bool isRunning { get { return _sveltoTask._threadSafeStates.isRunning; } }
+        public bool isRunning => _sveltoTask._threadSafeStates.isRunning;
 
-        public bool isDone { get { return _sveltoTask._threadSafeStates.isDone; } }
+        public bool isDone => _sveltoTask._threadSafeStates.isDone;
 
         public override string ToString()
         {
@@ -312,10 +318,14 @@ namespace Svelto.Tasks.Internal
             if (_sveltoTask._name == string.Empty)
             {
                 if (_taskGenerator == null && _taskEnumerator == null)
+                {
                     _sveltoTask._name = base.ToString();
+                }
                 else
                     if (_taskEnumerator != null)
+                {
                     _sveltoTask._name = _taskEnumerator.ToString();
+                }
                 else
                 {
                     var methodInfo = _taskGenerator.GetMethodInfoEx();
@@ -457,11 +467,15 @@ namespace Svelto.Tasks.Internal
                     }
 
                     if (completed == true)
+                    {
                         _threadSafeStates.completed = true;
+                    }
                 }
 
                 if (_threadSafeStates.isCompletedAndNotPaused == true)
+                {
                     return false;
+                }
 
                 return true;
             }
@@ -521,73 +535,97 @@ namespace Svelto.Tasks.Internal
 
             public bool completed
             {
-                get { return BIT(COMPLETED_BIT); }
+                get => BIT(COMPLETED_BIT);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(COMPLETED_BIT);
+                    }
                     else
+                    {
                         UNSETBIT(COMPLETED_BIT);
+                    }
                 }
             }
 
             public bool pendingTask
             {
-                get { return BIT(PENDING_BIT); }
+                get => BIT(PENDING_BIT);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(PENDING_BIT);
+                    }
                     else
+                    {
                         UNSETBIT(PENDING_BIT);
+                    }
                 }
             }
 
             public bool explicitlyStopped
             {
-                get { return BIT(EXPLICITLY_STOPPED); }
+                get => BIT(EXPLICITLY_STOPPED);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(EXPLICITLY_STOPPED);
+                    }
                     else
+                    {
                         UNSETBIT(EXPLICITLY_STOPPED);
+                    }
                 }
             }
 
             public bool paused
             {
-                get { return BIT(PAUSED_BIT); }
+                get => BIT(PAUSED_BIT);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(PAUSED_BIT);
+                    }
                     else
+                    {
                         UNSETBIT(PAUSED_BIT);
+                    }
                 }
             }
 
             public bool started
             {
-                get { return BIT(STARTED_BIT); }
+                get => BIT(STARTED_BIT);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(STARTED_BIT);
+                    }
                     else
+                    {
                         UNSETBIT(STARTED_BIT);
+                    }
                 }
             }
 
             public bool taskEnumeratorJustSet
             {
-                get { return BIT(TASK_ENUMERATOR_JUST_SET); }
+                get => BIT(TASK_ENUMERATOR_JUST_SET);
                 set
                 {
                     if (value)
+                    {
                         SETBIT(TASK_ENUMERATOR_JUST_SET);
+                    }
                     else
+                    {
                         UNSETBIT(TASK_ENUMERATOR_JUST_SET);
+                    }
                 }
             }
 

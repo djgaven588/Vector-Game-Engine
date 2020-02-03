@@ -34,7 +34,9 @@ namespace Svelto.Command
         void OnNewCommand(ICommand command)
         {
             if (_onNewCommand != null)
+            {
                 _onNewCommand(command);
+            }
         }
 
         Action<ICommand> _onNewCommand;

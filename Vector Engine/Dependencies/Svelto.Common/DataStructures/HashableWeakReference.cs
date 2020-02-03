@@ -21,13 +21,17 @@ namespace Svelto.DataStructures
         public static bool operator ==(HashableWeakRef<T> a, HashableWeakRef<T> b)
         {
             if (a._hash != b._hash)
+            {
                 return false;
+            }
 
             var tmpTargetA = (T)a._weakRef.Target;
             var tmpTargetB = (T)b._weakRef.Target;
 
             if (tmpTargetA == null || tmpTargetB == null)
+            {
                 return false;
+            }
 
             return tmpTargetA == tmpTargetB;
         }
@@ -35,7 +39,9 @@ namespace Svelto.DataStructures
         public override bool Equals(object other)
         {
             if (other is HashableWeakRef<T>)
+            {
                 return this.Equals((HashableWeakRef<T>)other);
+            }
 
             return false;
         }

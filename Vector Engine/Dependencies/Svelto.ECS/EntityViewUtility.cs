@@ -52,7 +52,9 @@ namespace Svelto.ECS
                     var type = implementor.GetType();
 
                     if (cachedTypes.TryGetValue(type, out var interfaces) == false)
+                    {
                         interfaces = cachedTypes[type] = type.GetInterfacesEx();
+                    }
 
                     for (var iindex = 0; iindex < interfaces.Length; iindex++)
                     {
@@ -64,7 +66,9 @@ namespace Svelto.ECS
                             implementorsByType[componentType] = implementorData;
                         }
                         else
+                        {
                             implementorsByType[componentType] = new ECSTuple<object, int>(implementor, 1);
+                        }
 #else
                         implementorsByType[componentType] = implementor;
 #endif
@@ -85,12 +89,11 @@ namespace Svelto.ECS
                 var fieldType = fieldSetter.Key;
 
 #if DEBUG && !PROFILER
-                ECSTuple<object, int> component;
 #else
             object component;
 #endif
 
-                if (implementorsByType.TryGetValue(fieldType, out component) == false)
+                if (implementorsByType.TryGetValue(fieldType, out ECSTuple<object, int> component) == false)
                 {
                     var e = new ECSException(NOT_FOUND_EXCEPTION + " Component Type: " + fieldType.Name +
                                              " - EntityView: " + entityBuilder.GetEntityType().Name);
@@ -99,6 +102,7 @@ namespace Svelto.ECS
                 }
 #if DEBUG && !PROFILER
                 if (component.numberOfImplementations > 1)
+                {
                     throw new ECSException(DUPLICATE_IMPLEMENTOR_ERROR.FastConcat(
                                                                                   "Component Type: ", fieldType.Name,
                                                                                   " implementor: ",
@@ -106,6 +110,7 @@ namespace Svelto.ECS
                                                                                            .ToString()) +
                                            " - EntityView: " +
                                            entityBuilder.GetEntityType().Name);
+                }
 #endif
 #if DEBUG && !PROFILER
                 fieldSetter.Value(ref entityView, component.implementorType);

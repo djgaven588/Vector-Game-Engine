@@ -81,7 +81,7 @@ namespace Svelto.Utilities
             public ILEmitter ldarg(int idx) { il.Emit(OpCodes.Ldarg, idx); return this; }
             public ILEmitter ldarg_s(int idx) { il.Emit(OpCodes.Ldarg_S, idx); return this; }
             public ILEmitter ldstr(string str) { il.Emit(OpCodes.Ldstr, str); return this; }
-            public ILEmitter IfClassLoadIndirectReference(Type type) { if (!type.IsValueType) il.Emit(OpCodes.Ldind_Ref); return this; }
+            public ILEmitter IfClassLoadIndirectReference(Type type) { if (!type.IsValueType) { il.Emit(OpCodes.Ldind_Ref); } return this; }
             public ILEmitter ldloc0() { il.Emit(OpCodes.Ldloc_0); return this; }
             public ILEmitter ldloc1() { il.Emit(OpCodes.Ldloc_1); return this; }
             public ILEmitter ldloc2() { il.Emit(OpCodes.Ldloc_2); return this; }
@@ -109,20 +109,86 @@ namespace Svelto.Utilities
             public ILEmitter mark(Label label) { il.MarkLabel(label); return this; }
             public ILEmitter ldfld(FieldInfo field) { il.Emit(OpCodes.Ldfld, field); return this; }
             public ILEmitter ldsfld(FieldInfo field) { il.Emit(OpCodes.Ldsfld, field); return this; }
-            public ILEmitter lodfld(FieldInfo field) { if (field.IsStatic) ldsfld(field); else ldfld(field); return this; }
-            public ILEmitter ifvaluetype_box(Type type) { if (type.IsValueType) il.Emit(OpCodes.Box, type); return this; }
+            public ILEmitter lodfld(FieldInfo field)
+            {
+                if (field.IsStatic)
+                {
+                    ldsfld(field);
+                }
+                else
+                {
+                    ldfld(field);
+                }
+                return this;
+            }
+            public ILEmitter ifvaluetype_box(Type type) { if (type.IsValueType) { il.Emit(OpCodes.Box, type); } return this; }
             public ILEmitter SetField(FieldInfo field) { il.Emit(OpCodes.Stfld, field); return this; }
             public ILEmitter setstaticfield(FieldInfo field) { il.Emit(OpCodes.Stsfld, field); return this; }
-            public ILEmitter unboxorcast(Type type) { if (type.IsValueType) unbox(type); else cast(type); return this; }
-            public ILEmitter callorvirt(MethodInfo method) { if (method.IsVirtual) il.Emit(OpCodes.Callvirt, method); else il.Emit(OpCodes.Call, method); return this; }
+            public ILEmitter unboxorcast(Type type)
+            {
+                if (type.IsValueType)
+                {
+                    unbox(type);
+                }
+                else
+                {
+                    cast(type);
+                }
+                return this;
+            }
+            public ILEmitter callorvirt(MethodInfo method)
+            {
+                if (method.IsVirtual)
+                {
+                    il.Emit(OpCodes.Callvirt, method);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Call, method);
+                }
+                return this;
+            }
             public ILEmitter stind_ref() { il.Emit(OpCodes.Stind_Ref); return this; }
             public ILEmitter ldind_ref() { il.Emit(OpCodes.Ldind_Ref); return this; }
             public LocalBuilder declocal(Type type) { return il.DeclareLocal(type); }
             public Label deflabel() { return il.DefineLabel(); }
-            public ILEmitter ifclass_ldarg_else_ldarga(int idx, Type type) { if (type.IsValueType) emit.ldarga(idx); else emit.ldarg(idx); return this; }
-            public ILEmitter ifclass_ldloc_else_ldloca(int idx, Type type) { if (type.IsValueType) emit.ldloca(idx); else emit.ldloc(idx); return this; }
+            public ILEmitter ifclass_ldarg_else_ldarga(int idx, Type type)
+            {
+                if (type.IsValueType)
+                {
+                    emit.ldarga(idx);
+                }
+                else
+                {
+                    emit.ldarg(idx);
+                }
+                return this;
+            }
+            public ILEmitter ifclass_ldloc_else_ldloca(int idx, Type type)
+            {
+                if (type.IsValueType)
+                {
+                    emit.ldloca(idx);
+                }
+                else
+                {
+                    emit.ldloc(idx);
+                }
+                return this;
+            }
             public ILEmitter perform(Action<ILEmitter, MemberInfo> action, MemberInfo member) { action(this, member); return this; }
-            public ILEmitter ifbyref_ldloca_else_ldloc(LocalBuilder local, Type type) { if (type.IsByRef) ldloca(local); else ldloc(local); return this; }
+            public ILEmitter ifbyref_ldloca_else_ldloc(LocalBuilder local, Type type)
+            {
+                if (type.IsByRef)
+                {
+                    ldloca(local);
+                }
+                else
+                {
+                    ldloc(local);
+                }
+                return this;
+            }
         }
 #else
        //https://stackoverflow.com/questions/321650/how-do-i-set-a-field-value-in-an-c-sharp-expression-tree/321686#321686

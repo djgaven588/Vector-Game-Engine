@@ -49,7 +49,9 @@ namespace Svelto.DataStructures
                 for (int divisor = 3; divisor <= limit; divisor += 2)
                 {
                     if ((candidate % divisor) == 0)
+                    {
                         return false;
+                    }
                 }
                 return true;
             }
@@ -59,12 +61,17 @@ namespace Svelto.DataStructures
         public static int GetPrime(int min)
         {
             if (min < 0)
+            {
                 throw new ArgumentException();
+            }
 
             for (int i = 0; i < primes.Length; i++)
             {
                 int prime = primes[i];
-                if (prime >= min) return prime;
+                if (prime >= min)
+                {
+                    return prime;
+                }
             }
 
             //outside of our predefined table. 
@@ -72,7 +79,9 @@ namespace Svelto.DataStructures
             for (int i = (min | 1); i < Int32.MaxValue; i += 2)
             {
                 if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+                {
                     return i;
+                }
             }
             return min;
         }

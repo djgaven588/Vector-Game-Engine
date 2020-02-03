@@ -12,13 +12,12 @@ namespace Svelto.ECS
             set
             {
                 if (value.Equals(_value) == false)
+                {
                     base.value = value;
+                }
             }
 
-            get
-            {
-                return _value;
-            }
+            get => _value;
         }
     }
 }

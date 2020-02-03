@@ -12,7 +12,9 @@ namespace VectorEngine.Engine.Common
             get
             {
                 if (render == null)
+                {
                     render = new VectorScheduler<IEnumerator>();
+                }
 
                 return render;
             }
@@ -23,7 +25,9 @@ namespace VectorEngine.Engine.Common
             get
             {
                 if (update == null)
+                {
                     update = new VectorScheduler<IEnumerator>();
+                }
 
                 return update;
             }
@@ -34,7 +38,9 @@ namespace VectorEngine.Engine.Common
             get
             {
                 if (entityScheduler == null)
+                {
                     entityScheduler = new SimpleSubmissionEntityViewScheduler();
+                }
 
                 return entityScheduler;
             }
@@ -43,16 +49,22 @@ namespace VectorEngine.Engine.Common
         public static void RunRender()
         {
             if (render != null)
+            {
                 render.Run();
+            }
         }
 
         public static void RunUpdate()
         {
             if (update != null)
+            {
                 update.Run();
+            }
 
             if (entityScheduler != null)
+            {
                 entityScheduler.SubmitEntities();
+            }
         }
 
         private static SimpleSubmissionEntityViewScheduler entityScheduler;
@@ -103,7 +115,9 @@ namespace VectorEngine.Engine.Common
         public void Run()
         {
             if (isPaused)
+            {
                 return;
+            }
 
             foreach (ISveltoTask<T> task in runningTasks)
             {

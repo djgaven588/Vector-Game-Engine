@@ -13,7 +13,7 @@ namespace Svelto.Tasks.Enumerators
             _enumerator = enumerator;
         }
 
-        public object Current { get { return _enumerator.Current; } }
+        public object Current => _enumerator.Current;
 
         public bool MoveNext()
         {
@@ -22,7 +22,9 @@ namespace Svelto.Tasks.Enumerators
             {
                 moveNext = _enumerator.MoveNext();
                 if (moveNext == false)
+                {
                     succeeded = true;
+                }
             }
             catch (Exception e)
             {

@@ -129,14 +129,18 @@ public static class NetFXCoreWrappers
 
                 if (propertyInfo.CanWrite &&
                     propertyInfo.ContainsCustomAttribute(customAttributeType, false))
+                {
                     propertyList.Add(propertyInfo);
+                }
             }
 
             contract = contract.GetBaseType();
         } while (contract != null);
 
         if (propertyList.Count > 0)
+        {
             return propertyList.ToArray();
+        }
 
         return null;
     }

@@ -67,7 +67,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException(message);
+                }
             }
             else
             {
@@ -87,7 +89,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException(message, inner);
+                }
             }
             else
             {
@@ -107,7 +111,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException("Precondition failed.");
+                }
             }
             else
             {
@@ -127,7 +133,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException(message);
+                }
             }
             else
             {
@@ -147,7 +155,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException(message, inner);
+                }
             }
             else
             {
@@ -167,7 +177,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException("Postcondition failed.");
+                }
             }
             else
             {
@@ -187,7 +199,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException(message);
+                }
             }
             else
             {
@@ -207,7 +221,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException(message, inner);
+                }
             }
             else
             {
@@ -227,7 +243,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException("Invariant failed.");
+                }
             }
             else
             {
@@ -246,7 +264,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException(message);
+                }
             }
             else
             {
@@ -266,7 +286,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException(message, inner);
+                }
             }
             else
             {
@@ -286,7 +308,9 @@ namespace DBC.Common
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException("Assertion failed.");
+                }
             }
             else
             {

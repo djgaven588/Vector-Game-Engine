@@ -12,7 +12,9 @@ namespace Svelto.Tasks
             get
             {
                 if (_instance == null)
+                {
                     InitInstance();
+                }
 
                 return _instance;
             }

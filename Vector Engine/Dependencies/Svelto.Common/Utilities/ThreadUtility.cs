@@ -44,7 +44,9 @@ namespace Svelto.Utilities
         public static void Wait(ref int quickIterations, int frequency = 256)
         {
             if ((quickIterations++ & (frequency - 1)) == 0)
+            {
                 Yield();
+            }
         }
 
 

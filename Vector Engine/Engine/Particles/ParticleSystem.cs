@@ -35,19 +35,19 @@ namespace VectorEngine.Engine.Particles
 
         public ParticleSystem(int maxParticles, Func<(int, float), int> particleGenerator, Func<(Vector3, Vector3, float)> particleCreation)
         {
-            if(maxParticles <= 0)
+            if (maxParticles <= 0)
             {
                 throw new Exception("Particle system with no or negative particle count are not allowed!");
             }
 
-            if(particleGenerator == null || particleCreation == null)
+            if (particleGenerator == null || particleCreation == null)
             {
                 throw new Exception("Particle generator and particle creation values must not be null!");
             }
 
             particleGeneratorFunction = particleGenerator;
             particleCreatorFunction = particleCreation;
-            
+
             MaxParticles = maxParticles;
 
             particlePositions = new Vector3[maxParticles];
@@ -103,7 +103,9 @@ namespace VectorEngine.Engine.Particles
             for (int i = 0; i < MaxParticles; i++)
             {
                 if (enabledParticles[i] == false)
+                {
                     continue;
+                }
 
                 remainingParticleLifetime[i] -= timeDelta;
 
@@ -131,13 +133,15 @@ namespace VectorEngine.Engine.Particles
                 newParticleData = particleCreatorFunction();
                 lastEnabledParticleIndex++;
 
-                if(lastEnabledParticleIndex >= MaxParticles)
+                if (lastEnabledParticleIndex >= MaxParticles)
                 {
                     lastEnabledParticleIndex = 0;
                 }
 
                 if (enabledParticles[lastEnabledParticleIndex] == true)
+                {
                     enabledParticleCount--;
+                }
 
                 particlePositions[lastEnabledParticleIndex] = newParticleData.position;
                 particleVelocities[lastEnabledParticleIndex] = newParticleData.velocity;
@@ -155,7 +159,9 @@ namespace VectorEngine.Engine.Particles
             for (int i = 0; i < MaxParticles; i++)
             {
                 if (enabledParticles[i] == false)
+                {
                     continue;
+                }
 
                 if (isScaleOverLifeTime)
                 {
@@ -165,7 +171,7 @@ namespace VectorEngine.Engine.Particles
                 toRender.Enqueue(Core.Common.Mathmatics.CreateTransformationMatrix(particlePositions[i], Quaternion.Identity, Vector3.One * particleSize));
             }
 
-            Core.Rendering.LowLevel.RenderEngine.RenderMeshInstanced(toRender.ToArray(), meshToRender, texture);
+            Core.Rendering.LowLevel.RenderEngine.RenderMeshNowInstanced(toRender.ToArray(), meshToRender, texture);
             toRender.Clear();
         }
     }

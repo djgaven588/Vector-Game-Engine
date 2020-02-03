@@ -68,7 +68,9 @@ namespace Svelto.ECS
                 where T : IEntityDescriptor, new()
             {
                 if (fromID.groupID != mustBeFromGroup)
+                {
                     throw new ECSException("Entity is not coming from the expected group");
+                }
 
                 SwapEntityGroup<T>(fromID, toGroupID);
             }
@@ -88,7 +90,9 @@ namespace Svelto.ECS
                 where T : IEntityDescriptor, new()
             {
                 if (fromID.groupID != mustBeFromGroup)
+                {
                     throw new ECSException("Entity is not coming from the expected group");
+                }
 
                 SwapEntityGroup<T>(fromID, toID);
             }
@@ -110,6 +114,7 @@ namespace Svelto.ECS
             if (_entitiesOperations.TryGetValue((ulong)entitySubmitOperation.fromID, out var entitySubmitedOperation) == true)
             {
                 if (entitySubmitedOperation != entitySubmitOperation)
+                {
                     throw new ECSException("Only one entity operation per submission is allowed".FastConcat(" entityViewType: ")
                                     .FastConcat(typeof(T).Name)
                                     .FastConcat(" submission type ", entitySubmitOperation.type.ToString(),
@@ -117,6 +122,7 @@ namespace Svelto.ECS
                                     .FastConcat(" previous operation type: ",
                                                 _entitiesOperations[(ulong)entitySubmitOperation.fromID].type
                                                    .ToString()));
+                }
             }
             else
 #endif

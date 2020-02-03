@@ -15,13 +15,17 @@ namespace Svelto.ECS
             EntityBuilderUtilities.CheckFields(ENTITY_VIEW_TYPE, NEEDS_REFLECTION);
 
             if (NEEDS_REFLECTION)
+            {
                 EntityView<T>.InitCache();
+            }
         }
 
         public void BuildEntityAndAddToList(ref ITypeSafeDictionary dictionary, EGID entityID, object[] implementors)
         {
             if (dictionary == null)
+            {
                 dictionary = new TypeSafeDictionary<T>();
+            }
 
             var castedDic = dictionary as TypeSafeDictionary<T>;
 
@@ -53,9 +57,13 @@ namespace Svelto.ECS
         static ITypeSafeDictionary Preallocate(ref ITypeSafeDictionary dictionary, uint size)
         {
             if (dictionary == null)
+            {
                 dictionary = new TypeSafeDictionary<T>(size);
+            }
             else
+            {
                 dictionary.SetCapacity(size);
+            }
 
             return dictionary;
         }

@@ -10,7 +10,9 @@ namespace Svelto.Tasks.Chain
         public new SerialTaskCollection<Token> Add(ITaskChain<Token> task)
         {
             if (task == null)
+            {
                 throw new ArgumentNullException();
+            }
 
             base.Add(task);
 

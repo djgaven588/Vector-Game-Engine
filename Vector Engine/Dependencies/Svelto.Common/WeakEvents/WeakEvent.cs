@@ -9,7 +9,11 @@ namespace Svelto.WeakEvents
     {
         public static WeakEvent operator +(WeakEvent c1, Action x)
         {
-            if (c1 == null) c1 = new WeakEvent();
+            if (c1 == null)
+            {
+                c1 = new WeakEvent();
+            }
+
             c1.Add(x);
 
             return c1;
@@ -48,13 +52,19 @@ namespace Svelto.WeakEvents
             _isIterating = true;
 
             for (int i = 0; i < _subscribers.Count; i++)
+            {
                 if (invoke(_subscribers[i]) == false)
+                {
                     _subscribers.UnorderedRemoveAt(i--);
+                }
+            }
 
             _isIterating = false;
 
             for (int i = 0; i < _toRemove.Count; i++)
+            {
                 RemoveInternal(_toRemove[i].Key, _toRemove[i].Value);
+            }
 
             _toRemove.Clear();
         }
@@ -105,7 +115,11 @@ namespace Svelto.WeakEvents
 
         public static WeakEvent<T1> operator +(WeakEvent<T1> c1, Action<T1> x)
         {
-            if (c1 == null) c1 = new WeakEvent<T1>();
+            if (c1 == null)
+            {
+                c1 = new WeakEvent<T1>();
+            }
+
             c1.Add(x);
 
             return c1;
@@ -149,7 +163,11 @@ namespace Svelto.WeakEvents
 
         public static WeakEvent<T1, T2> operator +(WeakEvent<T1, T2> c1, Action<T1, T2> x)
         {
-            if (c1 == null) c1 = new WeakEvent<T1, T2>();
+            if (c1 == null)
+            {
+                c1 = new WeakEvent<T1, T2>();
+            }
+
             c1._subscribers.Add(new WeakAction<T1, T2>(x));
 
             return c1;

@@ -49,7 +49,9 @@ namespace Svelto.DataStructures
         public ReadOnlyDictionary(Dictionary<TKey, TValue> dictionary)
         {
             if (dictionary == null)
+            {
                 throw new ArgumentNullException("dictionary");
+            }
 
             _dictionary = dictionary;
         }
@@ -181,7 +183,9 @@ namespace Svelto.DataStructures
             internal KeyCollection(ICollection<TKey> keys)
             {
                 if (keys == null)
+                {
                     throw new ArgumentNullException("keys");
+                }
 
                 _keys = keys;
             }
@@ -287,7 +291,9 @@ namespace Svelto.DataStructures
             internal ValueCollection(ICollection<TValue> values)
             {
                 if (values == null)
+                {
                     throw new ArgumentNullException("values");
+                }
 
                 _values = values;
             }
@@ -390,7 +396,9 @@ namespace Svelto.DataStructures
             public DictionaryEnumerator(IDictionary<TKey, TValue> dictionary)
             {
                 if (dictionary == null)
+                {
                     throw new ArgumentNullException("dictionary");
+                }
 
                 _enumerator = dictionary.GetEnumerator();
             }

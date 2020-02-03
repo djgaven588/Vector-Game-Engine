@@ -11,11 +11,13 @@ namespace VectorEngine.Engine.Components
 
         public override bool Equals(object obj)
         {
-            if(obj.GetType() == typeof(Transform))
+            if (obj.GetType() == typeof(Transform))
             {
                 Transform other = (Transform)obj;
-                if(position == other.position && scale == other.scale && rotation == other.rotation)
+                if (position == other.position && scale == other.scale && rotation == other.rotation)
+                {
                     return true;
+                }
             }
 
             return false;

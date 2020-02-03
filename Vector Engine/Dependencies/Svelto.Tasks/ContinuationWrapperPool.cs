@@ -12,9 +12,8 @@ namespace Svelto.Tasks.Internal
     {
         internal static ContinuationWrapper Pull()
         {
-            ContinuationWrapper task;
 
-            if (_pool.Dequeue(out task))
+            if (_pool.Dequeue(out ContinuationWrapper task))
             {
                 GC.ReRegisterForFinalize(task);
 

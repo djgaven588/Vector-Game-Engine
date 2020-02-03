@@ -26,7 +26,7 @@ namespace VectorEngine.Engine.Rendering
                 foreach (var entry in objectsToRender)
                 {
                     Transform transform = entry.Item1;
-                    RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(transform.position, transform.rotation, transform.scale), entry.Item2.mesh, GameEngine.treeTexture);
+                    RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(transform.position, transform.rotation, transform.scale), entry.Item2.mesh, GameEngine.treeTexture);
                 }
 
                 yield return null;

@@ -24,7 +24,7 @@ namespace Svelto.Tasks.Enumerators
             _wait.Reset(seconds);
         }
 
-        public object Current { get { return null; } }
+        public object Current => null;
 
         ReusableWaitForSecondsEnumerator _wait;
     }

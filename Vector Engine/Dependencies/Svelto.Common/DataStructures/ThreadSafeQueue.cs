@@ -40,7 +40,9 @@ namespace Svelto.DataStructures
             }
 
             foreach (T item in localQ)
+            {
                 yield return item;
+            }
         }
 
         public void Enqueue(T item)
@@ -77,7 +79,9 @@ namespace Svelto.DataStructures
             try
             {
                 foreach (T item in ItemsToQueue)
+                {
                     m_Queue.Enqueue(item);
+                }
             }
 
             finally
@@ -94,7 +98,9 @@ namespace Svelto.DataStructures
                 FasterList<T> returnList = new FasterList<T>();
 
                 while (m_Queue.Count > 0)
+                {
                     returnList.Add(m_Queue.Dequeue());
+                }
 
                 return returnList;
             }
@@ -117,7 +123,9 @@ namespace Svelto.DataStructures
                 var array = list.ToArrayFast();
 
                 while (m_Queue.Count > 0)
+                {
                     array[i++] = m_Queue.Dequeue();
+                }
             }
 
             finally
@@ -133,7 +141,9 @@ namespace Svelto.DataStructures
             {
                 int originalSize = m_Queue.Count;
                 while (m_Queue.Count > 0 && originalSize - m_Queue.Count < count)
+                {
                     list.Add(m_Queue.Dequeue());
+                }
             }
 
             finally
@@ -150,7 +160,9 @@ namespace Svelto.DataStructures
                 FasterList<U> returnList = new FasterList<U>();
 
                 while (m_Queue.Count > 0)
+                {
                     returnList.Add(m_Queue.Dequeue() as U);
+                }
 
                 return returnList;
             }
@@ -169,7 +181,9 @@ namespace Svelto.DataStructures
                 T item = default(T);
 
                 if (m_Queue.Count > 0)
+                {
                     item = m_Queue.Peek();
+                }
 
                 return item;
             }

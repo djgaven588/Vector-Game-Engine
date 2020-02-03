@@ -45,11 +45,11 @@ namespace VectorEngine.Core.Common
         {
             Matrix4 matrix = Matrix4.Identity;
 
-            Vector3 negativeCameraPos = (Vector3)(-camera.GetPosition());
+            Vector3 negativeCameraPos = (Vector3)(-camera.Position);
             matrix *= Matrix4.CreateTranslation(negativeCameraPos);
-            matrix *= Matrix4.CreateRotationY((float)ConvertToRadians(camera.GetRotation().Y));
-            matrix *= Matrix4.CreateRotationX((float)ConvertToRadians(camera.GetRotation().X));
-            matrix *= Matrix4.CreateRotationZ((float)ConvertToRadians(camera.GetRotation().Z));
+            matrix *= Matrix4.CreateRotationY((float)ConvertToRadians(camera.Rotation.Y));
+            matrix *= Matrix4.CreateRotationX((float)ConvertToRadians(camera.Rotation.X));
+            matrix *= Matrix4.CreateRotationZ((float)ConvertToRadians(camera.Rotation.Z));
             return matrix;
         }
 

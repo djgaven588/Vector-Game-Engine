@@ -12,7 +12,9 @@ namespace Svelto.Tasks.Chain
         public new ParallelTaskCollection<Token> Add(ITaskChain<Token> task)
         {
             if (task == null)
+            {
                 throw new ArgumentNullException();
+            }
 
             base.Add(task);
 

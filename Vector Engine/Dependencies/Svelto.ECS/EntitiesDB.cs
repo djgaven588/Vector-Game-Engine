@@ -25,7 +25,11 @@ namespace Svelto.ECS.Internal
         {
             var entities = QueryEntities<T>(@group, out var count);
 
-            if (count != 1) throw new ECSException("Unique entities must be unique! ".FastConcat(typeof(T).ToString()));
+            if (count != 1)
+            {
+                throw new ECSException("Unique entities must be unique! ".FastConcat(typeof(T).ToString()));
+            }
+
             return ref entities[0];
         }
 
@@ -34,7 +38,9 @@ namespace Svelto.ECS.Internal
         {
             T[] array;
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out var index)) != null)
+            {
                 return ref array[index];
+            }
 
             throw new EntityNotFoundException(entityGID, typeof(T));
         }
@@ -50,7 +56,9 @@ namespace Svelto.ECS.Internal
             uint @group = groupStruct;
             count = 0;
             if (QueryEntitySafeDictionary(@group, out TypeSafeDictionary<T> typeSafeDictionary) == false)
+            {
                 return RetrieveEmptyEntityViewArray<T>();
+            }
 
             return typeSafeDictionary.GetValuesArray(out count);
         }
@@ -81,10 +89,11 @@ namespace Svelto.ECS.Internal
             var T2entities = QueryEntities<T2>(@groupStruct, out count);
 
             if (count != countCheck)
+            {
                 throw new ECSException("Entity views count do not match in group. Entity 1: ".
                                            FastConcat(typeof(T1).ToString()).FastConcat(
                                                "Entity 2: ".FastConcat(typeof(T2).ToString())));
-
+            }
 
             return (T1entities, T2entities);
         }
@@ -99,10 +108,12 @@ namespace Svelto.ECS.Internal
             var T3entities = QueryEntities<T3>(@groupStruct, out count);
 
             if (count != countCheck1 || count != countCheck2)
+            {
                 throw new ECSException("Entity views count do not match in group. Entity 1: ".
                                            FastConcat(typeof(T1).ToString()).
                                            FastConcat(" Entity 2: ".FastConcat(typeof(T2).ToString()).
                                                           FastConcat(" Entity 3: ".FastConcat(typeof(T3).ToString()))));
+            }
 
             return (T1entities, T2entities, T3entities);
         }
@@ -112,7 +123,9 @@ namespace Svelto.ECS.Internal
         {
             uint groupId = groupStructId;
             if (QueryEntitySafeDictionary(groupId, out TypeSafeDictionary<T> typeSafeDictionary) == false)
+            {
                 throw new EntityGroupNotFoundException(groupId, typeof(T));
+            }
 
             EGIDMapper<T> mapper;
             mapper.map = typeSafeDictionary;
@@ -127,7 +140,9 @@ namespace Svelto.ECS.Internal
         {
             T[] array;
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGID, out index)) != null)
+            {
                 return array;
+            }
 
             throw new EntityNotFoundException(entityGID, typeof(T));
         }
@@ -136,7 +151,9 @@ namespace Svelto.ECS.Internal
         public bool TryQueryEntitiesAndIndex<T>(EGID entityGid, out uint index, out T[] array) where T : struct, IEntityStruct
         {
             if ((array = QueryEntitiesAndIndexInternal<T>(entityGid, out index)) != null)
+            {
                 return true;
+            }
 
             return false;
         }
@@ -156,7 +173,10 @@ namespace Svelto.ECS.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Exists<T>(EGID entityGID) where T : struct, IEntityStruct
         {
-            if (QueryEntitySafeDictionary(entityGID.groupID, out TypeSafeDictionary<T> casted) == false) return false;
+            if (QueryEntitySafeDictionary(entityGID.groupID, out TypeSafeDictionary<T> casted) == false)
+            {
+                return false;
+            }
 
             return casted != null && casted.ContainsKey(entityGID.entityID);
         }
@@ -192,10 +212,14 @@ namespace Svelto.ECS.Internal
         {
             index = 0;
             if (QueryEntitySafeDictionary(entityGID.groupID, out TypeSafeDictionary<T> safeDictionary) == false)
+            {
                 return null;
+            }
 
             if (safeDictionary.TryFindIndex(entityGID.entityID, out index) == false)
+            {
                 return null;
+            }
 
             return safeDictionary.GetValuesArray(out _);
         }
@@ -207,11 +231,15 @@ namespace Svelto.ECS.Internal
 
             //search for the group
             if (_groupEntityViewsDB.TryGetValue(group, out var entitiesInGroupPerType) == false)
+            {
                 return false;
+            }
 
             //search for the indexed entities in the group
             if (entitiesInGroupPerType.TryGetValue(typeof(T), out var safeDictionary) == false)
+            {
                 return false;
+            }
 
             //return the indexes entities if they exist
             typeSafeDictionary = (safeDictionary as TypeSafeDictionary<T>);

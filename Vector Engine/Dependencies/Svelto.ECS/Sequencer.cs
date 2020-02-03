@@ -13,7 +13,9 @@ namespace Svelto.ECS
             _steps = new Dictionary<IEngine, To>();
 
             for (int i = 0; i < values.Length; i++)
+            {
                 _steps.Add(values[i].from, values[i].to);
+            }
         }
     }
 
@@ -112,7 +114,9 @@ namespace Svelto.ECS
             var steps = to._tos[branch];
 
             for (var i = 0; i < steps.Length; i++)
+            {
                 steps[i].Step(condition, id);
+            }
         }
 
         public void Next(IEngine engine, EGID id)
@@ -121,10 +125,16 @@ namespace Svelto.ECS
             var steps = to.engines;
 
             if (steps != null && steps.Length > 1)
+            {
                 for (var i = 0; i < steps.Length; i++)
+                {
                     steps[i].Step(id);
+                }
+            }
             else
+            {
                 to.engine.Step(id);
+            }
         }
 
         Steps _steps;

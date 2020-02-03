@@ -20,10 +20,7 @@ namespace Svelto.Tasks.Enumerators
             _value = default(T);
         }
 
-        public T field
-        {
-            get { return _value; }
-        }
+        public T field => _value;
 
         public bool MoveNext()
         {
@@ -33,15 +30,9 @@ namespace Svelto.Tasks.Enumerators
         public void Reset()
         { }
 
-        T IEnumerator<T>.Current
-        {
-            get { return _value; }
-        }
+        T IEnumerator<T>.Current => _value;
 
-        public object Current
-        {
-            get { return null; }
-        }
+        public object Current => null;
 
         public override string ToString()
         {

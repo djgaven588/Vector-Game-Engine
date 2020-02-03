@@ -39,8 +39,7 @@ namespace Svelto.ECS
 #endif        
         void CheckRemoveEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group, string name)
         {
-            ITypeSafeDictionary entities;
-            if (group.TryGetValue(entityViewType, out entities))
+            if (group.TryGetValue(entityViewType, out ITypeSafeDictionary entities))
             {
                 if (entities.Has(entityID.entityID) == false)
                 {
@@ -87,8 +86,7 @@ namespace Svelto.ECS
         static void CheckAddEntityID(EGID entityID, Type entityViewType, Dictionary<Type, ITypeSafeDictionary> group,
                                      string name)
         {
-            ITypeSafeDictionary entities;
-            if (group.TryGetValue(entityViewType, out entities))
+            if (group.TryGetValue(entityViewType, out ITypeSafeDictionary entities))
             {
                 if (entities.Has(entityID.entityID))
                 {

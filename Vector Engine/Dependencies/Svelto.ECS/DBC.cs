@@ -68,7 +68,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException(message);
+                }
             }
             else
             {
@@ -88,7 +90,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException(message, inner);
+                }
             }
             else
             {
@@ -108,7 +112,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PreconditionException("Precondition failed.");
+                }
             }
             else
             {
@@ -128,7 +134,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException(message);
+                }
             }
             else
             {
@@ -148,7 +156,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException(message, inner);
+                }
             }
             else
             {
@@ -168,7 +178,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new PostconditionException("Postcondition failed.");
+                }
             }
             else
             {
@@ -188,7 +200,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException(message);
+                }
             }
             else
             {
@@ -208,7 +222,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException(message, inner);
+                }
             }
             else
             {
@@ -228,7 +244,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new InvariantException("Invariant failed.");
+                }
             }
             else
             {
@@ -247,7 +265,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException(message);
+                }
             }
             else
             {
@@ -267,7 +287,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException(message, inner);
+                }
             }
             else
             {
@@ -287,7 +309,9 @@ namespace DBC.ECS
             if (UseExceptions)
             {
                 if (!assertion)
+                {
                     throw new AssertionException("Assertion failed.");
+                }
             }
             else
             {
@@ -303,14 +327,8 @@ namespace DBC.ECS
         public static bool UseAssertions
         {
 
-            get
-            {
-                return useAssertions;
-            }
-            set
-            {
-                useAssertions = value;
-            }
+            get => useAssertions;
+            set => useAssertions = value;
         }
 
         #endregion // Interface
@@ -322,13 +340,7 @@ namespace DBC.ECS
         /// <summary>
         /// Is exception handling being used?
         /// </summary>
-        private static bool UseExceptions
-        {
-            get
-            {
-                return !useAssertions;
-            }
-        }
+        private static bool UseExceptions => !useAssertions;
 
         // Are trace assertion statements being used? 
         // Default is to use exception handling.

@@ -73,7 +73,9 @@ namespace Svelto.ECS.Internal
             entityBuilder.BuildEntityAndAddToList(ref safeDictionary, entityID, implementors);
 
             if (entityViewsPoolWillBeCreated)
+            {
                 @group.Add(entityViewType, safeDictionary);
+            }
         }
     }
 }

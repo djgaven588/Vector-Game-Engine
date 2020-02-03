@@ -20,7 +20,7 @@ namespace VectorEngine.Core
         private const float NEAR_PLANE = 0.1f;
         private const float FAR_PLANE = 1000f;
 
-        private readonly WindowHandler windowHandler;
+        public static WindowHandler windowHandler;
 
         public GameEngine(string[] startParameters)
         {
@@ -31,7 +31,10 @@ namespace VectorEngine.Core
 
             windowHandler.Run();
 
-            while (windowHandler.Exists) Thread.Sleep(50);
+            while (windowHandler.Exists)
+            {
+                Thread.Sleep(50);
+            }
 
             windowHandler.Dispose();
         }
@@ -47,12 +50,10 @@ namespace VectorEngine.Core
 
         public void OnLoad(EventArgs e)
         {
-            staticShader = new StaticShader();
-            RenderEngine.Setup(staticShader);
             light = new Light(new Vector3d(-500, 500, 500), new Vector3d(1, 1, 1));
             camera = new Camera();
-            camera.Move(new Vector3d(0, 0, 0));
-            camera.Rotate(new Vector3d(0, 0, 0));
+            camera.Position = new Vector3d(0, 0, 0);
+            camera.Rotation = new Vector3d(0, 0, 0);
 
             treeMesh = OBJLoader.LoadObjModel("Tree");
 
@@ -81,6 +82,9 @@ namespace VectorEngine.Core
 
             treeTexture = RenderDataLoader.LoadTexture("Tree");
 
+            staticShader = new StaticShader(treeTexture);
+            RenderEngine.Setup(staticShader);
+
             RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
 
             root = new VectorCompositionRoot();
@@ -92,7 +96,7 @@ namespace VectorEngine.Core
         private static float lastSpawned = 0f;
         private static int TestParticleGenerator((int particleCount, float lifeTime) systemData)
         {
-            if(systemData.lifeTime - lastSpawned > 0.25 && systemData.particleCount < 10)
+            if (systemData.lifeTime - lastSpawned > 0.25 && systemData.particleCount < 10)
             {
                 lastSpawned += 0.25f;
                 return 1;
@@ -145,27 +149,59 @@ namespace VectorEngine.Core
             {
                 KeyboardState keyboard = Keyboard.GetState();
                 if (keyboard.IsKeyDown(Key.W))
+                {
                     camera.MoveDirectionBased(new Vector3d(0, 0, -10 * e.Time));
+                }
+
                 if (keyboard.IsKeyDown(Key.A))
+                {
                     camera.MoveDirectionBased(new Vector3d(10 * e.Time, 0, 0));
+                }
+
                 if (keyboard.IsKeyDown(Key.S))
+                {
                     camera.MoveDirectionBased(new Vector3d(0, 0, 10 * e.Time));
+                }
+
                 if (keyboard.IsKeyDown(Key.D))
+                {
                     camera.MoveDirectionBased(new Vector3d(-10 * e.Time, 0, 0));
+                }
+
                 if (keyboard.IsKeyDown(Key.Space))
-                    camera.Move(new Vector3d(0, 10 * e.Time, 0));
+                {
+                    camera.Position += new Vector3d(0, 10 * e.Time, 0);
+                }
+
                 if (keyboard.IsKeyDown(Key.ShiftLeft))
-                    camera.Move(new Vector3d(0, -10 * e.Time, 0));
+                {
+                    camera.Position += new Vector3d(0, -10 * e.Time, 0);
+                }
+
                 if (keyboard.IsKeyDown(Key.Q))
-                    camera.Rotate(new Vector3d(0, -80 * e.Time, 0));
+                {
+                    camera.Rotation += new Vector3d(0, -80 * e.Time, 0);
+                }
+
                 if (keyboard.IsKeyDown(Key.E))
-                    camera.Rotate(new Vector3d(0, 80 * e.Time, 0));
+                {
+                    camera.Rotation += new Vector3d(0, 80 * e.Time, 0);
+                }
+
                 if (keyboard.IsKeyDown(Key.X))
-                    camera.Rotate(new Vector3d(-80 * e.Time, 0, 0));
+                {
+                    camera.Rotation += new Vector3d(-80 * e.Time, 0, 0);
+                }
+
                 if (keyboard.IsKeyDown(Key.Z))
-                    camera.Rotate(new Vector3d(80 * e.Time, 0, 0));
-                if(keyboard.IsKeyDown(Key.K))
+                {
+                    camera.Rotation += new Vector3d(80 * e.Time, 0, 0);
+                }
+
+                if (keyboard.IsKeyDown(Key.K))
+                {
                     testParticles.RunUpdate((float)e.Time);
+                }
             }
         }
 
@@ -174,7 +210,7 @@ namespace VectorEngine.Core
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
 
             RenderEngine.CleanUp();
-            light.SetPosition(camera.GetPosition());
+            light.Position = camera.Position;
 
             RenderEngine.PrepareForRendering();
             staticShader.LoadViewMatrix(camera);
@@ -183,18 +219,22 @@ namespace VectorEngine.Core
             VectorSchedulers.RunRender();
 
             // Run render code here
-            RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
-            RenderEngine.RenderMesh(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
+            RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
+            RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
             testParticles.RenderParticles(Mathmatics.CreateTransformationMatrix(Vector3d.Zero, Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
 
-            ShaderProgram.DisableShader();
+            staticShader.DisableShader();
 
             windowHandler.SwapBuffers();
 
             if (EntryPoint.VSyncEnabled && e.Time < 1000d / EntryPoint.TargetFPS)
+            {
                 Thread.Sleep((int)Math.Round(1000 / EntryPoint.TargetFPS - e.Time));
+            }
             else if (!EntryPoint.VSyncEnabled && e.Time < 1000d / EntryPoint.MaxFPS)
+            {
                 Thread.Sleep((int)Math.Round(1000 / EntryPoint.MaxFPS - e.Time));
+            }
         }
     }
 }

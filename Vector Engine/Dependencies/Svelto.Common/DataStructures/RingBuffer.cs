@@ -52,7 +52,10 @@ namespace Svelto.DataStructures
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
 
-            if (quickIterations >= 1024) throw new RingBufferExceptionDequeue<T>(name, next);
+            if (quickIterations >= 1024)
+            {
+                throw new RingBufferExceptionDequeue<T>(name, next);
+            }
 
             _consumerCursor.WriteReleaseFence(next); // makes sure we read the data from _entries before we update the consumer cursor
             return ref this[next];
@@ -102,7 +105,10 @@ namespace Svelto.DataStructures
                 ThreadUtility.Wait(ref quickIterations, 16);
             }
 
-            if (quickIterations >= 1024) throw new RingBufferExceptionEnqueue<T>(name, next);
+            if (quickIterations >= 1024)
+            {
+                throw new RingBufferExceptionEnqueue<T>(name, next);
+            }
 
             this[next] = item;
             _producerCursor.WriteReleaseFence(next); // makes sure we write the data in _entries before we update the producer cursor

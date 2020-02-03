@@ -25,7 +25,9 @@ namespace Svelto.Observer
         public void Dispatch(ref DispatchType parameter)
         {
             if (Notify != null)
+            {
                 Notify(ref parameter);
+            }
         }
     }
 
@@ -36,7 +38,9 @@ namespace Svelto.Observer
         public void Dispatch()
         {
             if (Notify != null)
+            {
                 Notify();
+            }
         }
     }
 }

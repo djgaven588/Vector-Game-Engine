@@ -23,16 +23,15 @@ namespace Svelto.Tasks.Parallelism.Internal
         void Loop()
         {
             for (_index = _startIndex; _index < _endIndex; _index++)
+            {
                 _job.Update(_index);
+            }
         }
 
         public void Reset()
         { }
 
-        public object Current
-        {
-            get { return null; }
-        }
+        public object Current => null;
 
         readonly int _startIndex;
         readonly int _numberOfITerations;

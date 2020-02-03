@@ -110,9 +110,13 @@ namespace VectorEngine.Core.Rendering.LowLevel
         private static int BindToVAO(int vaoID, int indID, int posVBO, int texVBO, int normVBO)
         {
             if (vaoID == 0)
+            {
                 GenerateVAO(out vaoID);
+            }
             else
+            {
                 LoadVAO(vaoID);
+            }
 
             GL.EnableVertexAttribArray(0);
             GL.BindBuffer(BufferTarget.ArrayBuffer, posVBO);

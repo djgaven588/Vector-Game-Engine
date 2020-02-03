@@ -134,7 +134,9 @@ namespace Svelto.ECS
         public static ExclusiveGroupStruct Search(string holderGroupName)
         {
             if (_serialisedGroups.ContainsKey(holderGroupName) == false)
+            {
                 throw new Exception("Serialized Group Not Found ".FastConcat(holderGroupName));
+            }
 
             return _serialisedGroups[holderGroupName];
         }

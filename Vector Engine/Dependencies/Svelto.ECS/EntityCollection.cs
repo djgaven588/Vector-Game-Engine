@@ -150,7 +150,9 @@ namespace Svelto.ECS
 
 #if DEBUG && !PROFILER
                     if (_count != count1)
+                    {
                         throw new ECSException("number of entities in group doesn't match");
+                    }
 #endif
                 }
 
@@ -166,7 +168,9 @@ namespace Svelto.ECS
                 _array2 = _db.QueryEntities<T2>(_groups[0], out var count1);
 #if DEBUG && !PROFILER
                 if (_count != count1)
+                {
                     throw new ECSException("number of entities in group doesn't match");
+                }
 #endif
             }
 

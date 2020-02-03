@@ -12,10 +12,14 @@ namespace Svelto.Utilities
             string stack = null;
 
             if (e != null)
+            {
                 stack = e.StackTrace;
+            }
 
             if (data != null)
+            {
                 dataString = DataToString.DetailString(data);
+            }
 
             switch (type)
             {

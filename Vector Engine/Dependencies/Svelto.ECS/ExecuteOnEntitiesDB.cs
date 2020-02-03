@@ -16,7 +16,9 @@ namespace Svelto.ECS.Internal
                     var entities = (pair.Value as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
                     if (innerCount > 0)
+                    {
                         action(entities, new ExclusiveGroup.ExclusiveGroupStruct(pair.Key), innerCount, this);
+                    }
                 }
             }
         }
@@ -34,7 +36,9 @@ namespace Svelto.ECS.Internal
                     var entities = (pair.Value as TypeSafeDictionary<T>).GetValuesArray(out var innerCount);
 
                     if (innerCount > 0)
+                    {
                         action(entities, new ExclusiveGroup.ExclusiveGroupStruct(pair.Key), innerCount, this, value);
+                    }
                 }
             }
         }

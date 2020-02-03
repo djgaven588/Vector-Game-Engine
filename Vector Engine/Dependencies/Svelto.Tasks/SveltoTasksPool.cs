@@ -6,10 +6,11 @@ namespace Svelto.Tasks.Internal
     {
         public PooledSveltoTask RetrieveTaskFromPool()
         {
-            PooledSveltoTask task;
 
-            if (_pool.Dequeue(out task))
+            if (_pool.Dequeue(out PooledSveltoTask task))
+            {
                 return task;
+            }
 
             return CreateEmptyTask();
         }

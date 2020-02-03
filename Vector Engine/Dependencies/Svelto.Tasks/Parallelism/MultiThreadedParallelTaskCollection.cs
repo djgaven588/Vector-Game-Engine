@@ -16,7 +16,7 @@ namespace Svelto.Tasks.Parallelism
     {
         public event Action onComplete;
 
-        public object Current { get { return null; } }
+        public object Current => null;
         public bool isRunning { private set; get; }
 
         /// <summary>
@@ -45,7 +45,9 @@ namespace Svelto.Tasks.Parallelism
         public void Add(IEnumerator enumerator)
         {
             if (isRunning == true)
+            {
                 throw new MultiThreadedParallelTaskCollectionException("can't add tasks on a started MultiThreadedParallelTaskCollection");
+            }
 
             ParallelTaskCollection parallelTaskCollection = _parallelTasks[_numberOfTasksAdded++ % _parallelTasks.Length];
             parallelTaskCollection.Add(enumerator);
@@ -56,23 +58,32 @@ namespace Svelto.Tasks.Parallelism
         public void Add<T>(ref T job, int iterations) where T : struct, ISveltoJob
         {
             if (isRunning == true)
+            {
                 throw new MultiThreadedParallelTaskCollectionException("can't add tasks on a started MultiThreadedParallelTaskCollection");
+            }
 
             var runnersLength = _runners.Length;
             int itemsPerThread = (int)Math.Floor((double)iterations / runnersLength);
             int reminder = iterations % runnersLength;
 
             for (int i = 0; i < runnersLength; i++)
+            {
                 Add(new ParallelRunEnumerator<T>(ref job, itemsPerThread * i, itemsPerThread));
+            }
 
             if (reminder > 0)
+            {
                 Add(new ParallelRunEnumerator<T>(ref job, itemsPerThread * runnersLength, reminder));
+            }
         }
 
         public void Clear()
         {
             isRunning = false;
-            foreach (var parallelTask in _parallelTasks) parallelTask.Clear();
+            foreach (var parallelTask in _parallelTasks)
+            {
+                parallelTask.Clear();
+            }
 
             _numberOfTasksAdded = 0;
             _numberOfConcurrentOperationsToRun = 0;
@@ -80,12 +91,20 @@ namespace Svelto.Tasks.Parallelism
 
         public bool MoveNext()
         {
-            if (ThreadUtility.VolatileRead(ref _isDisposed)) return false;
+            if (ThreadUtility.VolatileRead(ref _isDisposed))
+            {
+                return false;
+            }
 
-            if (RunMultiThreadParallelTasks()) return true;
+            if (RunMultiThreadParallelTasks())
+            {
+                return true;
+            }
 
             if (onComplete != null)
+            {
                 onComplete();
+            }
 
             isRunning = false;
 
@@ -98,7 +117,9 @@ namespace Svelto.Tasks.Parallelism
                                     "trying to reset a disposed MultiThreadedParallelTaskCollection");
 
             for (int i = 0; i < _parallelTasks.Length; i++)
+            {
                 _parallelTasks[i].Reset();
+            }
         }
 
         public void Stop()
@@ -106,10 +127,14 @@ namespace Svelto.Tasks.Parallelism
             _stoppingThreads = _taskRoutines.Length;
 
             for (int i = 0; i < _runners.Length; i++)
+            {
                 _runners[i].StopAllCoroutines();
+            }
 
             while (_stoppingThreads > 0)
+            {
                 ThreadUtility.TakeItEasy();
+            }
 
             isRunning = false;
 
@@ -118,19 +143,28 @@ namespace Svelto.Tasks.Parallelism
 
         public void Dispose()
         {
-            if (ThreadUtility.VolatileRead(ref _isDisposed) == true) return;
+            if (ThreadUtility.VolatileRead(ref _isDisposed) == true)
+            {
+                return;
+            }
 
             ThreadUtility.VolatileWrite(ref _isDisposed, true);
             _disposingThreads = _runners.Length;
 
             for (int i = 0; i < _runners.Length; i++)
+            {
                 _runners[i].Kill(_decrementRunningThread);
+            }
 
             while (_disposingThreads > 0)
+            {
                 ThreadUtility.TakeItEasy();
+            }
 
             for (int i = 0; i < _runners.Length; i++)
+            {
                 _runners[i].Dispose();
+            }
 
             _runners = null;
             _parallelTasks = null;
@@ -164,8 +198,10 @@ namespace Svelto.Tasks.Parallelism
             //prepare a single multithread runner for each group of fiber like task collections
             //number of threads can be less than the number of tasks to run
             for (int i = 0; i < numberOfThreads; i++)
+            {
                 _runners[i] = new MultiThreadRunner("MultiThreadedParallelRunner ".FastConcat(_name, " #").FastConcat(i),
                                                     false, tightTasks);
+            }
 
             Func<Exception, bool> ptcOnOnException = (e) =>
             {
@@ -193,8 +229,10 @@ namespace Svelto.Tasks.Parallelism
         bool RunMultiThreadParallelTasks()
         {
             if (_taskRoutines == null)
+            {
                 throw new MultiThreadedParallelTaskCollectionException("can't run a MultiThreadedParallelTaskCollection " +
                                                                        "once killed");
+            }
 
             if (isRunning == false)
             {
@@ -204,7 +242,9 @@ namespace Svelto.Tasks.Parallelism
                 Action ptcOnOnComplete = DecrementStoppingThread;
                 //start them
                 for (int i = 0; i < _numberOfConcurrentOperationsToRun; i++)
+                {
                     _taskRoutines[i].Start(onStop: ptcOnOnComplete);
+                }
             }
 
             //wait for completition, I am not using signaling as this Collection could be yielded by a main thread runner

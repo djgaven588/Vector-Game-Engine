@@ -55,7 +55,9 @@ namespace Svelto.DataStructures.Experimental
         public uint Add(TKey key, ref TValue value)
         {
             if (AddValue(key, ref value) == false)
+            {
                 throw new FasterDictionaryException("Key already present");
+            }
 
             return _freeValueCellIndex - 1;
         }
@@ -72,7 +74,10 @@ namespace Svelto.DataStructures.Experimental
 
         public void Clear()
         {
-            if (_freeValueCellIndex == 0) return;
+            if (_freeValueCellIndex == 0)
+            {
+                return;
+            }
 
             _freeValueCellIndex = 0;
 
@@ -83,7 +88,10 @@ namespace Svelto.DataStructures.Experimental
 
         public void FastClear()
         {
-            if (_freeValueCellIndex == 0) return;
+            if (_freeValueCellIndex == 0)
+            {
+                return;
+            }
 
             _freeValueCellIndex = 0;
 
@@ -178,8 +186,10 @@ namespace Svelto.DataStructures.Experimental
             var valueIndex = _buckets[bucketIndex] - 1;
 
             if (valueIndex == -1)
+            {
                 //create the info node at the last position and fill it with the relevant information
                 _valuesInfo[_freeValueCellIndex] = new Node(ref key, hash);
+            }
             else //collision or already exists
             {
                 {
@@ -302,8 +312,10 @@ namespace Svelto.DataStructures.Experimental
                         _buckets[bucketIndex] = value + 1;
                     }
                     else
+                    {
                         DBC.Common.Check.Require(_valuesInfo[indexToValueToRemove].next != -1,
                                                  "if the bucket points to another cell, next MUST exists");
+                    }
 
                     UpdateLinkedList(indexToValueToRemove, _valuesInfo);
 
@@ -314,7 +326,9 @@ namespace Svelto.DataStructures.Experimental
             }
 
             if (indexToValueToRemove == -1)
+            {
                 return false; //not found!
+            }
 
             _freeValueCellIndex--; //one less value to iterate
 
@@ -336,7 +350,9 @@ namespace Svelto.DataStructures.Experimental
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
                 if (_buckets[movingBucketIndex] - 1 == _freeValueCellIndex)
+                {
                     _buckets[movingBucketIndex] = (int)(indexToValueToRemove + 1);
+                }
 
                 //otherwise it means that there was more than one key with the same hash (collision), so 
                 //we need to update the linked list and its pointers
@@ -345,9 +361,14 @@ namespace Svelto.DataStructures.Experimental
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
+                {
                     _valuesInfo[next].previous = (int)indexToValueToRemove;
+                }
+
                 if (previous != -1)
+                {
                     _valuesInfo[previous].next = (int)indexToValueToRemove;
+                }
 
                 //finally, actually move the values
                 _valuesInfo[indexToValueToRemove] = _valuesInfo[_freeValueCellIndex];
@@ -410,14 +431,19 @@ namespace Svelto.DataStructures.Experimental
         static uint Reduce(uint x, uint N)
         {
             if (x >= N)
+            {
                 return x % N;
+            }
 
             return x;
         }
 
         static uint GetIndex(TKey key, int[] buckets, Node[] valuesInfo)
         {
-            if (TryFindIndex(key, buckets, valuesInfo, out var findIndex)) return findIndex;
+            if (TryFindIndex(key, buckets, valuesInfo, out var findIndex))
+            {
+                return findIndex;
+            }
 
             throw new FasterDictionaryException("Key not found");
         }
@@ -452,9 +478,14 @@ namespace Svelto.DataStructures.Experimental
             int previous = valuesInfo[index].previous;
 
             if (next != -1)
+            {
                 valuesInfo[next].previous = previous;
+            }
+
             if (previous != -1)
+            {
                 valuesInfo[previous].next = next;
+            }
         }
 
         public struct FasterDictionaryKeyValueEnumerator : IEnumerator<KeyValuePairFast<TKey, TValue>>
@@ -471,7 +502,9 @@ namespace Svelto.DataStructures.Experimental
             public bool MoveNext()
             {
                 if (_count != _dic.Count)
+                {
                     throw new FasterDictionaryException("can't modify a dictionary during its iteration");
+                }
 
                 if (_index < _count - 1)
                 {

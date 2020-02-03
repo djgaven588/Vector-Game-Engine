@@ -45,15 +45,22 @@ namespace Svelto.Tasks.Enumerators
             var timedOut = DateTime.Now > _then;
             _isDone = ThreadUtility.VolatileRead(ref _signal) || timedOut;
 
-            if (_extraDoneCondition != null) _isDone |= _extraDoneCondition();
+            if (_extraDoneCondition != null)
+            {
+                _isDone |= _extraDoneCondition();
+            }
 
             if (_isDone == true)
             {
                 if (_autoreset == true)
+                {
                     Reset();
+                }
 
                 if (timedOut)
+                {
                     Console.LogWarning("WaitForSignalEnumerator ".FastConcat(_name, " timedOut"));
+                }
 
                 return false;
             }
@@ -111,13 +118,7 @@ namespace Svelto.Tasks.Enumerators
             { }
         }
 
-        public object Current
-        {
-            get
-            {
-                return _return;
-            }
-        }
+        public object Current => _return;
 
         volatile object _return;
 

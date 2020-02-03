@@ -15,12 +15,16 @@ namespace Svelto.ECS
         public static void CheckFields(Type type, bool needsReflection)
         {
             if (type == ENTITY_STRUCT_INFO_VIEW || type == EGIDType || type == ECLUSIVEGROUPSTRUCTTYPE)
+            {
                 return;
+            }
 
             if (needsReflection == false)
             {
                 if (type.IsClass)
+                {
                     throw new EntityStructException("EntityStructs must be structs.", ENTITY_VIEW_TYPE, type);
+                }
 
                 var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
@@ -37,14 +41,18 @@ namespace Svelto.ECS
                 var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
 
                 if (fields.Length < 1)
+                {
                     ProcessError("Entity View Structs must hold only entity components interfaces.", type);
+                }
 
                 for (int i = fields.Length - 1; i >= 0; --i)
                 {
                     var field = fields[i];
 
                     if (field.FieldType.IsInterfaceEx() == false)
+                    {
                         ProcessError("Entity View Structs must hold only entity components interfaces.", type);
+                    }
 
                     var properties = field.FieldType.GetProperties(BindingFlags.Public |
                                                         BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -55,12 +63,17 @@ namespace Svelto.ECS
                         {
                             var genericTypeDefinition = properties[j].PropertyType.GetGenericTypeDefinition();
                             if (genericTypeDefinition == DISPATCHONSETTYPE ||
-                                genericTypeDefinition == DISPATCHONCHANGETYPE) continue;
+                                genericTypeDefinition == DISPATCHONCHANGETYPE)
+                            {
+                                continue;
+                            }
                         }
 
                         var propertyType = properties[j].PropertyType;
                         if (propertyType != STRINGTYPE)
+                        {
                             SubCheckFields(propertyType);
+                        }
                     }
                 }
             }

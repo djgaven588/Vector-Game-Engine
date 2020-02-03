@@ -17,7 +17,7 @@ namespace Svelto.Tasks
     {
         public bool isPaused { get; set; }
         public bool isStopping { private set; get; }
-        public bool isKilled { get { return false; } }
+        public bool isKilled => false;
 
         public SyncRunner(int timeout = 1000)
         {
@@ -51,8 +51,8 @@ namespace Svelto.Tasks
             throw new System.NotImplementedException();
         }
 
-        public int numberOfRunningTasks { get { return 0; } }
-        public int numberOfQueuedTasks { get { return 0; } }
+        public int numberOfRunningTasks => 0;
+        public int numberOfQueuedTasks => 0;
 
         int _timeout;
         ISveltoTask<T> _syncTask;

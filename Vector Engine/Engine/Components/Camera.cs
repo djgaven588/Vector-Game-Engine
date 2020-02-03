@@ -5,46 +5,30 @@ namespace VectorEngine.Core.Rendering.Objects
 {
     public class Camera
     {
-        private Vector3d position = new Vector3d(0, 0, 0);
-        private Vector3d rotation = new Vector3d(0, 0, 0);
+        public Vector3d Position = new Vector3d(0, 0, 0);
+        public Vector3d Rotation = new Vector3d(0, 0, 0);
+        public Matrix4 ProjectionMatrix { get { RecreateProjectionMatrix(); return projectionMatrix; } }
+        public float FOV = 60f;
+        public float NearPlane = 0.01f;
+        public float FarPlane = 1000f;
+        public bool IsPerspective = true;
+        public Vector2 ViewPortSize = new Vector2(1, 1);
+        public Vector2 ViewPortOffset = new Vector2(0, 0);
 
-        public Camera() { }
+        private Matrix4 projectionMatrix;
 
-        public void Move(Vector3d pos)
+        private void RecreateProjectionMatrix()
         {
-            position += pos;
+            (int width, int height) = GameEngine.windowHandler.GetWindowDimensions();
+            float aspectRatio = (width * ViewPortSize.X) / (height * ViewPortSize.Y);
+            projectionMatrix = IsPerspective ? Matrix4.CreatePerspectiveFieldOfView((float)Mathmatics.ConvertToRadians(FOV), aspectRatio, NearPlane, FarPlane) : Matrix4.CreateOrthographic((int)(width * ViewPortSize.X), (int)(height * ViewPortSize.Y), NearPlane, FarPlane);
         }
 
         public void MoveDirectionBased(Vector3d movement)
         {
-            Vector3d toAdd = (Vector3d)(Quaternion.FromEulerAngles(0, (float)Mathmatics.ConvertToRadians(rotation.Y), 0) * (Vector3)movement);
+            Vector3d toAdd = (Vector3d)(Quaternion.FromEulerAngles(0, (float)Mathmatics.ConvertToRadians(Rotation.Y), 0) * (Vector3)movement);
             toAdd.X = -toAdd.X;
-            position += toAdd;
-        }
-
-        public void Rotate(Vector3d rot)
-        {
-            rotation += rot;
-        }
-
-        public void SetPosition(Vector3d pos)
-        {
-            position = pos;
-        }
-
-        public void SetRotation(Vector3d rot)
-        {
-            rotation = rot;
-        }
-
-        public Vector3d GetPosition()
-        {
-            return position;
-        }
-
-        public Vector3d GetRotation()
-        {
-            return rotation;
+            Position += toAdd;
         }
     }
 }

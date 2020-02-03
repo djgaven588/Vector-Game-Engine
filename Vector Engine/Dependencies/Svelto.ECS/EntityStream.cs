@@ -19,14 +19,20 @@ namespace Svelto.ECS
     {
         internal Consumer<T> GenerateConsumer<T>(string name, int capacity) where T : unmanaged, IEntityStruct
         {
-            if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
+            if (_streams.ContainsKey(typeof(T)) == false)
+            {
+                _streams[typeof(T)] = new EntityStream<T>();
+            }
 
             return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(name, capacity);
         }
 
         public Consumer<T> GenerateConsumer<T>(ExclusiveGroup @group, string name, int capacity) where T : unmanaged, IEntityStruct
         {
-            if (_streams.ContainsKey(typeof(T)) == false) _streams[typeof(T)] = new EntityStream<T>();
+            if (_streams.ContainsKey(typeof(T)) == false)
+            {
+                _streams[typeof(T)] = new EntityStream<T>();
+            }
 
             return (_streams[typeof(T)] as EntityStream<T>).GenerateConsumer(@group, name, capacity);
         }
@@ -34,9 +40,13 @@ namespace Svelto.ECS
         internal void PublishEntity<T>(ref T entity) where T : unmanaged, IEntityStruct
         {
             if (_streams.TryGetValue(typeof(T), out var typeSafeStream))
+            {
                 (typeSafeStream as EntityStream<T>).PublishEntity(ref entity);
+            }
             else
+            {
                 Console.LogWarningDebug("No Consumers are waiting for this entity to change ", typeof(T));
+            }
         }
 
         readonly ConcurrentDictionary<Type, ITypeSafeStream> _streams =
@@ -60,7 +70,9 @@ namespace Svelto.ECS
                     }
                 }
                 else
+                {
                     _consumers[i].Enqueue(ref entity);
+                }
             }
         }
 

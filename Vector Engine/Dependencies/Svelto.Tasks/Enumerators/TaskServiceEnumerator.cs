@@ -14,7 +14,7 @@ namespace Svelto.Tasks.Enumerators
     /// </summary>
     public class TaskServiceEnumerator : IEnumerator
     {
-        public object Current { get { return null; } }
+        public object Current => null;
 
         public TaskServiceEnumerator(IServiceTask task)
         {
@@ -39,7 +39,9 @@ namespace Svelto.Tasks.Enumerators
                 var taskException = task as IServiceTaskExceptionHandler;
 
                 if ((taskException != null) && (taskException.throwException != null))
+                {
                     throw taskException.throwException;
+                }
 
                 return true;
             }
@@ -63,9 +65,13 @@ namespace Svelto.Tasks.Enumerators
         {
             var task1 = task as IServiceTask;
             if (task1 != null)
+            {
                 task1.Execute();
+            }
             else
+            {
                 throw new Exception("not supported task " + task.GetType());
+            }
         }
 
         protected IServiceTask task { get; private set; }

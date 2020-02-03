@@ -13,7 +13,10 @@ public static class SafeEvent
 
                 try
                 {
-                    if (handler != null) handler.Invoke(val);
+                    if (handler != null)
+                    {
+                        handler.Invoke(val);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -34,7 +37,10 @@ public static class SafeEvent
 
                 try
                 {
-                    if (handler != null) handler.Invoke();
+                    if (handler != null)
+                    {
+                        handler.Invoke();
+                    }
                 }
                 catch (Exception e)
                 {
