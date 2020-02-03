@@ -203,6 +203,7 @@
     <Compile Include="Dependencies\Svelto.Tasks\TasksChain\SerialTaskCollection.cs" />
     <Compile Include="Dependencies\Svelto.Tasks\TaskYieldsIEnumerableException.cs" />
     <Compile Include="Engine\Common\ExclusiveGroups.cs" />
+    <Compile Include="Engine\Common\IStartEngine.cs" />
     <Compile Include="Engine\Common\LowLevel\VectorCompositionRoot.cs" />
     <Compile Include="Engine\Common\Mathmatics.cs" />
     <Compile Include="Engine\Common\VectorSchedulers.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Engine\Components\Transform.cs" />
     <Compile Include="Engine\Debug.cs" />
     <Compile Include="Engine\GameEngine.cs" />
+    <Compile Include="Engine\Input\InputManager.cs" />
     <Compile Include="Engine\Particles\ParticleSystem.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />
     <Compile Include="Engine\Rendering\EntityRenderingEngine.cs" />

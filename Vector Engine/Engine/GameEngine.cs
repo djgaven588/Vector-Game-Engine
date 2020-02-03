@@ -22,8 +22,11 @@ namespace VectorEngine.Core
 
         public static WindowHandler windowHandler;
 
-        public GameEngine(string[] startParameters)
+        private IStartEngine entryPoint;
+
+        public GameEngine(string[] startParameters, IStartEngine entryPoint)
         {
+            this.entryPoint = entryPoint;
             windowHandler = new WindowHandler(640, 480, "Vector Engine", this)
             {
                 VSync = VSyncMode.Off
@@ -50,6 +53,7 @@ namespace VectorEngine.Core
 
         public void OnLoad(EventArgs e)
         {
+            entryPoint.OnLoad();
             light = new Light(new Vector3d(-500, 500, 500), new Vector3d(1, 1, 1));
             camera = new Camera();
             camera.Position = new Vector3d(0, 0, 0);
@@ -120,6 +124,7 @@ namespace VectorEngine.Core
 
         public void OnClosed(EventArgs e)
         {
+            entryPoint.OnClose();
             staticShader.CleanUp();
             RenderEngine.CleanUp();
             RenderDataLoader.CleanUp();
@@ -142,7 +147,7 @@ namespace VectorEngine.Core
         public void OnUpdateFrame(FrameEventArgs e)
         {
             VectorSchedulers.RunUpdate();
-
+            entryPoint.OnUpdate(e.Time);
             //TODO:
             //Look at SpinWait which would replace Thread.Sleep(), which is known for being inconsistent.
             if (windowHandler.Focused)
@@ -217,7 +222,7 @@ namespace VectorEngine.Core
             staticShader.LoadLight(light);
 
             VectorSchedulers.RunRender();
-
+            entryPoint.OnRender(e.Time);
             // Run render code here
             RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
             RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
