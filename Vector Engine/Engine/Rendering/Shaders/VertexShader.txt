@@ -12,6 +12,8 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
+//uniform vec3 lightPositions[10];
+//uniform vec3 lightColors[10];
 
 void main()
 {

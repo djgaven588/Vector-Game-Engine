@@ -53,6 +53,12 @@ namespace VectorEngine.Core.Rendering.LowLevel
             projectionMatrix = projectMatrix;
         }
 
+        public static void TEST_Prepare()
+        {
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+        }
+
         /// <summary>
         /// Clear the screen using the clear color
         /// </summary>
