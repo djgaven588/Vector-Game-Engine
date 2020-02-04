@@ -10,49 +10,20 @@ namespace VectorEngine.Engine.Rendering
     /// </summary>
     public class Material
     {
-        public bool InstancedMaterial { get; private set; }
         public bool UsesLights { get; private set; }
         public bool UsesViewMatrix { get; private set; }
         public bool UsesTime { get; private set; }
-        public ShaderProgram Shader
+        public ShaderProgram Shader { get; private set; }
+        private Dictionary<string, int> UniformLocations;
+
+        public Material(ShaderProgram shader, bool useLights = true, bool viewBased = true, bool useTime = true)
         {
-            get => InstancedMaterial ? instancedMaterialShader : staticMaterialShader;
-            private set
-            {
-                if (InstancedMaterial)
-                {
-                    instancedMaterialShader = value;
-                }
-                else
-                {
-                    staticMaterialShader = value;
-                }
-            }
-        }
-
-        public Dictionary<string, int> UniformLocations => InstancedMaterial ? instancedUniformLocations : staticUniformLocations;
-
-        private ShaderProgram instancedMaterialShader;
-        private static ShaderProgram staticMaterialShader;
-        private Dictionary<string, int> instancedUniformLocations;
-        private static Dictionary<string, int> staticUniformLocations;
-
-        public Material(ShaderProgram shader, bool isInstanced = false, bool useLights = true, bool viewBased = true, bool useTime = true)
-        {
-            InstancedMaterial = isInstanced;
             UsesLights = useLights;
             UsesViewMatrix = viewBased;
             UsesTime = useTime;
             Shader = shader;
 
-            if (InstancedMaterial)
-            {
-                instancedUniformLocations = new Dictionary<string, int>();
-            }
-            else
-            {
-                staticUniformLocations = new Dictionary<string, int>();
-            }
+            UniformLocations = new Dictionary<string, int>();
         }
 
         /// <summary>
