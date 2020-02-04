@@ -56,7 +56,7 @@ namespace VectorEngine.Core.Rendering.Shaders
         public void LoadLight(Light light)
         {
             LoadVector(location_lightPosition, (Vector3)light.Position);
-            LoadVector(location_lightColor, (Vector3)light.Position);
+            LoadVector(location_lightColor, (Vector3)light.Color);
         }
 
         public override void BeforeRenderShader()

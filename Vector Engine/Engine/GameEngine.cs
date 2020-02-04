@@ -134,7 +134,6 @@ namespace VectorEngine.Core
         public void OnRenderFrame(FrameEventArgs e)
         {
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
-
             RenderEngine.CleanUp();
             light.Position = camera.Position;
 

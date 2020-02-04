@@ -16,7 +16,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
         private static readonly Queue<Light> lights = new Queue<Light>();
         private static readonly Queue<Camera> cameras = new Queue<Camera>();
 
-        private static Queue<(Material, Queue<(Mesh, Queue<Matrix4>)>)> renderingQueue = new Queue<(Material, Queue<(Mesh, Queue<Matrix4>)>)>();
+        private static Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> renderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
 
         /// <summary>
         /// Setup the renderer, defaults some OpenTK options
@@ -156,7 +156,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
         {
             Camera camera;
             Material material;
-            Queue<(Mesh, Queue<Matrix4>)> objectsToRender;
+            Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
             Mesh currentMesh;
             Queue<Matrix4> currentObjects;
             Matrix4 currentObject;
@@ -176,9 +176,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 camera = cameraData[cameraIndex];
                 GL.Viewport((int)(camera.ViewPortOffset.X * width), (int)(camera.ViewPortOffset.Y * height), (int)(camera.ViewPortSize.X * width), (int)(camera.ViewPortSize.Y * height));
 
-                while (renderingQueue.Count > 0)
+                foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in renderingQueue)
                 {
-                    (material, objectsToRender) = renderingQueue.Dequeue();
+                    material = entry.Key;
+                    objectsToRender = entry.Value;
 
                     material.Shader.EnableShader();
 
@@ -201,9 +202,11 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
                     material.Shader.BeforeRenderShader();
 
-                    while (objectsToRender.Count > 0)
+                    foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
                     {
-                        (currentMesh, currentObjects) = objectsToRender.Dequeue();
+                        currentMesh = renderEntry.Key;
+                        currentObjects = renderEntry.Value;
+
                         GL.BindVertexArray(currentMesh.VaoID);
 
                         material.Shader.BeforeRenderObject();
@@ -223,6 +226,8 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 }
             }
 
+            renderingQueue.Clear();
+
             GL.Viewport(0, 0, width, height);
 
             GL.DisableVertexAttribArray(0);
@@ -234,16 +239,51 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
         public static void AddToRenderQueue(Material mat, Mesh mesh, Matrix4 pos)
         {
-            // TODO : Add ability to add to the queue
-            // Garbage to force error
-            //addToQueue
+            if (renderingQueue.ContainsKey(mat))
+            {
+                if (renderingQueue[mat].ContainsKey(mesh))
+                {
+                    renderingQueue[mat][mesh].Enqueue(pos);
+                }
+                else
+                {
+                    Queue<Matrix4> temp = new Queue<Matrix4>();
+                    temp.Enqueue(pos);
+                    renderingQueue[mat].Add(mesh, temp);
+                }
+            }
+            else
+            {
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>();
+                temp.Add(mesh, new Queue<Matrix4>());
+                temp[mesh].Enqueue(pos);
+                renderingQueue.Add(mat, temp);
+            }
         }
 
-        public static void AddToRenderQueueInstanced(Material matrix, Mesh mesh, Matrix4[] positions)
+        public static void AddToRenderQueueInstanced(Material mat, Mesh mesh, Matrix4[] positions)
         {
-            // TODO : Add ability to add multiple positions to the queue at once.
-            // Garbage to force error
-            //addToQueue
+            if (renderingQueue.ContainsKey(mat))
+            {
+                if (renderingQueue[mat].ContainsKey(mesh))
+                {
+                    for (int i = 0; i < positions.Length; i++)
+                    {
+                        renderingQueue[mat][mesh].Enqueue(positions[i]);
+                    }
+                }
+                else
+                {
+                    Queue<Matrix4> temp = new Queue<Matrix4>(positions);
+                    renderingQueue[mat].Add(mesh, temp);
+                }
+            }
+            else
+            {
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>();
+                temp.Add(mesh, new Queue<Matrix4>(positions));
+                renderingQueue.Add(mat, temp);
+            }
         }
     }
 }
