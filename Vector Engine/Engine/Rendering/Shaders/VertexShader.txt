@@ -12,8 +12,8 @@ uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 lightPosition;
-//uniform vec3 lightPositions[10];
-//uniform vec3 lightColors[10];
+uniform vec3 lightPositions[12];
+uniform vec3 lightColors[12];
 
 void main()
 {
@@ -22,5 +22,8 @@ void main()
 	pass_textureCoords = textureCoords;
 	
 	surfaceNormal = (transformationMatrix * vec4(normal, 0.0)).xyz;
+
 	toLightVector = lightPosition - worldPosition.xyz;
+
+	toLightVector = lightPositions[0] - worldPosition.xyz;
 }

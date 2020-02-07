@@ -10,7 +10,6 @@ namespace VectorEngine.Core.Rendering.Shaders
         private readonly int programID;
         private readonly int vertexShaderID;
         private readonly int fragmentShaderID;
-        public bool wasEnabled { get; private set; }
 
         protected ShaderProgram(string vertexFile, string fragmentFile)
         {
@@ -36,9 +35,9 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         protected abstract void GetAllUniformLocations();
 
-        public abstract void BeforeRenderShader();
+        public abstract void BeforeRenderGroup();
 
-        public abstract void BeforeRenderObject();
+        public abstract void BeforeRenderIndividual();
 
         public abstract void AfterRenderObject();
 
@@ -51,13 +50,11 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public void EnableShader()
         {
-            wasEnabled = true;
             GL.UseProgram(programID);
         }
 
         public void DisableShader()
         {
-            wasEnabled = false;
             GL.UseProgram(0);
         }
 
@@ -74,17 +71,17 @@ namespace VectorEngine.Core.Rendering.Shaders
             GL.BindAttribLocation(programID, attribute, variableName);
         }
 
-        public static void LoadDouble(int location, double value)
+        public void LoadDouble(int location, double value)
         {
-            GL.Uniform1(location, value);
+            GL.ProgramUniform1(programID, location, value);
         }
 
-        public static void LoadVector(int location, Vector3 vector)
+        public void LoadVector(int location, Vector3 vector)
         {
-            GL.Uniform3(location, vector.X, vector.Y, vector.Z);
+            GL.ProgramUniform3(programID, location, vector);
         }
 
-        public static void LoadBoolean(int location, bool value)
+        public void LoadBoolean(int location, bool value)
         {
             int toLoad = 0;
             if (value)
@@ -92,24 +89,24 @@ namespace VectorEngine.Core.Rendering.Shaders
                 toLoad = 1;
             }
 
-            GL.Uniform1(location, toLoad);
+            GL.ProgramUniform1(programID, location, toLoad);
         }
 
-        public static void LoadMatrix4(int location, Matrix4 matrix)
+        public void LoadMatrix4(int location, Matrix4 matrix)
         {
-            GL.UniformMatrix4(location, false, ref matrix);
+            GL.ProgramUniformMatrix4(programID, location, false, ref matrix);
         }
 
-        public static void LoadVectorArray(int location, Vector3d[] vectors)
+        public void LoadVectorArray(int location, Vector3[] vectors)
         {
-            double[] data = new double[vectors.Length * 3];
-            for (int i = 0; i < vectors.Length; i++)
+            float[] values = new float[vectors.Length * 3];
+            for (int i = 0; i < vectors.Length; i+=3)
             {
-                data[i] = vectors[i].X;
-                data[i + 1] = vectors[i].Y;
-                data[i + 2] = vectors[i].Z;
+                values[i] = vectors[i].X;
+                values[i + 1] = vectors[i].Y;
+                values[i + 2] = vectors[i].Z;
             }
-            GL.Uniform3(location, vectors.Length, data);
+            GL.ProgramUniform3(programID, location, vectors.Length, values);
         }
 
         private static int LoadShader(string file, ShaderType type)

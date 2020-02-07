@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using VectorEngine.Core.Common;
 using VectorEngine.Core.Rendering.Objects;
 using VectorEngine.Core.Rendering.Shaders;
+using VectorEngine.Engine;
 using VectorEngine.Engine.Rendering;
 
 namespace VectorEngine.Core.Rendering.LowLevel
@@ -55,6 +56,13 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
         public static void TEST_Prepare()
         {
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            ChangeClearColor(0.25f, 0f, 0.5f, 1f);
+
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
         }
@@ -167,10 +175,6 @@ namespace VectorEngine.Core.Rendering.LowLevel
             Queue<Matrix4> currentObjects;
             Matrix4 currentObject;
 
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-            GL.EnableVertexAttribArray(2);
-
             Light[] lightData = lights.ToArray();
             lights.Clear();
 
@@ -181,11 +185,14 @@ namespace VectorEngine.Core.Rendering.LowLevel
             {
                 camera = cameraData[cameraIndex];
                 GL.Viewport((int)(camera.ViewPortOffset.X * width), (int)(camera.ViewPortOffset.Y * height), (int)(camera.ViewPortSize.X * width), (int)(camera.ViewPortSize.Y * height));
-
+                Debug.Log($"Rendering camera {cameraIndex}");
                 foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in renderingQueue)
                 {
                     material = entry.Key;
                     objectsToRender = entry.Value;
+
+                    Debug.Log($"Shader {material.UsesLights}");
+                    Debug.Log($"Different meshes to render {objectsToRender.Count}");
 
                     material.Shader.EnableShader();
 
@@ -206,8 +213,6 @@ namespace VectorEngine.Core.Rendering.LowLevel
                         material.SetMatrix("viewMatrix", Mathmatics.CreateViewMatrix(camera));
                     }
 
-                    material.Shader.BeforeRenderShader();
-
                     foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
                     {
                         currentMesh = renderEntry.Key;
@@ -215,32 +220,32 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
                         GL.BindVertexArray(currentMesh.VaoID);
 
-                        material.Shader.BeforeRenderObject();
+                        material.Shader.BeforeRenderGroup();
 
                         while (currentObjects.Count > 0)
                         {
+                            material.Shader.BeforeRenderIndividual();
+
                             currentObject = currentObjects.Dequeue();
                             material.SetMatrix("transformationMatrix", currentObject);
 
                             GL.DrawElements(BeginMode.Triangles, currentMesh.VertexCount, DrawElementsType.UnsignedInt, 0);
                         }
 
+                        GL.BindVertexArray(0);
+
                         material.Shader.AfterRenderObject();
                     }
 
                     material.Shader.AfterRenderShader();
+
+                    material.Shader.DisableShader();
                 }
             }
 
             renderingQueue.Clear();
 
             GL.Viewport(0, 0, width, height);
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-            GL.DisableVertexAttribArray(2);
-
-            GL.BindVertexArray(0);
         }
 
         public static void AddToRenderQueue(Material mat, Mesh mesh, Matrix4 pos)

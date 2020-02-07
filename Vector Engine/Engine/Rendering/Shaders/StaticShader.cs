@@ -59,15 +59,19 @@ namespace VectorEngine.Core.Rendering.Shaders
             LoadVector(location_lightColor, (Vector3)light.Color);
         }
 
-        public override void BeforeRenderShader()
+        public override void BeforeRenderGroup()
         {
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, textureId);
+
+            GL.EnableVertexAttribArray(0);
+            GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
         }
 
-        public override void BeforeRenderObject()
+        public override void BeforeRenderIndividual()
         {
-
+            
         }
 
         public override void AfterRenderObject()
@@ -77,7 +81,9 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public override void AfterRenderShader()
         {
-
+            GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
         }
     }
 }

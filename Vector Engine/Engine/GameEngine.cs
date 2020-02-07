@@ -145,20 +145,20 @@ namespace VectorEngine.Core
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
             RenderEngine.CleanUp();
             light.Position = camera.Position;
-
-            RenderEngine.PrepareForRendering();
-            //RenderEngine.AddCamera(camera);
-            //RenderEngine.AddLight(light);
-            //RenderEngine.AddToRenderQueue(standardMaterial, treeMesh, Mathmatics.CreateTransformationMatrix(new Vector3(-3, 0, -2), Quaternion.Identity, Vector3.Zero));
-            staticShader.LoadViewMatrix(camera);
-            staticShader.LoadLight(light);
+            RenderEngine.TEST_Prepare();
+            //RenderEngine.PrepareForRendering();
+            RenderEngine.AddCamera(camera);
+            RenderEngine.AddLight(light);
+            RenderEngine.AddToRenderQueue(standardMaterial, treeMesh, Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -5), Vector3d.Zero, Vector3d.One));
+            //staticShader.LoadViewMatrix(camera);
+            //staticShader.LoadLight(light);
 
             entryPoint.OnRender(e.Time);
             // Run render code here
-            RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
-            RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
-            //RenderEngine.RenderAll();
-            staticShader.DisableShader();
+            //RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
+            //RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
+            RenderEngine.RenderAll();
+            //staticShader.DisableShader();
 
             windowHandler.SwapBuffers();
 

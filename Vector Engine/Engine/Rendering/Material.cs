@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using OpenTK.Graphics.OpenGL4;
 using System.Collections.Generic;
 using VectorEngine.Core.Rendering.Objects;
 using VectorEngine.Core.Rendering.Shaders;
@@ -34,20 +35,9 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="value">The value to set it to</param>
         public void SetDouble(string uniformName, double value)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
-
             int uniformLocation = HandleUniformGet(uniformName);
 
-            ShaderProgram.LoadDouble(uniformLocation, value);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            Shader.LoadDouble(uniformLocation, value);
         }
 
         /// <summary>
@@ -58,20 +48,9 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="value">The value to set it to</param>
         public void SetMatrix(string uniformName, Matrix4 value)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
-
             int uniformLocation = HandleUniformGet(uniformName);
 
-            ShaderProgram.LoadMatrix4(uniformLocation, value);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            Shader.LoadMatrix4(uniformLocation, value);
         }
 
         /// <summary>
@@ -82,20 +61,9 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="value">The value to set it to</param>
         public void SetVector3(string uniformName, Vector3 value)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
-
             int uniformLocation = HandleUniformGet(uniformName);
 
-            ShaderProgram.LoadVector(uniformLocation, value);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            Shader.LoadVector(uniformLocation, value);
         }
 
         /// <summary>
@@ -106,20 +74,9 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="timeSinceStart">The time since the engine core start.</param>
         public void SetTimeData(double timeSinceStart)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
-
             int uniformLocation = HandleUniformGet("timeSinceStart");
 
-            ShaderProgram.LoadDouble(uniformLocation, timeSinceStart);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            Shader.LoadDouble(uniformLocation, timeSinceStart);
         }
 
         /// <summary>
@@ -130,31 +87,20 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="lights"></param>
         public void SetLights(Light[] lights)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
+            Vector3[] positions = new Vector3[lights.Length];
+            Vector3[] colors = new Vector3[lights.Length];
 
-            int uniformLocationPos = HandleUniformGet("lightPositions");
-            int uniformLocationCol = HandleUniformGet("lightColors");
-
-            Vector3d[] positions = new Vector3d[lights.Length];
-            Vector3d[] colors = new Vector3d[lights.Length];
+            int uniformLocationPos = HandleUniformGet($"lightPositions[12]");
+            int uniformLocationCol = HandleUniformGet($"lightColors[12]");
 
             for (int i = 0; i < lights.Length; i++)
             {
-                positions[i] = lights[i].Position;
-                colors[i] = lights[i].Color;
+                positions[i] = (Vector3)lights[i].Position;
+                colors[i] = (Vector3)lights[i].Color;
             }
 
-            ShaderProgram.LoadVectorArray(uniformLocationPos, positions);
-            ShaderProgram.LoadVectorArray(uniformLocationCol, colors);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            //Shader.LoadVectorArray(uniformLocationPos, positions);
+            //Shader.LoadVectorArray(uniformLocationCol, colors);
         }
 
         /// <summary>
@@ -166,20 +112,9 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="viewMatrix"></param>
         public void SetViewMatrix(Matrix4 viewMatrix)
         {
-            bool shaderPreviouslyEnabled = Shader.wasEnabled;
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.EnableShader();
-            }
-
             int uniformLocation = HandleUniformGet("viewMatrix");
 
-            ShaderProgram.LoadMatrix4(uniformLocation, viewMatrix);
-
-            if (!shaderPreviouslyEnabled)
-            {
-                Shader.DisableShader();
-            }
+            Shader.LoadMatrix4(uniformLocation, viewMatrix);
         }
 
         private int HandleUniformGet(string uniformName)
