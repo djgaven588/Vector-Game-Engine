@@ -20,7 +20,6 @@ namespace VectorEngine.Engine
 
         protected override void OnLoad(EventArgs e)
         {
-            Debug.Log(GL.IsEnabled(EnableCap.CullFace));
             engine.OnLoad(e);
         }
 

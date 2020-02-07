@@ -15,7 +15,7 @@ namespace VectorEngine.Engine.Rendering
         public bool UsesViewMatrix { get; private set; }
         public bool UsesTime { get; private set; }
         public ShaderProgram Shader { get; private set; }
-        private Dictionary<string, int> UniformLocations;
+        private readonly Dictionary<string, int> UniformLocations;
 
         public Material(ShaderProgram shader, bool useLights = true, bool viewBased = true, bool useTime = true)
         {
@@ -87,20 +87,31 @@ namespace VectorEngine.Engine.Rendering
         /// <param name="lights"></param>
         public void SetLights(Light[] lights)
         {
-            Vector3[] positions = new Vector3[lights.Length];
-            Vector3[] colors = new Vector3[lights.Length];
+            Vector3[] positions = new Vector3[12];
+            Vector3[] colors = new Vector3[12];
+            float[] distances = new float[12];
+            float[] intensities = new float[12];
 
-            int uniformLocationPos = HandleUniformGet($"lightPositions[12]");
-            int uniformLocationCol = HandleUniformGet($"lightColors[12]");
+            int uniformLocationPos = HandleUniformGet("lightPositions");
+            int uniformLocationCol = HandleUniformGet("lightColors");
+            int uniformLocationDis = HandleUniformGet("lightDistances");
+            int uniformLocationInt = HandleUniformGet("lightIntensities");
 
             for (int i = 0; i < lights.Length; i++)
             {
+                if (i >= 12)
+                    break;
+
                 positions[i] = (Vector3)lights[i].Position;
                 colors[i] = (Vector3)lights[i].Color;
+                distances[i] = lights[i].Distance;
+                intensities[i] = lights[i].Intensity;
             }
 
-            //Shader.LoadVectorArray(uniformLocationPos, positions);
-            //Shader.LoadVectorArray(uniformLocationCol, colors);
+            Shader.LoadVectorArray(uniformLocationPos, positions);
+            Shader.LoadVectorArray(uniformLocationCol, colors);
+            Shader.LoadFloatArray(uniformLocationDis, distances);
+            Shader.LoadFloatArray(uniformLocationInt, intensities);
         }
 
         /// <summary>

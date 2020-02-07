@@ -11,29 +11,24 @@ namespace VectorEngine.Core.Rendering.LowLevel
 {
     public static class RenderEngine
     {
-        private static Matrix4 projectionMatrix;
-        private static StaticShader staticShader;
         private static double timeSinceStart;
         private static readonly Queue<Light> lights = new Queue<Light>();
         private static readonly Queue<Camera> cameras = new Queue<Camera>();
 
-        private static Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> renderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
+        private static readonly Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> renderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
 
         /// <summary>
         /// Setup the renderer, defaults some OpenTK options
         /// </summary>
         /// <param name="shader"></param>
-        public static void Setup(StaticShader shader)
+        public static void Setup()
         {
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            staticShader = shader;
-
             ChangeClearColor(0.25f, 0f, 0.5f, 1f);
-            PrepareForRendering();
         }
 
         /// <summary>
@@ -45,38 +40,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
             renderingQueue.Clear();
         }
 
-        /// <summary>
-        /// Change the projection matrix used by the current renderer
-        /// </summary>
-        /// <param name="projectMatrix"></param>
-        public static void SetProjectionMatrix(Matrix4 projectMatrix)
-        {
-            projectionMatrix = projectMatrix;
-        }
-
-        public static void TEST_Prepare()
-        {
-            GL.Enable(EnableCap.CullFace);
-            GL.CullFace(CullFaceMode.Back);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-
-            ChangeClearColor(0.25f, 0f, 0.5f, 1f);
-
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.DepthTest);
-        }
-
-        /// <summary>
-        /// Clear the screen using the clear color
-        /// </summary>
-        public static void PrepareForRendering()
+        public static void RenderPrepare()
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);
-
-            staticShader.EnableShader();
-            staticShader.LoadProjectionMatrix(projectionMatrix);
         }
 
         /// <summary>
@@ -92,80 +59,35 @@ namespace VectorEngine.Core.Rendering.LowLevel
         }
 
         /// <summary>
-        /// Render a mesh, ignoring the batching system
+        /// Add a light to the next render
         /// </summary>
-        /// <param name="matrix"></param>
-        /// <param name="mesh"></param>
-        /// <param name="textureId"></param>
-        public static void RenderMeshNow(Matrix4 matrix, Mesh mesh, int textureId)
-        {
-            staticShader.LoadTransformationMatrix(matrix);
-
-            GL.BindVertexArray(mesh.VaoID);
-
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-            GL.EnableVertexAttribArray(2);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
-
-            GL.DrawElements(BeginMode.Triangles, mesh.VertexCount, DrawElementsType.UnsignedInt, 0);
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-            GL.DisableVertexAttribArray(2);
-
-            GL.BindVertexArray(0);
-        }
-
-        /// <summary>
-        /// Render multiple meshes in one call, particles will find this useful
-        /// </summary>
-        /// <param name="matrix"></param>
-        /// <param name="mesh"></param>
-        /// <param name="textureId"></param>
-        public static void RenderMeshNowInstanced(Matrix4[] matrixes, Mesh mesh, int textureId)
-        {
-            GL.BindVertexArray(mesh.VaoID);
-
-            GL.EnableVertexAttribArray(0);
-            GL.EnableVertexAttribArray(1);
-            GL.EnableVertexAttribArray(2);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-
-            GL.BindTexture(TextureTarget.Texture2D, textureId);
-            for (int i = 0; i < matrixes.Length; i++)
-            {
-                staticShader.LoadTransformationMatrix(matrixes[i]);
-
-                GL.DrawElements(BeginMode.Triangles, mesh.VertexCount, DrawElementsType.UnsignedInt, 0);
-            }
-
-            GL.DisableVertexAttribArray(0);
-            GL.DisableVertexAttribArray(1);
-            GL.DisableVertexAttribArray(2);
-
-            GL.BindVertexArray(0);
-        }
-
+        /// <param name="light"></param>
         public static void AddLight(Light light)
         {
             lights.Enqueue(light);
         }
 
+        /// <summary>
+        /// Update the current time information
+        /// </summary>
+        /// <param name="timeSinceStart"></param>
         public static void SetTimeData(double timeSinceStart)
         {
             RenderEngine.timeSinceStart = timeSinceStart;
         }
 
+        /// <summary>
+        /// Add a camera to the next render
+        /// </summary>
+        /// <param name="cam"></param>
         public static void AddCamera(Camera cam)
         {
             cameras.Enqueue(cam);
         }
 
+        /// <summary>
+        /// Render all queued up objects
+        /// </summary>
         public static void RenderAll()
         {
             Camera camera;
@@ -185,14 +107,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
             {
                 camera = cameraData[cameraIndex];
                 GL.Viewport((int)(camera.ViewPortOffset.X * width), (int)(camera.ViewPortOffset.Y * height), (int)(camera.ViewPortSize.X * width), (int)(camera.ViewPortSize.Y * height));
-                Debug.Log($"Rendering camera {cameraIndex}");
                 foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in renderingQueue)
                 {
                     material = entry.Key;
                     objectsToRender = entry.Value;
-
-                    Debug.Log($"Shader {material.UsesLights}");
-                    Debug.Log($"Different meshes to render {objectsToRender.Count}");
 
                     material.Shader.EnableShader();
 
@@ -201,17 +119,17 @@ namespace VectorEngine.Core.Rendering.LowLevel
                         material.SetLights(lightData);
                     }
 
-                    if (material.UsesLights)
+                    if (material.UsesTime)
                     {
                         material.SetTimeData(timeSinceStart);
                     }
-
-                    material.SetMatrix("projectionMatrix", camera.ProjectionMatrix);
 
                     if (material.UsesViewMatrix)
                     {
                         material.SetMatrix("viewMatrix", Mathmatics.CreateViewMatrix(camera));
                     }
+
+                    material.SetMatrix("projectionMatrix", camera.ProjectionMatrix);
 
                     foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
                     {
@@ -248,6 +166,12 @@ namespace VectorEngine.Core.Rendering.LowLevel
             GL.Viewport(0, 0, width, height);
         }
 
+        /// <summary>
+        /// Add a single instance of a mesh to the batch queue
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <param name="mesh"></param>
+        /// <param name="pos"></param>
         public static void AddToRenderQueue(Material mat, Mesh mesh, Matrix4 pos)
         {
             if (renderingQueue.ContainsKey(mat))
@@ -265,13 +189,21 @@ namespace VectorEngine.Core.Rendering.LowLevel
             }
             else
             {
-                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>();
-                temp.Add(mesh, new Queue<Matrix4>());
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
+                {
+                    { mesh, new Queue<Matrix4>() }
+                };
                 temp[mesh].Enqueue(pos);
                 renderingQueue.Add(mat, temp);
             }
         }
 
+        /// <summary>
+        /// Add many instances of a mesh to the batch queue
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <param name="mesh"></param>
+        /// <param name="positions"></param>
         public static void AddToRenderQueueInstanced(Material mat, Mesh mesh, Matrix4[] positions)
         {
             if (renderingQueue.ContainsKey(mat))
@@ -291,8 +223,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
             }
             else
             {
-                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>();
-                temp.Add(mesh, new Queue<Matrix4>(positions));
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
+                {
+                    { mesh, new Queue<Matrix4>(positions) }
+                };
                 renderingQueue.Add(mat, temp);
             }
         }

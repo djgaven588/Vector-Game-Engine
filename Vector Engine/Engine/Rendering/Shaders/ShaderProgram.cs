@@ -100,13 +100,18 @@ namespace VectorEngine.Core.Rendering.Shaders
         public void LoadVectorArray(int location, Vector3[] vectors)
         {
             float[] values = new float[vectors.Length * 3];
-            for (int i = 0; i < vectors.Length; i+=3)
+            for (int i = 0; i < vectors.Length; i++)
             {
-                values[i] = vectors[i].X;
-                values[i + 1] = vectors[i].Y;
-                values[i + 2] = vectors[i].Z;
+                values[i * 3] = vectors[i].X;
+                values[i * 3 + 1] = vectors[i].Y;
+                values[i * 3 + 2] = vectors[i].Z;
             }
             GL.ProgramUniform3(programID, location, vectors.Length, values);
+        }
+
+        public void LoadFloatArray(int location, float[] values)
+        {
+            GL.ProgramUniform1(programID, location, values.Length, values);
         }
 
         private static int LoadShader(string file, ShaderType type)
@@ -114,7 +119,7 @@ namespace VectorEngine.Core.Rendering.Shaders
             int shaderID = GL.CreateShader(type);
             GL.ShaderSource(shaderID, File.ReadAllText(file));
             GL.CompileShader(shaderID);
-            Debug.Log($"Shader Info Log: {GL.GetShaderInfoLog(shaderID)} END");
+            Debug.Log($"Shader Info Log:\n{GL.GetShaderInfoLog(shaderID)}\nEND");
             return shaderID;
         }
     }

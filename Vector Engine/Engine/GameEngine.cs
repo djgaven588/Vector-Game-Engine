@@ -16,10 +16,6 @@ namespace VectorEngine.Core
 {
     public class GameEngine
     {
-        private const float FOV = 60.0f;
-        private const float NEAR_PLANE = 0.1f;
-        private const float FAR_PLANE = 1000f;
-
         public static WindowHandler windowHandler;
 
         private readonly IStartEngine entryPoint;
@@ -44,7 +40,9 @@ namespace VectorEngine.Core
 
         StaticShader staticShader;
         Light light;
+        Light mainLight;
         Camera camera;
+        Camera secondCamera;
         public static Mesh treeMesh;
         public static Mesh testMesh;
         public static int treeTexture;
@@ -53,7 +51,8 @@ namespace VectorEngine.Core
         public void OnLoad(EventArgs e)
         {
             entryPoint.OnLoad();
-            light = new Light(new Vector3d(-500, 500, 500), new Vector3d(1, 1, 1));
+            light = new Light(Vector3d.Zero, new Vector3d(0, 0, 1), 50, 2f);
+            mainLight = new Light(new Vector3d(-10000000, 10000000, 10000000), new Vector3d(1, 1, 0.8f), 100000000, 0.8f);
             camera = new Camera
             {
                 Position = new Vector3d(0, 0, 0),
@@ -64,6 +63,18 @@ namespace VectorEngine.Core
                 IsPerspective = true,
                 ViewPortOffset = Vector2.Zero,
                 ViewPortSize = Vector2.One
+            };
+
+            secondCamera = new Camera
+            {
+                Position = new Vector3d(0, 0, 0),
+                Rotation = new Vector3d(0, 0, 0),
+                FarPlane = 1000f,
+                NearPlane = 0.01f,
+                FOV = 60,
+                IsPerspective = true,
+                ViewPortOffset = Vector2.Zero,
+                ViewPortSize = Vector2.One * 0.25f
             };
 
             treeMesh = OBJLoader.LoadObjModel("Tree");
@@ -94,10 +105,8 @@ namespace VectorEngine.Core
             treeTexture = RenderDataLoader.LoadTexture("Tree");
 
             staticShader = new StaticShader(treeTexture);
-            standardMaterial = new Material(new StaticShader(treeTexture), true, true, true);
-            RenderEngine.Setup(staticShader);
-
-            RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
+            standardMaterial = new Material(new StaticShader(treeTexture), true, true, false);
+            RenderEngine.Setup();
         }
 
         public void OnClosed(EventArgs e)
@@ -110,16 +119,8 @@ namespace VectorEngine.Core
 
         public void OnResize(EventArgs e)
         {
-            RenderEngine.SetProjectionMatrix(CreateProjectionMatrix());
             (int width, int height) = windowHandler.GetWindowDimensions();
             GL.Viewport(0, 0, width, height);
-        }
-
-        private Matrix4 CreateProjectionMatrix()
-        {
-            (int width, int height) = windowHandler.GetWindowDimensions();
-            float aspectRatio = (float)width / height;
-            return Matrix4.CreatePerspectiveFieldOfView((float)Mathmatics.ConvertToRadians(FOV), aspectRatio, NEAR_PLANE, FAR_PLANE);
         }
 
         public void OnUpdateFrame(FrameEventArgs e)
@@ -145,20 +146,14 @@ namespace VectorEngine.Core
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
             RenderEngine.CleanUp();
             light.Position = camera.Position;
-            RenderEngine.TEST_Prepare();
-            //RenderEngine.PrepareForRendering();
+            RenderEngine.RenderPrepare();
             RenderEngine.AddCamera(camera);
             RenderEngine.AddLight(light);
+            RenderEngine.AddLight(mainLight);
             RenderEngine.AddToRenderQueue(standardMaterial, treeMesh, Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -5), Vector3d.Zero, Vector3d.One));
-            //staticShader.LoadViewMatrix(camera);
-            //staticShader.LoadLight(light);
 
             entryPoint.OnRender(e.Time);
-            // Run render code here
-            //RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -2), Vector3d.Zero, Vector3d.One), testMesh, treeTexture);
-            //RenderEngine.RenderMeshNow(Mathmatics.CreateTransformationMatrix(new Vector3d(5, 0, -5), Vector3d.Zero, Vector3d.One), treeMesh, treeTexture);
             RenderEngine.RenderAll();
-            //staticShader.DisableShader();
 
             windowHandler.SwapBuffers();
 
