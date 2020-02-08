@@ -2,6 +2,9 @@
 {
     public interface IStartEngine
     {
+        int TargetFrameRate { get; }
+        int MaxFrameRate { get; }
+        bool UseVSync { get; }
         void OnLoad();
         void OnClose();
         void OnUpdate(double timeDelta);

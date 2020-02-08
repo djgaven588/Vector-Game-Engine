@@ -115,8 +115,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
             Material material;
             Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
             Mesh currentMesh;
-            Queue<Matrix4> currentObjects;
-            Matrix4 currentObject;
+            Matrix4[] currentObjects;
 
             Light[] lightData = lights.ToArray();
             lights.Clear();
@@ -133,7 +132,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 GL.BindFramebuffer(FramebufferTarget.Framebuffer, camera.fboId);
                 GL.BindTexture(TextureTarget.Texture2D, camera.texId);
 
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, viewPortWidth, viewPortHeight, 0, PixelFormat.Rgb, PixelType.UnsignedByte, System.IntPtr.Zero);
+                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, viewPortWidth, viewPortHeight, 0, PixelFormat.Rgba, PixelType.UnsignedByte, System.IntPtr.Zero);
 
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -156,7 +155,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
                 GL.Viewport(0, 0, viewPortWidth, viewPortHeight);
 
-                ChangeClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+                ChangeClearColor(camera.ClearColor.X, camera.ClearColor.Y, camera.ClearColor.Z, camera.ClearColor.W);
                 RenderPrepare();
 
                 foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in renderingQueue)
@@ -186,18 +185,18 @@ namespace VectorEngine.Core.Rendering.LowLevel
                     foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
                     {
                         currentMesh = renderEntry.Key;
-                        currentObjects = renderEntry.Value;
+                        currentObjects = new Matrix4[renderEntry.Value.Count]; 
+                        renderEntry.Value.CopyTo(currentObjects, 0);
 
                         GL.BindVertexArray(currentMesh.VaoID);
 
                         material.Shader.BeforeRenderGroup();
 
-                        while (currentObjects.Count > 0)
+                        for (int i = 0; i < currentObjects.Length; i++)
                         {
                             material.Shader.BeforeRenderIndividual();
 
-                            currentObject = currentObjects.Dequeue();
-                            material.SetMatrix("transformationMatrix", currentObject);
+                            material.SetMatrix("transformationMatrix", currentObjects[i]);
 
                             GL.DrawElements(BeginMode.Triangles, currentMesh.VertexCount, DrawElementsType.UnsignedInt, 0);
 
@@ -231,6 +230,8 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 frameBufferRedraw.Shader.BeforeRenderIndividual();
 
                 frameBufferRedraw.SetVector4("offsetAndScale", new Vector4(cameraData[i].ViewPortOffset.X, cameraData[i].ViewPortOffset.Y, cameraData[i].ViewPortSize.X, cameraData[i].ViewPortSize.X));
+                frameBufferRedraw.SetDouble("zOffset", -i / 1024.0);
+                
                 GL.BindTexture(TextureTarget.Texture2D, cameraData[i].texId);
 
                 GL.DrawElements(BeginMode.Triangles, vboQuad.VertexCount, DrawElementsType.UnsignedInt, 0);

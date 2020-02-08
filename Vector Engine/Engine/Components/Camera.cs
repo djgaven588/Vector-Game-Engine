@@ -15,6 +15,7 @@ namespace VectorEngine.Core.Rendering.Objects
         public bool IsPerspective = true;
         public Vector2 ViewPortSize = new Vector2(1, 1);
         public Vector2 ViewPortOffset = new Vector2(0, 0);
+        public Vector4 ClearColor = new Vector4(1, 1, 1, 1);
 
         public readonly int fboId;
         public readonly int texId;

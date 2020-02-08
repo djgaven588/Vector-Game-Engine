@@ -65,7 +65,6 @@
   <ItemGroup>
     <Compile Include="Engine\Common\GameLayer.cs" />
     <Compile Include="Engine\Common\IStartEngine.cs" />
-    <Compile Include="Engine\Common\LayerManager.cs" />
     <Compile Include="Engine\Common\Mathmatics.cs" />
     <Compile Include="Engine\Debug.cs" />
     <Compile Include="Engine\GameEngine.cs" />
@@ -87,7 +86,6 @@
     <Compile Include="Engine\Rendering\LowLevel\RenderEngine.cs" />
     <Compile Include="Engine\Rendering\Shaders\ShaderProgram.cs" />
     <Compile Include="Engine\Rendering\Shaders\StaticShader.cs" />
-    <Compile Include="EntryPoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Engine\Rendering\Shaders\FragmentShader.txt">

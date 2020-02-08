@@ -10,6 +10,7 @@ namespace VectorEngine.Core.Rendering.Shaders
         private readonly int programID;
         private readonly int vertexShaderID;
         private readonly int fragmentShaderID;
+        private bool hasBeenCleanedUp = false;
 
         protected ShaderProgram(string vertexFile, string fragmentFile)
         {
@@ -56,8 +57,18 @@ namespace VectorEngine.Core.Rendering.Shaders
 
         public void CleanUp()
         {
+            hasBeenCleanedUp = true;
             DisableShader();
             GL.DeleteProgram(programID);
+        }
+
+        ~ShaderProgram()
+        {
+            if(hasBeenCleanedUp == false)
+            {
+                Debug.Log($"A shader was not cleaned up before closing! If this was displayed before a crash or close, this may be ignored. Manually handling...");
+                CleanUp();
+            }
         }
 
         protected abstract void BindAttributes();
