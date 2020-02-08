@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using VectorEngine.Core.Common;
+using VectorEngine.Core.Rendering.LowLevel;
 
 namespace VectorEngine.Core.Rendering.Objects
 {
@@ -15,6 +16,10 @@ namespace VectorEngine.Core.Rendering.Objects
         public Vector2 ViewPortSize = new Vector2(1, 1);
         public Vector2 ViewPortOffset = new Vector2(0, 0);
 
+        public readonly int fboId;
+        public readonly int texId;
+        public readonly int bufId;
+
         private Matrix4 projectionMatrix;
 
         private void RecreateProjectionMatrix()
@@ -28,6 +33,20 @@ namespace VectorEngine.Core.Rendering.Objects
         {
             Vector3d toAdd = (Vector3d)(Quaternion.FromEulerAngles(0, (float)Mathmatics.ConvertToRadians(-Rotation.Y), 0) * (Vector3)movement);
             Position += toAdd;
+        }
+
+        public Camera()
+        {
+            fboId = RenderDataLoader.GenerateFrameBuffer();
+            texId = RenderDataLoader.GenerateTexture();
+            bufId = RenderDataLoader.GenerateRenderBuffer();
+        }
+
+        ~Camera()
+        {
+            RenderDataLoader.DeleteFrameBuffer(fboId);
+            RenderDataLoader.DeleteRenderBuffer(bufId);
+            RenderDataLoader.DeleteTexture(texId);
         }
     }
 }

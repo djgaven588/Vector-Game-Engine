@@ -77,7 +77,7 @@ namespace VectorEngine.Core
                 NearPlane = 0.01f,
                 FOV = 60,
                 IsPerspective = true,
-                ViewPortOffset = Vector2.Zero,
+                ViewPortOffset = Vector2.One * 0.5f,
                 ViewPortSize = Vector2.One * 0.25f
             };
 
@@ -150,6 +150,7 @@ namespace VectorEngine.Core
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
             RenderEngine.CleanUp();
             RenderEngine.AddCamera(camera);
+            RenderEngine.AddCamera(secondCamera);
             RenderEngine.AddLight(light);
             RenderEngine.AddLight(mainLight);
             RenderEngine.AddLight(anotherLight);
