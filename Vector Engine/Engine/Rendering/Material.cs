@@ -67,6 +67,19 @@ namespace VectorEngine.Engine.Rendering
         }
 
         /// <summary>
+        /// Sets a variable of type vector with the given name
+        /// inside the shader.
+        /// </summary>
+        /// <param name="uniformName">Name of the variable</param>
+        /// <param name="value">The value to set it to</param>
+        public void SetVector4(string uniformName, Vector4 value)
+        {
+            int uniformLocation = HandleUniformGet(uniformName);
+
+            Shader.LoadVector(uniformLocation, value);
+        }
+
+        /// <summary>
         /// !@! - INTERNAL USAGE - !@!
         /// Set the time value of the shader, this variable should be called
         /// "timeSinceStart", and if not found should be ignored.

@@ -35,18 +35,11 @@ namespace VectorEngine.Core.Rendering.Objects
             Position += toAdd;
         }
 
-        public Camera()
+        public Camera(int fboId, int texId, int bufId)
         {
-            fboId = RenderDataLoader.GenerateFrameBuffer();
-            texId = RenderDataLoader.GenerateTexture();
-            bufId = RenderDataLoader.GenerateRenderBuffer();
-        }
-
-        ~Camera()
-        {
-            RenderDataLoader.DeleteFrameBuffer(fboId);
-            RenderDataLoader.DeleteRenderBuffer(bufId);
-            RenderDataLoader.DeleteTexture(texId);
+            this.fboId = fboId;
+            this.texId = texId;
+            this.bufId = bufId;
         }
     }
 }

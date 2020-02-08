@@ -57,19 +57,7 @@ namespace VectorEngine.Core
             light = new Light(new Vector3d(10000000, 10000000, 10000000), new Vector3d(0, 1, 0), 100000000, 3f);
             mainLight = new Light(new Vector3d(-10000000, 10000000, 10000000), new Vector3d(1, 0, 0), 100000000, 3f);
             anotherLight = new Light(new Vector3d(0, -10000000, 10000000), new Vector3d(0, 0, 1), 100000000, 3f);
-            camera = new Camera
-            {
-                Position = new Vector3d(0, 0, 0),
-                Rotation = new Vector3d(0, 0, 0),
-                FarPlane = 1000f,
-                NearPlane = 0.01f,
-                FOV = 60,
-                IsPerspective = true,
-                ViewPortOffset = Vector2.Zero,
-                ViewPortSize = Vector2.One
-            };
-
-            secondCamera = new Camera
+            camera = new Camera (RenderDataLoader.GenerateFrameBuffer(), RenderDataLoader.GenerateTexture(), RenderDataLoader.GenerateRenderBuffer())
             {
                 Position = new Vector3d(0, 0, 0),
                 Rotation = new Vector3d(0, 0, 0),
@@ -78,7 +66,19 @@ namespace VectorEngine.Core
                 FOV = 60,
                 IsPerspective = true,
                 ViewPortOffset = Vector2.One * 0.5f,
-                ViewPortSize = Vector2.One * 0.25f
+                ViewPortSize = Vector2.One * 0.5f
+            };
+
+            secondCamera = new Camera (RenderDataLoader.GenerateFrameBuffer(), RenderDataLoader.GenerateTexture(), RenderDataLoader.GenerateRenderBuffer())
+            {
+                Position = new Vector3d(0, 0, 0),
+                Rotation = new Vector3d(0, 0, 0),
+                FarPlane = 1000f,
+                NearPlane = 0.01f,
+                FOV = 60,
+                IsPerspective = true,
+                ViewPortOffset = Vector2.One * -0.5f,
+                ViewPortSize = Vector2.One * 0.5f
             };
 
             treeMesh = OBJLoader.LoadObjModel("Tree");
@@ -118,6 +118,10 @@ namespace VectorEngine.Core
             entryPoint.OnClose();
             staticShader.CleanUp();
             RenderEngine.CleanUp();
+            GL.BindVertexArray(0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
             RenderDataLoader.CleanUp();
         }
 
@@ -149,6 +153,8 @@ namespace VectorEngine.Core
         {
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
             RenderEngine.CleanUp();
+            
+            
             RenderEngine.AddCamera(camera);
             RenderEngine.AddCamera(secondCamera);
             RenderEngine.AddLight(light);

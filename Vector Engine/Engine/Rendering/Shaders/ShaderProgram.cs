@@ -77,6 +77,11 @@ namespace VectorEngine.Core.Rendering.Shaders
             GL.ProgramUniform3(programID, location, vector);
         }
 
+        public void LoadVector(int location, Vector4 vector)
+        {
+            GL.ProgramUniform4(programID, location, vector);
+        }
+
         public void LoadBoolean(int location, bool value)
         {
             int toLoad = 0;

@@ -121,14 +121,14 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 DeleteTexture(textures[i]);
             }
 
-            for (int i = 0; i < fbos.Count; i++)
-            {
-                DeleteFrameBuffer(fbos[i]);
-            }
-
             for (int i = 0; i < rbos.Count; i++)
             {
                 DeleteRenderBuffer(rbos[i]);
+            }
+
+            for (int i = 0; i < fbos.Count; i++)
+            {
+                DeleteFrameBuffer(fbos[i]);
             }
         }
 
@@ -149,8 +149,14 @@ namespace VectorEngine.Core.Rendering.LowLevel
         /// <param name="fbo">The FBO to delete</param>
         public static void DeleteFrameBuffer(int fbo)
         {
-            GL.DeleteFramebuffer(fbo);
-            fbos.Remove(fbo);
+            try
+            {
+                GL.DeleteFramebuffer(fbo);
+            }
+            finally
+            {
+                fbos.Remove(fbo);
+            }
         }
 
         /// <summary>

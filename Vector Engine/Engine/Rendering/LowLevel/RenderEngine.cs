@@ -111,8 +111,6 @@ namespace VectorEngine.Core.Rendering.LowLevel
         /// </summary>
         public static void RenderAll()
         {
-            ChangeClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-            RenderPrepare();
             Camera camera;
             Material material;
             Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
@@ -130,19 +128,10 @@ namespace VectorEngine.Core.Rendering.LowLevel
             {
                 // Initialize the camera and view port to prepare for rendering
                 camera = cameraData[cameraIndex];
-                int viewPortOffsetX = (int)(camera.ViewPortOffset.X * width);
-                int viewPortOffsetY = (int)(camera.ViewPortOffset.Y * height);
                 int viewPortWidth = (int)(camera.ViewPortSize.X * width);
                 int viewPortHeight = (int)(camera.ViewPortSize.Y * height);
-                GL.Viewport(viewPortOffsetX, viewPortOffsetY, viewPortWidth, viewPortHeight);
-
-                // Create and bind a FBO
-                int cameraFBO = RenderDataLoader.GenerateFrameBuffer();
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, cameraFBO);
-
-                // Create and setup a texture to push our results to
-                int cameraTexture = RenderDataLoader.GenerateTexture();
-                GL.BindTexture(TextureTarget.Texture2D, cameraTexture);
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, camera.fboId);
+                GL.BindTexture(TextureTarget.Texture2D, camera.texId);
 
                 GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, viewPortWidth, viewPortHeight, 0, PixelFormat.Rgb, PixelType.UnsignedByte, System.IntPtr.Zero);
 
@@ -150,21 +139,22 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
                 GL.BindTexture(TextureTarget.Texture2D, 0);
 
-                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, cameraTexture, 0);
+                GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, camera.texId, 0);
 
                 // Create, initialize, and attach depth and stencil buffer
-                int cameraRBO = RenderDataLoader.GenerateRenderBuffer();
-                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, cameraRBO);
+                GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, camera.bufId);
                 GL.RenderbufferStorage(RenderbufferTarget.Renderbuffer, RenderbufferStorage.Depth24Stencil8, viewPortWidth, viewPortHeight);
                 GL.BindRenderbuffer(RenderbufferTarget.Renderbuffer, 0);
 
-                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, cameraRBO);
+                GL.FramebufferRenderbuffer(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthStencilAttachment, RenderbufferTarget.Renderbuffer, camera.bufId);
 
                 if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
                 {
                     Debug.Log($"Frame buffer was not complete! BAIL! Error code: {GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer).ToString()}");
                     return;
                 }
+
+                GL.Viewport(0, 0, viewPortWidth, viewPortHeight);
 
                 ChangeClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderPrepare();
@@ -210,54 +200,50 @@ namespace VectorEngine.Core.Rendering.LowLevel
                             material.SetMatrix("transformationMatrix", currentObject);
 
                             GL.DrawElements(BeginMode.Triangles, currentMesh.VertexCount, DrawElementsType.UnsignedInt, 0);
+
+                            material.Shader.AfterRenderInvividual();
                         }
 
                         GL.BindVertexArray(0);
-
-                        material.Shader.AfterRenderInvividual();
                     }
 
                     material.Shader.AfterRenderGroup();
 
                     material.Shader.DisableShader();
                 }
-
-                GL.Viewport(0, 0, viewPortWidth, viewPortHeight);
-                GL.Disable(EnableCap.DepthTest);
-
-                GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
                 
-
-                frameBufferRedraw.Shader.EnableShader();
-
-                GL.BindVertexArray(vboQuad.VaoID);
-
-                frameBufferRedraw.Shader.BeforeRenderGroup();
-                frameBufferRedraw.Shader.BeforeRenderIndividual();
-
-                GL.BindTexture(TextureTarget.Texture2D, cameraTexture);
-
-                GL.DrawElements(BeginMode.Triangles, vboQuad.VertexCount, DrawElementsType.UnsignedInt, 0);
-
-                GL.BindTexture(TextureTarget.Texture2D, 0);
-
-                frameBufferRedraw.Shader.AfterRenderInvividual();
-                frameBufferRedraw.Shader.AfterRenderGroup();
-
-                GL.BindVertexArray(0);
-
-                frameBufferRedraw.Shader.DisableShader();
-
-                RenderDataLoader.DeleteFrameBuffer(cameraFBO);
-                RenderDataLoader.DeleteTexture(cameraTexture);
-
-                GL.Enable(EnableCap.DepthTest);
             }
 
             GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-
             GL.Viewport(0, 0, width, height);
+
+            ChangeClearColor(1, 1, 1, 1);
+            RenderPrepare();
+
+            frameBufferRedraw.Shader.EnableShader();
+
+            GL.BindVertexArray(vboQuad.VaoID);
+
+            frameBufferRedraw.Shader.BeforeRenderGroup();
+
+            for (int i = 0; i < cameraData.Length; i++)
+            {
+                frameBufferRedraw.Shader.BeforeRenderIndividual();
+
+                frameBufferRedraw.SetVector4("offsetAndScale", new Vector4(cameraData[i].ViewPortOffset.X, cameraData[i].ViewPortOffset.Y, cameraData[i].ViewPortSize.X, cameraData[i].ViewPortSize.X));
+                GL.BindTexture(TextureTarget.Texture2D, cameraData[i].texId);
+
+                GL.DrawElements(BeginMode.Triangles, vboQuad.VertexCount, DrawElementsType.UnsignedInt, 0);
+
+                frameBufferRedraw.Shader.AfterRenderInvividual();
+            }
+
+            GL.BindVertexArray(0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            frameBufferRedraw.Shader.AfterRenderGroup();
+
+            frameBufferRedraw.Shader.DisableShader();
 
             renderingQueue.Clear();
         }
