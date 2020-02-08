@@ -13,7 +13,18 @@ namespace VectorEngine.Core.Rendering.LowLevel
         private static readonly List<int> vaos = new List<int>();
         private static readonly List<int> vbos = new List<int>();
         private static readonly List<int> textures = new List<int>();
+        private static readonly List<int> fbos = new List<int>();
+        private static readonly List<int> rbos = new List<int>();
 
+        /// <summary>
+        /// Loads a mesh, optionally takes a mesh ID which you want to override
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="indices"></param>
+        /// <param name="textureCoords"></param>
+        /// <param name="normals"></param>
+        /// <param name="meshID"></param>
+        /// <returns></returns>
         public static Mesh LoadMeshData(Vector3d[] positions, int[] indices, Vector2d[] textureCoords, Vector3d[] normals, int meshID = 0)
         {
             int eboID = BindIndices(indices);
@@ -21,6 +32,25 @@ namespace VectorEngine.Core.Rendering.LowLevel
             int vboTex = BindVector2Array(textureCoords);
             int vboNor = BindVector3Array(normals);
             meshID = BindToVAO(meshID, eboID, vboPos, vboTex, vboNor);
+
+            return new Mesh(meshID, indices.Length);
+        }
+
+        /// <summary>
+        /// Loads a mesh, specifically meant for things like UI and sprites, optionally takes a mesh ID which you want to override
+        /// </summary>
+        /// <param name="positions"></param>
+        /// <param name="indices"></param>
+        /// <param name="textureCoords"></param>
+        /// <param name="normals"></param>
+        /// <param name="meshID"></param>
+        /// <returns></returns>
+        public static Mesh LoadMeshData2d(Vector3d[] positions, int[] indices, Vector2d[] textureCoords, int meshID = 0)
+        {
+            int eboID = BindIndices(indices);
+            int vboPos = BindVector3Array(positions);
+            int vboTex = BindVector2Array(textureCoords);
+            meshID = BindToVAO2D(meshID, eboID, vboPos, vboTex);
 
             return new Mesh(meshID, indices.Length);
         }
@@ -38,7 +68,8 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
                 BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                int textureID = GL.GenTexture();
+                int textureID = GenerateTexture();
+                textures.Add(textureID);
                 GL.BindTexture(TextureTarget.Texture2D, textureID);
 
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
@@ -62,6 +93,14 @@ namespace VectorEngine.Core.Rendering.LowLevel
             }
         }
 
+        public static int GenerateTexture()
+        {
+            int textureID = GL.GenTexture();
+            textures.Add(textureID);
+
+            return textureID;
+        }
+
         /// <summary>
         /// Clears VAOS, VBOS, and textures. Should be called before application close.
         /// </summary>
@@ -79,8 +118,70 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
             for (int i = 0; i < textures.Count; i++)
             {
-                GL.DeleteTexture(textures[i]);
+                DeleteTexture(textures[i]);
             }
+
+            for (int i = 0; i < fbos.Count; i++)
+            {
+                DeleteFrameBuffer(fbos[i]);
+            }
+
+            for (int i = 0; i < rbos.Count; i++)
+            {
+                DeleteRenderBuffer(rbos[i]);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new FBO, frame buffer object, and returns the ID
+        /// </summary>
+        /// <returns></returns>
+        public static int GenerateFrameBuffer()
+        {
+            int generatedFbo = GL.GenFramebuffer();
+            fbos.Add(generatedFbo);
+            return generatedFbo;
+        }
+
+        /// <summary>
+        /// Deletes the provided FBO, frame buffer object, for use of cleaning up
+        /// </summary>
+        /// <param name="fbo">The FBO to delete</param>
+        public static void DeleteFrameBuffer(int fbo)
+        {
+            GL.DeleteFramebuffer(fbo);
+            fbos.Remove(fbo);
+        }
+
+        /// <summary>
+        /// Delete the provided texture
+        /// </summary>
+        /// <param name="texture"></param>
+        public static void DeleteTexture(int texture)
+        {
+            GL.DeleteTexture(texture);
+            textures.Remove(texture);
+        }
+        
+        /// <summary>
+        /// Creates an RBO (render buffer object)
+        /// </summary>
+        /// <returns></returns>
+        public static int GenerateRenderBuffer()
+        {
+            int rbo = GL.GenRenderbuffer();
+            rbos.Add(rbo);
+            return rbo;
+        }
+
+        /// <summary>
+        /// Deletes the provided RBO (render buffer object)
+        /// </summary>
+        /// <param name="rbo"></param>
+        public static void DeleteRenderBuffer(int rbo)
+        {
+            GL.DeleteRenderbuffer(rbo);
+            rbos.Remove(rbo);
         }
 
         private static int BindVector3Array(Vector3d[] vec)
@@ -132,6 +233,34 @@ namespace VectorEngine.Core.Rendering.LowLevel
             GL.BindBuffer(BufferTarget.ArrayBuffer, normVBO);
             GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Double, false, Vector3d.SizeInBytes, 0);
             GL.DisableVertexAttribArray(2);
+
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, indID);
+
+            UnloadVAO();
+
+            return vaoID;
+        }
+
+        private static int BindToVAO2D(int vaoID, int indID, int posVBO, int texVBO)
+        {
+            if (vaoID == 0)
+            {
+                GenerateVAO(out vaoID);
+            }
+            else
+            {
+                LoadVAO(vaoID);
+            }
+
+            GL.EnableVertexAttribArray(0);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, posVBO);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Double, false, Vector3d.SizeInBytes, 0);
+            GL.DisableVertexAttribArray(0);
+
+            GL.EnableVertexAttribArray(1);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, texVBO);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Double, false, Vector2d.SizeInBytes, 0);
+            GL.DisableVertexAttribArray(1);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, indID);
 

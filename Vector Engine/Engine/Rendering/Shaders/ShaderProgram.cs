@@ -25,23 +25,19 @@ namespace VectorEngine.Core.Rendering.Shaders
             GL.LinkProgram(programID);
             GL.ValidateProgram(programID);
 
-            GetAllUniformLocations();
-
             GL.DetachShader(programID, vertexShaderID);
             GL.DetachShader(programID, fragmentShaderID);
             GL.DeleteShader(vertexShaderID);
             GL.DeleteShader(fragmentShaderID);
         }
 
-        protected abstract void GetAllUniformLocations();
-
         public abstract void BeforeRenderGroup();
 
         public abstract void BeforeRenderIndividual();
 
-        public abstract void AfterRenderObject();
+        public abstract void AfterRenderInvividual();
 
-        public abstract void AfterRenderShader();
+        public abstract void AfterRenderGroup();
 
         public int GetUniformLocation(string uniformName)
         {

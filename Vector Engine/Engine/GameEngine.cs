@@ -41,8 +41,11 @@ namespace VectorEngine.Core
         StaticShader staticShader;
         Light light;
         Light mainLight;
+        Light anotherLight;
+
         Camera camera;
         Camera secondCamera;
+        
         public static Mesh treeMesh;
         public static Mesh testMesh;
         public static int treeTexture;
@@ -51,8 +54,9 @@ namespace VectorEngine.Core
         public void OnLoad(EventArgs e)
         {
             entryPoint.OnLoad();
-            light = new Light(Vector3d.Zero, new Vector3d(0, 0, 1), 50, 2f);
-            mainLight = new Light(new Vector3d(-10000000, 10000000, 10000000), new Vector3d(1, 1, 0.8f), 100000000, 0.8f);
+            light = new Light(new Vector3d(10000000, 10000000, 10000000), new Vector3d(0, 1, 0), 100000000, 3f);
+            mainLight = new Light(new Vector3d(-10000000, 10000000, 10000000), new Vector3d(1, 0, 0), 100000000, 3f);
+            anotherLight = new Light(new Vector3d(0, -10000000, 10000000), new Vector3d(0, 0, 1), 100000000, 3f);
             camera = new Camera
             {
                 Position = new Vector3d(0, 0, 0),
@@ -145,11 +149,10 @@ namespace VectorEngine.Core
         {
             windowHandler.SetWindowTitle($"Vector Engine | VSync: { EntryPoint.VSyncEnabled } FPS: { ((int)(1 / e.Time * 10)) / 10f }");
             RenderEngine.CleanUp();
-            light.Position = camera.Position;
-            RenderEngine.RenderPrepare();
             RenderEngine.AddCamera(camera);
             RenderEngine.AddLight(light);
             RenderEngine.AddLight(mainLight);
+            RenderEngine.AddLight(anotherLight);
             RenderEngine.AddToRenderQueue(standardMaterial, treeMesh, Mathmatics.CreateTransformationMatrix(new Vector3d(0, 0, -5), Vector3d.Zero, Vector3d.One));
 
             entryPoint.OnRender(e.Time);

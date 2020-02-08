@@ -72,6 +72,9 @@
     <Compile Include="Engine\Input\InputManager.cs" />
     <Compile Include="Engine\Rendering\LowLevel\OBJLoader.cs" />
     <Compile Include="Engine\Rendering\Material.cs" />
+    <Content Include="Engine\Rendering\Shaders\FrameBufferRedrawFragment.txt" />
+    <Content Include="Engine\Rendering\Shaders\FrameBufferRedrawVertex.txt" />
+    <Compile Include="Engine\Rendering\Shaders\FrameBufferRedrawShader.cs" />
     <Compile Include="Engine\WindowHandler.cs" />
     <Compile Include="Engine\Rendering\LowLevel\RenderDataLoader.cs" />
     <Compile Include="Engine\Components\Camera.cs" />
