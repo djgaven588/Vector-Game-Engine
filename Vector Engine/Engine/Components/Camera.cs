@@ -1,6 +1,6 @@
 ﻿using OpenTK;
 using VectorEngine.Core.Common;
-using VectorEngine.Core.Rendering.LowLevel;
+using VectorEngine.Engine.Rendering;
 
 namespace VectorEngine.Core.Rendering.Objects
 {
@@ -16,6 +16,8 @@ namespace VectorEngine.Core.Rendering.Objects
         public Vector2 ViewPortSize = new Vector2(1, 1);
         public Vector2 ViewPortOffset = new Vector2(0, 0);
         public Vector4 ClearColor = new Vector4(1, 1, 1, 1);
+
+        public Material PostProcessing = null;
 
         public readonly int fboId;
         public readonly int texId;

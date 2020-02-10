@@ -1,20 +1,21 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using VectorEngine.Core.Rendering.Shaders;
 
-namespace VectorEngine.Core.Rendering.Shaders
+namespace ExampleGame
 {
-    public class FrameBufferRedrawShader : ShaderProgram
+    public class InvertedColorPostProcessing : ShaderProgram
     {
-        private const string VERTEX_FILE = @"Engine\Rendering\Shaders\FrameBufferRedrawVertex.txt";
-        private const string FRAGMENT_FILE = @"Engine\Rendering\Shaders\FrameBufferRedrawFragment.txt";
+        private const string VERTEX_FILE = @"Engine\Rendering\Shaders\QuadRedrawVertex.txt";
+        private const string FRAGMENT_FILE = @"Game\Shaders\InvertedColorPostProcessingFragment.txt";
 
-        public FrameBufferRedrawShader() : base(VERTEX_FILE, FRAGMENT_FILE)
+        public InvertedColorPostProcessing() : base(VERTEX_FILE, FRAGMENT_FILE)
         {
 
         }
 
         public override void AfterRenderInvividual() { }
 
-        public override void AfterRenderGroup() 
+        public override void AfterRenderGroup()
         {
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);

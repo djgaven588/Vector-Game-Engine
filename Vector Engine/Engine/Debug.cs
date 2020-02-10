@@ -10,6 +10,12 @@ namespace VectorEngine.Engine
             ChangeConsoleColor(ConsoleColor.Gray);
             StackFrame frame = new StackFrame(1, true);
 
+            // Weird behaviour can happen if an attempt to log is done when the application
+            // is closing, this prevents that issue. A better solution should be implemented
+            // though.
+            if (frame == null || frame.GetFileName() == null)
+                return;
+
             string[] splitFilePath = frame.GetFileName().Split('\\');
             string fileName = splitFilePath[splitFilePath.Length - 1];
             string callInfo = fileName + ", " + frame.GetMethod().ToString() + " : " + frame.GetFileLineNumber();

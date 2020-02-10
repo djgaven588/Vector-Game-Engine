@@ -15,10 +15,14 @@ namespace VectorEngine.Core.Rendering.LowLevel
         private static readonly Queue<Light> lights = new Queue<Light>();
         private static readonly Queue<Camera> cameras = new Queue<Camera>();
 
-        private static readonly Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> renderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
+        private static readonly Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> objectRenderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
+        private static readonly Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> uiRenderingQueue = new Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>>();
 
         private static Mesh vboQuad;
-        private static Material frameBufferRedraw;
+        private static Material quadRedraw;
+
+        private static int uiFBO;
+        private static int uiTex;
 
         /// <summary>
         /// Setup the renderer, defaults some OpenTK options
@@ -42,7 +46,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 new Vector2d(1, 1)
             });
 
-            frameBufferRedraw = new Material(new FrameBufferRedrawShader(), false, false, false);
+            quadRedraw = new Material(new QuadRedraw(), false, false, false);
 
             GL.Enable(EnableCap.CullFace);
             GL.CullFace(CullFaceMode.Back);
@@ -50,15 +54,26 @@ namespace VectorEngine.Core.Rendering.LowLevel
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             ChangeClearColor(0.25f, 0f, 0.5f, 1f);
+
+            uiFBO = RenderDataLoader.GenerateFrameBuffer();
+            uiTex = RenderDataLoader.GenerateTexture();
         }
 
         /// <summary>
-        /// Cleans up the renderer
-        /// TODO: When implementing batching, clear all buffers
+        /// Cleans up all held references
         /// </summary>
         public static void CleanUp()
         {
-            renderingQueue.Clear();
+            quadRedraw.Shader.CleanUp();
+            RenderDataLoader.DeleteFrameBuffer(uiFBO);
+            RenderDataLoader.DeleteTexture(uiTex);
+            objectRenderingQueue.Clear();
+        }
+
+        public static void BufferFlush()
+        {
+            objectRenderingQueue.Clear();
+            uiRenderingQueue.Clear();
         }
 
         public static void RenderPrepare()
@@ -111,18 +126,111 @@ namespace VectorEngine.Core.Rendering.LowLevel
         /// </summary>
         public static void RenderAll()
         {
-            Camera camera;
-            Material material;
-            Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
-            Mesh currentMesh;
-            Matrix4[] currentObjects;
-
             Light[] lightData = lights.ToArray();
             lights.Clear();
 
             Camera[] cameraData = cameras.ToArray();
             cameras.Clear();
+
             (int width, int height) = GameEngine.windowHandler.GetWindowDimensions();
+
+            DrawCameras(width, height, cameraData, lightData);
+            DrawUI(width, height);
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.Viewport(0, 0, width, height);
+
+            ChangeClearColor(1, 1, 1, 1);
+            RenderPrepare();
+
+            GL.Disable(EnableCap.DepthTest);
+
+            DrawCamerasToScreen(cameraData);
+            DrawUIToScreen();
+
+            GL.Enable(EnableCap.DepthTest);
+
+            objectRenderingQueue.Clear();
+            uiRenderingQueue.Clear();
+        }
+
+        /// <summary>
+        /// Add a single instance of a mesh to the batch queue
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <param name="mesh"></param>
+        /// <param name="pos"></param>
+        public static void AddToRenderQueue(Material mat, Mesh mesh, Matrix4 pos, bool isUI)
+        {
+            Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> queue = isUI ? uiRenderingQueue : objectRenderingQueue;
+
+            if (queue.ContainsKey(mat))
+            {
+                if (queue[mat].ContainsKey(mesh))
+                {
+                    queue[mat][mesh].Enqueue(pos);
+                }
+                else
+                {
+                    Queue<Matrix4> temp = new Queue<Matrix4>();
+                    temp.Enqueue(pos);
+                    queue[mat].Add(mesh, temp);
+                }
+            }
+            else
+            {
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
+                {
+                    { mesh, new Queue<Matrix4>() }
+                };
+                temp[mesh].Enqueue(pos);
+                queue.Add(mat, temp);
+            }
+        }
+
+        /// <summary>
+        /// Add many instances of a mesh to the batch queue
+        /// </summary>
+        /// <param name="mat"></param>
+        /// <param name="mesh"></param>
+        /// <param name="positions"></param>
+        public static void AddToRenderQueueInstanced(Material mat, Mesh mesh, Matrix4[] positions, bool isUI)
+        {
+            Dictionary<Material, Dictionary<Mesh, Queue<Matrix4>>> queue = isUI ? uiRenderingQueue : objectRenderingQueue;
+
+            if (queue.ContainsKey(mat))
+            {
+                if (queue[mat].ContainsKey(mesh))
+                {
+                    for (int i = 0; i < positions.Length; i++)
+                    {
+                        queue[mat][mesh].Enqueue(positions[i]);
+                    }
+                }
+                else
+                {
+                    Queue<Matrix4> temp = new Queue<Matrix4>(positions);
+                    queue[mat].Add(mesh, temp);
+                }
+            }
+            else
+            {
+                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
+                {
+                    { mesh, new Queue<Matrix4>(positions) }
+                };
+                queue.Add(mat, temp);
+            }
+        }
+
+        private static void DrawCameras(int width, int height, Camera[] cameraData, Light[] lightData)
+        {
+            Camera camera;
+            Material material;
+            Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
+            Mesh currentMesh;
+            Matrix4[] currentObjects;
+            
             for (int cameraIndex = 0; cameraIndex < cameraData.Length; cameraIndex++)
             {
                 // Initialize the camera and view port to prepare for rendering
@@ -158,7 +266,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
                 ChangeClearColor(camera.ClearColor.X, camera.ClearColor.Y, camera.ClearColor.Z, camera.ClearColor.W);
                 RenderPrepare();
 
-                foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in renderingQueue)
+                foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in objectRenderingQueue)
                 {
                     material = entry.Key;
                     objectsToRender = entry.Value;
@@ -185,7 +293,7 @@ namespace VectorEngine.Core.Rendering.LowLevel
                     foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
                     {
                         currentMesh = renderEntry.Key;
-                        currentObjects = new Matrix4[renderEntry.Value.Count]; 
+                        currentObjects = new Matrix4[renderEntry.Value.Count];
                         renderEntry.Value.CopyTo(currentObjects, 0);
 
                         GL.BindVertexArray(currentMesh.VaoID);
@@ -210,108 +318,131 @@ namespace VectorEngine.Core.Rendering.LowLevel
 
                     material.Shader.DisableShader();
                 }
-                
+
             }
+        }
 
-            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
-            GL.Viewport(0, 0, width, height);
-
-            ChangeClearColor(1, 1, 1, 1);
-            RenderPrepare();
-
-            frameBufferRedraw.Shader.EnableShader();
-
+        private static void DrawCamerasToScreen(Camera[] cameraData)
+        {
             GL.BindVertexArray(vboQuad.VaoID);
-
-            frameBufferRedraw.Shader.BeforeRenderGroup();
 
             for (int i = 0; i < cameraData.Length; i++)
             {
-                frameBufferRedraw.Shader.BeforeRenderIndividual();
+                Material materialToUse = cameraData[i].PostProcessing == null ? quadRedraw : cameraData[i].PostProcessing;
+                materialToUse.Shader.EnableShader();
+                materialToUse.Shader.BeforeRenderIndividual();
+                materialToUse.Shader.BeforeRenderGroup();
 
-                frameBufferRedraw.SetVector4("offsetAndScale", new Vector4(cameraData[i].ViewPortOffset.X, cameraData[i].ViewPortOffset.Y, cameraData[i].ViewPortSize.X, cameraData[i].ViewPortSize.X));
-                frameBufferRedraw.SetDouble("zOffset", -i / 1024.0);
-                
+                materialToUse.SetVector4("offsetAndScale", new Vector4(cameraData[i].ViewPortOffset.X, cameraData[i].ViewPortOffset.Y, cameraData[i].ViewPortSize.X, cameraData[i].ViewPortSize.X));
+                materialToUse.SetDouble("zOffset", -i / 1024.0);
+
                 GL.BindTexture(TextureTarget.Texture2D, cameraData[i].texId);
 
                 GL.DrawElements(BeginMode.Triangles, vboQuad.VertexCount, DrawElementsType.UnsignedInt, 0);
 
-                frameBufferRedraw.Shader.AfterRenderInvividual();
+                materialToUse.Shader.AfterRenderInvividual();
+                materialToUse.Shader.AfterRenderGroup();
+                materialToUse.Shader.DisableShader();
             }
 
             GL.BindVertexArray(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
-
-            frameBufferRedraw.Shader.AfterRenderGroup();
-
-            frameBufferRedraw.Shader.DisableShader();
-
-            renderingQueue.Clear();
         }
 
-        /// <summary>
-        /// Add a single instance of a mesh to the batch queue
-        /// </summary>
-        /// <param name="mat"></param>
-        /// <param name="mesh"></param>
-        /// <param name="pos"></param>
-        public static void AddToRenderQueue(Material mat, Mesh mesh, Matrix4 pos)
+        private static void DrawUI(int width, int height)
         {
-            if (renderingQueue.ContainsKey(mat))
-            {
-                if (renderingQueue[mat].ContainsKey(mesh))
-                {
-                    renderingQueue[mat][mesh].Enqueue(pos);
-                }
-                else
-                {
-                    Queue<Matrix4> temp = new Queue<Matrix4>();
-                    temp.Enqueue(pos);
-                    renderingQueue[mat].Add(mesh, temp);
-                }
-            }
-            else
-            {
-                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
-                {
-                    { mesh, new Queue<Matrix4>() }
-                };
-                temp[mesh].Enqueue(pos);
-                renderingQueue.Add(mat, temp);
-            }
-        }
+            Material material;
+            Dictionary<Mesh, Queue<Matrix4>> objectsToRender;
+            Mesh currentMesh;
+            Matrix4[] currentObjects;
 
-        /// <summary>
-        /// Add many instances of a mesh to the batch queue
-        /// </summary>
-        /// <param name="mat"></param>
-        /// <param name="mesh"></param>
-        /// <param name="positions"></param>
-        public static void AddToRenderQueueInstanced(Material mat, Mesh mesh, Matrix4[] positions)
-        {
-            if (renderingQueue.ContainsKey(mat))
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, uiFBO);
+            GL.BindTexture(TextureTarget.Texture2D, uiTex);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, System.IntPtr.Zero);
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, uiTex, 0);
+
+            if (GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer) != FramebufferErrorCode.FramebufferComplete)
             {
-                if (renderingQueue[mat].ContainsKey(mesh))
+                Debug.Log($"Frame buffer was not complete! BAIL! Error code: {GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer).ToString()}");
+                return;
+            }
+
+            GL.Viewport(0, 0, width, height);
+
+            ChangeClearColor(0, 0, 0, 0);
+            RenderPrepare();
+
+            foreach (KeyValuePair<Material, Dictionary<Mesh, Queue<Matrix4>>> entry in uiRenderingQueue)
+            {
+                material = entry.Key;
+                objectsToRender = entry.Value;
+
+                material.Shader.EnableShader();
+
+                if (material.UsesTime)
                 {
-                    for (int i = 0; i < positions.Length; i++)
+                    material.SetTimeData(timeSinceStart);
+                }
+
+                foreach (KeyValuePair<Mesh, Queue<Matrix4>> renderEntry in objectsToRender)
+                {
+                    currentMesh = renderEntry.Key;
+                    currentObjects = new Matrix4[renderEntry.Value.Count];
+                    renderEntry.Value.CopyTo(currentObjects, 0);
+
+                    GL.BindVertexArray(currentMesh.VaoID);
+
+                    material.Shader.BeforeRenderGroup();
+
+                    for (int i = 0; i < currentObjects.Length; i++)
                     {
-                        renderingQueue[mat][mesh].Enqueue(positions[i]);
+                        material.Shader.BeforeRenderIndividual();
+
+                        material.SetMatrix("transformationMatrix", currentObjects[i]);
+
+                        GL.DrawElements(BeginMode.Triangles, currentMesh.VertexCount, DrawElementsType.UnsignedInt, 0);
+
+                        material.Shader.AfterRenderInvividual();
                     }
+
+                    GL.BindVertexArray(0);
                 }
-                else
-                {
-                    Queue<Matrix4> temp = new Queue<Matrix4>(positions);
-                    renderingQueue[mat].Add(mesh, temp);
-                }
+
+                material.Shader.AfterRenderGroup();
+
+                material.Shader.DisableShader();
             }
-            else
-            {
-                Dictionary<Mesh, Queue<Matrix4>> temp = new Dictionary<Mesh, Queue<Matrix4>>
-                {
-                    { mesh, new Queue<Matrix4>(positions) }
-                };
-                renderingQueue.Add(mat, temp);
-            }
+
+            uiRenderingQueue.Clear();
+        }
+
+        private static void DrawUIToScreen()
+        {
+            GL.BindVertexArray(vboQuad.VaoID);
+
+            quadRedraw.Shader.EnableShader();
+            quadRedraw.Shader.BeforeRenderIndividual();
+            quadRedraw.Shader.BeforeRenderGroup();
+
+            quadRedraw.SetVector4("offsetAndScale", new Vector4(0, 0, 1, 1));
+            quadRedraw.SetDouble("zOffset", 0);
+
+            GL.BindTexture(TextureTarget.Texture2D, uiTex);
+
+            GL.DrawElements(BeginMode.Triangles, vboQuad.VertexCount, DrawElementsType.UnsignedInt, 0);
+
+            quadRedraw.Shader.AfterRenderInvividual();
+            quadRedraw.Shader.AfterRenderGroup();
+            quadRedraw.Shader.DisableShader();
+
+            GL.BindVertexArray(0);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
         }
     }
 }
